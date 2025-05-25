@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { Pressable, StyleSheet, Text, View,Image, TextInput } from 'react-native';
-import colors from './constants/colors';
+import colors from './src/constants/colors';
 import { useFonts } from 'expo-font';
 export default function App() {
   const [fontsLoaded] = useFonts({
