@@ -1,10 +1,6 @@
 const colors = {
   background:"#FDF0FF",
-  text:"#333",
-  black20:"#A49CA6",
-  black30:"#B6ACB8",
   black40:"#989099",
-  black50:"#7F7880",
   primary:"#7F68FF",
   primary50:"#BEACFF",
   primary70:"#A591FF",
@@ -14,6 +10,15 @@ const colors = {
   blue:"#5B3FFC",
   blue50:"#A690FF",
   primaryDark:"#684EFF",
-  primaryDark70:"#957FFF"
+  primaryDark70:"#957FFF",
+  textPrimary: "#333", 
+  textSecondary: "#7F7880", 
+  textPlaceholder: "#B6ACB8", 
+  error: "#FF0000", 
+  white: "#FFFFFF",
+  purple: "#7F68FF", 
+  textLight: "#A49CA6", 
+  border: "#B6ACB8",
+  black: "#000000", 
 }
 export default colors;
