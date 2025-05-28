@@ -8,13 +8,13 @@ const FONT_FAMILY_SEMIBOLD = 'Nunito-SemiBold';
 const FONT_FAMILY_BOLD = 'Nunito-Bold';
 
 
-const FONT_SIZE_XXL = 34; // e.g., "You have a match!"
-const FONT_SIZE_XL = 28;  // e.g., Screen titles like "Home", "Profile"
-const FONT_SIZE_L = 22;   // e.g., Section headers like "Your Connections"
-const FONT_SIZE_M = 18;   // e.g., General headings, important text
-const FONT_SIZE_S = 16;   // e.g., Body text, input labels
-const FONT_SIZE_XS = 14;  // e.g., Smaller details, captions, placeholder text
-const FONT_SIZE_XXS = 12; // e.g., Very small text, timestamps
+const FONT_SIZE_XXL = 32; // e.g., "You have a match!"
+const FONT_SIZE_XL = 24;  // e.g., Screen titles like "Home", "Profile"
+const FONT_SIZE_L = 20;   // e.g., Section headers like "Your Connections"
+const FONT_SIZE_M = 16;   // e.g., General headings, important text
+const FONT_SIZE_S = 14;   // e.g., Body text, input labels
+const FONT_SIZE_XS = 12;  // e.g., Smaller details, captions, placeholder text
+const FONT_SIZE_XXS = 10; // e.g., Very small text, timestamps
 
 const LINE_HEIGHT_XXL = FONT_SIZE_XXL * 1.2;
 const LINE_HEIGHT_XL = FONT_SIZE_XL * 1.3;
@@ -87,15 +87,15 @@ const textStyles = StyleSheet.create({
   },
 
   buttonTextPrimary: {
-    fontFamily: FONT_FAMILY_BOLD,
-    fontSize: FONT_SIZE_M,
+    fontFamily: FONT_FAMILY_SEMIBOLD,
+    fontSize: FONT_SIZE_S,
     fontWeight: FONT_WEIGHT_BOLD,
     color: colors.white,
   },
   buttonTextSecondary: {
-    fontFamily: FONT_FAMILY_BOLD,
+    fontFamily: FONT_FAMILY_MEDIUM,
     fontSize: FONT_SIZE_M,
-    fontWeight: FONT_WEIGHT_BOLD,
+    fontWeight: FONT_FAMILY_MEDIUM,
     color: colors.purple,
   },
   link: {
