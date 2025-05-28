@@ -38,11 +38,14 @@ const textStyles = StyleSheet.create({
     lineHeight: LINE_HEIGHT_S,
     color: colors.textPrimary,
   },
-  label: {
-    fontFamily: FONT_FAMILY_MEDIUM, 
-    fontSize: FONT_SIZE_XS,
+  inputLabel: {
+    fontFamily: FONT_FAMILY_SEMIBOLD, 
+    fontSize: FONT_SIZE_S,
     lineHeight: LINE_HEIGHT_XS,
-    color: colors.textSecondary,
+    color: colors.textPrimary,
+  },
+  sectionLabel:{
+
   },
   placeholder: {
     fontFamily: FONT_FAMILY_REGULAR,
@@ -62,28 +65,25 @@ const textStyles = StyleSheet.create({
     fontSize: FONT_SIZE_XXL,
     lineHeight: LINE_HEIGHT_XXL,
     fontWeight: FONT_WEIGHT_BOLD,
-    color: colors.textPrimary,
   },
   h2: {
     fontFamily: FONT_FAMILY_BOLD,
     fontSize: FONT_SIZE_XL,
     lineHeight: LINE_HEIGHT_XL,
     fontWeight: FONT_WEIGHT_BOLD,
-    color: colors.textPrimary,
   },
   h3: {
-    fontFamily: FONT_FAMILY_SEMIBOLD,
+    fontFamily: FONT_FAMILY_MEDIUM,
     fontSize: FONT_SIZE_L,
     lineHeight: LINE_HEIGHT_L,
     fontWeight: FONT_WEIGHT_SEMIBOLD,
-    color: colors.textPrimary,
+    color:colors.textLight
   },
   h4: {
     fontFamily: FONT_FAMILY_MEDIUM, 
     fontSize: FONT_SIZE_M,
     lineHeight: LINE_HEIGHT_M,
     fontWeight: FONT_WEIGHT_MEDIUM,
-    color: colors.textPrimary,
   },
 
   buttonTextPrimary: {
