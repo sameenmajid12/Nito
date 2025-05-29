@@ -1,72 +1,63 @@
-import {
-  SafeAreaView,
-  StyleSheet,
-  Image,
-  View,
-  Text,
-  Pressable,
-} from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Animated } from "react-native";
 import { colors, FONT_SIZE_L, FONT_SIZE_M, textStyles } from "../../styles";
 import Button from "../../components/common/Button";
 import { Ionicons } from "@expo/vector-icons";
+import LoginDecorationShapes from "../../components/auth/LoginDecorationShapes";
+import Input from "../../components/common/Input";
+import { useEffect, useRef, useState } from "react";
+import Logo from "../../components/common/Logo";
+import SchoolSelector from "../../components/auth/SchoolSelector";
+function LoginScreen({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-function LoginScreen({navigation}) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
   return (
     <SafeAreaView style={styles.page}>
-      <Image
-        resizeMode="contain"
-        source={require("../../assets/images/loginShape1.png")}
-        style={styles.shape1}
-      ></Image>
-      <Image
-        resizeMode="contain"
-        source={require("../../assets/images/loginShape2.png")}
-        style={styles.shape2}
-      ></Image>
-      <Image
-        resizeMode="contain"
-        source={require("../../assets/images/loginShape3.png")}
-        style={styles.shape3}
-      ></Image>
-      <Image
-        resizeMode="contain"
-        source={require("../../assets/images/loginShape4.png")}
-        style={styles.shape4}
-      ></Image>
-      <View style={styles.pageContentContainer}>
-        <Image
-          resizeMode="contain"
-          style={{ width: 150, height: 65 }}
-          source={require("../../assets/images/logo.png")}
-        ></Image>
-        <Text style={[textStyles.h3, { marginBottom: 10 }]}>
-          Chat freely. Chat anonymously.
-        </Text>
-        <View style={styles.dropDownContainer}>
-          <Text style={textStyles.inputLabel}>School</Text>
-          <View style={styles.dropDown}>
-            <Text
-              style={{ fontFamily: "Nunito-SemiBold", color: colors.textLight }}
-            >
-              Select School
-            </Text>
-            <Ionicons
-              name="chevron-down-outline"
-              size={FONT_SIZE_L}
-              color={colors.textSecondary}
-            ></Ionicons>
-          </View>
-        </View>
+      <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+        <LoginDecorationShapes opacity={fadeAnim} />
 
-        <Button title="Login" style={{ width: "80%", height: 45 }} />
-      </View>
-      <View style={{ flex: 1 }} />
-      <Text style={styles.noAccountText}>
-        Don't have an account?{" "}
-        <Text onPress={()=>navigation.navigate("Register")} style={{ color: colors.primary, fontFamily: "Nunito-Bold" }}>
-          Register
+        <View style={styles.pageContentContainer}>
+          <Logo style={{ marginBottom: 10 }} />
+          <Text style={[textStyles.h3, { marginBottom: 10 }]}>
+            Chat freely. Chat anonymously.
+          </Text>
+          <SchoolSelector />
+          <Input
+            label={"Email"}
+            placeholder={"Enter email"}
+            containerStyle={{ marginBottom: 15 }}
+            value={email}
+            setValue={setEmail}
+          ></Input>
+          <Input
+            label={"Password"}
+            placeholder={"Enter password"}
+            containerStyle={{ marginBottom: 25 }}
+            value={password}
+            setValue={setPassword}
+          ></Input>
+
+          <Button title="Login" style={{ width: "80%", height: 45 }} />
+        </View>
+        <View style={{ flex: 1 }} />
+        <Text style={styles.noAccountText}>
+          Don't have an account?{" "}
+          <Text
+            onPress={() => navigation.navigate("Register")}
+            style={{ color: colors.primary, fontFamily: "Nunito-Bold" }}
+          >
+            Register
+          </Text>
         </Text>
-      </Text>
+      </Animated.View>
     </SafeAreaView>
   );
 }
@@ -79,58 +70,15 @@ const styles = StyleSheet.create({
   pageContentContainer: {
     width: "100%",
     alignItems: "center",
-    paddingTop: 250,
-    rowGap: 15,
-  },
-  dropDownContainer: {
-    width: "80%",
-    marginBottom: 10,
-  },
-  dropDown: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    height: 45,
-    borderRadius: 10,
-    alignItems: "center",
-    paddingHorizontal: 18,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    paddingTop: 195,
   },
   noAccountText: {
     fontFamily: "Nunito-Medium",
     fontSize: FONT_SIZE_M,
     textAlign: "center",
     paddingBottom: 40,
+    color: colors.textPrimary,
   },
-  shape1: {
-    position: "absolute",
-    width: 100,
-    height:100,
-    top: 130,
-    right: 50,
-    zIndex:10
-  },
-  shape2: {
-    position: "absolute",
-    width: 123,
-    height:100,
-    top:80,
-    right:-15
-  },
-  shape3:{
-    position:"absolute",
-    width:80,
-    height:80,
-    bottom:150,
-    left:40
-  },
-  shape4:{
-    position:'absolute',
-    width:150,
-    height:150,
-    bottom:80,
-    left:-70
-  }
 });
 
 export default LoginScreen;

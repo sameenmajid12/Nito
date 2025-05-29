@@ -1,4 +1,70 @@
-function RegisterScreen(){
+import { SafeAreaView, StyleSheet, View, Text, Animated } from "react-native";
+import { colors, FONT_SIZE_M, textStyles } from "../../styles";
+import Button from "../../components/common/Button";
+import LoginDecorationShapes from "../../components/auth/LoginDecorationShapes";
+import { useEffect, useState, useRef } from "react";
+import Logo from "../../components/common/Logo";
+import SchoolSelector from "../../components/auth/SchoolSelector";
+function RegisterScreen({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+  return (
+    <SafeAreaView style={styles.page}>
+      <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
+        <LoginDecorationShapes />
+
+        <View style={styles.pageContentContainer}>
+          <Logo style={{ marginBottom: 10 }} />
+          <Text style={[textStyles.h3, { marginBottom: 20 }]}>
+            Start chatting anonymously.
+          </Text>
+          <SchoolSelector />
+          <Button
+            title="Register"
+            style={{ width: "80%", height: 45, marginTop: 10 }}
+          />
+        </View>
+        <View style={{ flex: 1 }} />
+        <Text style={styles.noAccountText}>
+          Already have an account?{" "}
+          <Text
+            onPress={() => navigation.navigate("Login")}
+            style={{ color: colors.primary, fontFamily: "Nunito-Bold" }}
+          >
+            Login
+          </Text>
+        </Text>
+      </Animated.View>
+    </SafeAreaView>
+  );
 }
+
+const styles = StyleSheet.create({
+  page: {
+    backgroundColor: colors.background,
+    flex: 1,
+  },
+  pageContentContainer: {
+    width: "100%",
+    alignItems: "center",
+    paddingTop: 250,
+  },
+  noAccountText: {
+    fontFamily: "Nunito-Medium",
+    fontSize: FONT_SIZE_M,
+    textAlign: "center",
+    paddingBottom: 40,
+    color: colors.textPrimary,
+  },
+});
+
 export default RegisterScreen;
