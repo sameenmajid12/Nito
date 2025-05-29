@@ -14,20 +14,23 @@ import { useEffect, useRef } from "react";
 function AccountCreatedScreen() {
   const scaleAnim = useRef(new Animated.Value(1)).current; 
 
-  const CIRCLE_BASE_SIZE = 230;
+  const CIRCLE_BASE_SIZE = 220;
   const ICONS_SIZE = 150; 
+
   useEffect(() => {
     const animation = Animated.loop(
       Animated.sequence([
         Animated.timing(scaleAnim, {
-          toValue: 240 / 220,
+          toValue: 250 / 220, 
           duration: 1500,
           useNativeDriver: true,
+          easing: Animated.easing,
         }),
         Animated.timing(scaleAnim, {
           toValue: 1, 
           duration: 1500,
           useNativeDriver: true,
+          easing: Animated.easing,
         }),
       ])
     );
@@ -128,7 +131,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: "50%",
     left: "50%",
-    transform: [{ translateX: -200 / 2 }, { translateY: -200 / 2 }],
+    transform: [{ translateX: -100 }, { translateY: -100 }],
     zIndex: 1,
   },
   checkmark: {},
