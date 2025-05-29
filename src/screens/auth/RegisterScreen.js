@@ -23,7 +23,7 @@ function RegisterScreen({ navigation }) {
         <DecorationShapes />
 
         <View style={styles.pageContentContainer}>
-          <Logo style={{ marginBottom: 10 }} />
+          <Logo style={{ marginBottom: 10 }} width={150} height={80}/>
           <Text style={[textStyles.h3, { marginBottom: 20 }]}>
             Start chatting anonymously.
           </Text>
