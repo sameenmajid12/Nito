@@ -15,7 +15,7 @@ function LoginScreen({ navigation }) {
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 500,
+      duration: 700,
       useNativeDriver: true,
     }).start();
   }, [fadeAnim]);
@@ -51,7 +51,7 @@ function LoginScreen({ navigation }) {
         <Text style={styles.noAccountText}>
           Don't have an account?{" "}
           <Text
-            onPress={() => navigation.navigate("Register")}
+            onPress={() => navigation.replace("Register")}
             style={{ color: colors.primary, fontFamily: "Nunito-Bold" }}
           >
             Register

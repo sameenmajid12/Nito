@@ -13,7 +13,7 @@ function RegisterScreen({ navigation }) {
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 500,
+      duration: 700,
       useNativeDriver: true,
     }).start();
   }, [fadeAnim]);
@@ -37,7 +37,7 @@ function RegisterScreen({ navigation }) {
         <Text style={styles.noAccountText}>
           Already have an account?{" "}
           <Text
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => navigation.replace("Login")}
             style={{ color: colors.primary, fontFamily: "Nunito-Bold" }}
           >
             Login
