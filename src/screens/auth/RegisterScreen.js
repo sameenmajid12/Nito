@@ -31,6 +31,7 @@ function RegisterScreen({ navigation }) {
           <Button
             title="Register"
             style={{ width: "80%", height: 45, marginTop: 10 }}
+            onPress={()=>navigation.replace("Register1")}
           />
           <Text style={styles.whyNito}>Why use Nito?</Text>
         </View>
