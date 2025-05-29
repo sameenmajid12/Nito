@@ -2,7 +2,7 @@ import { SafeAreaView, StyleSheet, View, Text, Animated } from "react-native";
 import { colors, FONT_SIZE_L, FONT_SIZE_M, textStyles } from "../../styles";
 import Button from "../../components/common/Button";
 import { Ionicons } from "@expo/vector-icons";
-import LoginDecorationShapes from "../../components/auth/LoginDecorationShapes";
+import DecorationShapes from "../../components/auth/DecorationShapes";
 import Input from "../../components/common/Input";
 import { useEffect, useRef, useState } from "react";
 import Logo from "../../components/common/Logo";
@@ -22,7 +22,7 @@ function LoginScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.page}>
       <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
-        <LoginDecorationShapes opacity={fadeAnim} />
+        <DecorationShapes variant={"login"} />
 
         <View style={styles.pageContentContainer}>
           <Logo style={{ marginBottom: 10 }} />

@@ -1,7 +1,7 @@
 import { SafeAreaView, StyleSheet, View, Text, Animated } from "react-native";
 import { colors, FONT_SIZE_M, textStyles } from "../../styles";
 import Button from "../../components/common/Button";
-import LoginDecorationShapes from "../../components/auth/LoginDecorationShapes";
+import DecorationShapes from "../../components/auth/DecorationShapes";
 import { useEffect, useState, useRef } from "react";
 import Logo from "../../components/common/Logo";
 import SchoolSelector from "../../components/auth/SchoolSelector";
@@ -20,7 +20,7 @@ function RegisterScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.page}>
       <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
-        <LoginDecorationShapes />
+        <DecorationShapes />
 
         <View style={styles.pageContentContainer}>
           <Logo style={{ marginBottom: 10 }} />
@@ -32,6 +32,7 @@ function RegisterScreen({ navigation }) {
             title="Register"
             style={{ width: "80%", height: 45, marginTop: 10 }}
           />
+          <Text style={styles.whyNito}>Why use Nito?</Text>
         </View>
         <View style={{ flex: 1 }} />
         <Text style={styles.noAccountText}>
@@ -65,6 +66,11 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     color: colors.textPrimary,
   },
+  whyNito:{
+    fontFamily:"Nunito-Bold",
+    color:colors.primary,
+    marginTop:15,
+  }
 });
 
 export default RegisterScreen;
