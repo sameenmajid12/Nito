@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import { useState } from "react";
-function YourDetailsScreen() {
+function YourDetailsScreen({navigation}) {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -69,6 +69,7 @@ function YourDetailsScreen() {
             setValue={setRetypePassword}
           ></Input>
           <Button
+          onPress={()=>navigation.replace("Register2")}
             title={"Continue"}
             style={{ width: "100%", height: 45, marginTop: 10 }}
           ></Button>

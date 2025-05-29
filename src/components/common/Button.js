@@ -5,11 +5,11 @@ function Button({ title, onPress, disabled, isLoading, variant, style }) {
     variant = "primary";
   }
   return (
-    <TouchableOpacity activeOpacity={0.9} style={[style, variant==="primary"?styles.primaryButton:styles.secondayButton]} onPress={onPress} disabled={disabled || false}>
+    <TouchableOpacity activeOpacity={0.9} style={[style, variant==="primary"?styles.primaryButton:variant==="secondary"?styles.secondayButton:styles.tertiaryButton]} onPress={onPress} disabled={disabled || false}>
       {isLoading ? (
         <ActivityIndicator color={variant === 'primary' ? colors.white : colors.purple} />
       ) : (
-        <Text style={textStyles.buttonTextPrimary}>{title}</Text>
+        <Text style={variant === 'primary'?textStyles.buttonTextPrimary:variant==="secondary"?textStyles.buttonTextSecondary:textStyles.buttonTextPrimary}>{title}</Text>
       )}
     </TouchableOpacity>
   );
@@ -27,12 +27,23 @@ const styles = StyleSheet.create({
   },
   secondayButton: {
     borderWidth:1,
-    borderColor:colors.primary,
+    borderColor:colors.primaryDark,
     borderRadius: 10,
     backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
+    
   },
+  tertiaryButton:{
+    borderRadius: 5,
+    backgroundColor: colors.accent,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "black",
+    shadowOpacity: "0.15",
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius:8
+  }
 });
 
 export default Button;

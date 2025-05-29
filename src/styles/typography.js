@@ -94,9 +94,9 @@ const textStyles = StyleSheet.create({
   },
   buttonTextSecondary: {
     fontFamily: FONT_FAMILY_MEDIUM,
-    fontSize: FONT_SIZE_M,
+    fontSize: FONT_SIZE_S,
     fontWeight: FONT_FAMILY_MEDIUM,
-    color: colors.purple,
+    color: colors.primaryDark,
   },
   link: {
     fontFamily: FONT_FAMILY_REGULAR,
