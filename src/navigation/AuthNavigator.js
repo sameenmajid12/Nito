@@ -7,7 +7,9 @@ import AccountCreatedScreen from "../screens/auth/AccountCreatedScreen";
 const AuthStack = createNativeStackNavigator();
 function AuthNavigator() {
   return (
-    <AuthStack.Navigator screenOptions={{ headerShown: false }}>
+    <AuthStack.Navigator
+      screenOptions={{ headerShown: false, animation: "none" }}
+    >
       <AuthStack.Screen name="Login" component={LoginScreen}></AuthStack.Screen>
       <AuthStack.Screen
         name="Register"
