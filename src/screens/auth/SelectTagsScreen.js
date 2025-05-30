@@ -3,8 +3,14 @@ import { colors, FONT_SIZE_M, FONT_SIZE_XXL } from "../../styles";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import { useState } from "react";
+import { useRegistration } from "../../contexts/RegistrationContext";
 function SelectTagsScreen({ navigation }) {
   const [tags, setTags] = useState([]);
+  const {updateRegistrationData} = useRegistration();
+  const finishRegistration = () => {
+    updateRegistrationData(tags);
+    navigation.replace("Register3")
+  }
   return (
     <SafeAreaView style={styles.page}>
       <View style={styles.pageContainer}>
@@ -38,7 +44,7 @@ function SelectTagsScreen({ navigation }) {
             variant={"secondary"}
           ></Button>
           <Button
-            onPress={() => navigation.replace("Register3")}
+            onPress={finishRegistration}
             title="Continue"
             style={{ width: "48%", height: 45 }}
           ></Button>

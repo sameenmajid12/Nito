@@ -5,12 +5,18 @@ import { Ionicons } from "@expo/vector-icons";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import { useState } from "react";
-function YourDetailsScreen({navigation}) {
-  const [name, setName] = useState("");
+import { useRegistration } from "../../contexts/RegistrationContext";
+function YourDetailsScreen({ navigation }) {
+  const { updateRegistrationData } = useRegistration();
+  const [fullname, setFullname] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [retypePassword, setRetypePassword] = useState("");
+  const continueRegistration = () => {
+    updateRegistrationData({ fullname, username, email, password });
+    navigation.replace("Register2");
+  };
   return (
     <SafeAreaView style={styles.page}>
       <View style={{ paddingHorizontal: 40, paddingVertical: 20 }}>
@@ -34,11 +40,11 @@ function YourDetailsScreen({navigation}) {
             </View>
           </View>
           <Input
-            placeholder={"Enter name"}
-            label={"Name"}
+            placeholder={"Enter fullname"}
+            label={"Fullname"}
             containerStyle={{ width: "100%" }}
-            value={name}
-            setValue={setName}
+            value={fullname}
+            setValue={setFullname}
           ></Input>
           <Input
             placeholder={"Enter username"}
@@ -60,16 +66,18 @@ function YourDetailsScreen({navigation}) {
             containerStyle={{ width: "100%" }}
             value={password}
             setValue={setPassword}
+            secure={true}
           ></Input>
           <Input
             placeholder={"Enter password"}
             label={"Retype password"}
             containerStyle={{ width: "100%" }}
-            value={retypePassword} 
+            value={retypePassword}
             setValue={setRetypePassword}
+            se={true}
           ></Input>
           <Button
-          onPress={()=>navigation.replace("Register2")}
+            onPress={continueRegistration}
             title={"Continue"}
             style={{ width: "100%", height: 45, marginTop: 10 }}
           ></Button>

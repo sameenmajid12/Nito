@@ -7,28 +7,28 @@ import {
   Animated,
 } from "react-native";
 import Logo from "../../components/common/Logo";
-import { colors, FONT_SIZE_M, FONT_SIZE_S } from "../../styles";
+import { colors, FONT_SIZE_M } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
 
 function AccountCreatedScreen() {
   const scaleAnim = useRef(new Animated.Value(1)).current; 
 
-  const CIRCLE_BASE_SIZE = 220;
+  const CIRCLE_BASE_SIZE = 240;
   const ICONS_SIZE = 150; 
 
   useEffect(() => {
     const animation = Animated.loop(
       Animated.sequence([
         Animated.timing(scaleAnim, {
-          toValue: 250 / 220, 
-          duration: 1500,
+          toValue: 250 / 240, 
+          duration: 1000,
           useNativeDriver: true,
           easing: Animated.easing,
         }),
         Animated.timing(scaleAnim, {
           toValue: 1, 
-          duration: 1500,
+          duration: 1000,
           useNativeDriver: true,
           easing: Animated.easing,
         }),
@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
   },
   outerCirclePulsing: {
     backgroundColor: colors.accent40,
-    width: 220,
-    height: 220, 
+    width: 240,
+    height: 240, 
     borderRadius: 999,
     position: "absolute",
     top: "50%",

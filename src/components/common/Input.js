@@ -9,6 +9,7 @@ function Input({
   inputStyle,
   containerStyle,
   labelStyle,
+  secure
 }) {
   return (
     <View style={[styles.inputContainer, containerStyle]}>
@@ -18,6 +19,7 @@ function Input({
         value={value}
         onChangeText={setValue}
         style={[styles.input, inputStyle]}
+        secureTextEntry={secure || false}
       ></TextInput>
     </View>
   );
