@@ -10,7 +10,7 @@ import SchoolSelector from "../../components/auth/SchoolSelector";
 function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [school, setSchool] = useState({ name: "Select School", img: null });
   const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -25,11 +25,11 @@ function LoginScreen({ navigation }) {
         <DecorationShapes variant={"login"} />
 
         <View style={styles.pageContentContainer}>
-          <Logo style={{ marginBottom: 10 }} width={150} height={80}/>
+          <Logo style={{ marginBottom: 10 }} width={150} height={80} />
           <Text style={[textStyles.h3, { marginBottom: 10 }]}>
             Chat freely. Chat anonymously.
           </Text>
-          <SchoolSelector />
+          <SchoolSelector school={school} setSchool={setSchool} />
           <Input
             label={"Email"}
             placeholder={"Enter email"}
