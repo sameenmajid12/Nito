@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
     height: 150,
     top: 20,
     right: -30,
+    zIndex:10
   },
   registerShape1: {
     position: "absolute",
@@ -53,6 +54,7 @@ const styles = StyleSheet.create({
     height: 150,
     top:30,
     right: -20,
+    zIndex:10
   },
   registerShape2: {
     position: "absolute",
@@ -60,6 +62,7 @@ const styles = StyleSheet.create({
     height: 150,
     bottom: 60,
     left: -30,
+    zIndex:10
   },
 });
 export default DecorationShapes;

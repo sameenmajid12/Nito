@@ -4,13 +4,10 @@ import {
   View,
   Text,
   Animated,
-  Platform, // <-- Import Platform
-  Keyboard, // <-- Import Keyboard API
-  ScrollView, // <-- Import ScrollView (if your content can overflow)
+  Keyboard, 
 } from "react-native";
 import { colors, FONT_SIZE_L, FONT_SIZE_M, textStyles } from "../../styles";
 import Button from "../../components/common/Button";
-import { Ionicons } from "@expo/vector-icons";
 import DecorationShapes from "../../components/auth/DecorationShapes";
 import Input from "../../components/common/Input";
 import { useEffect, useRef, useState } from "react";
@@ -44,10 +41,10 @@ function LoginScreen({ navigation }) {
 
     const keybaordWillShowListener = Keyboard.addListener(
       "keyboardWillShow",
-      (e) => {
+      () => {
         Animated.timing(animatedPageContentPaddingTop, {
           toValue: KEYBOARD_ACTIVE_PADDING_TOP,
-          duration: e.duration,
+          duration: 250,
           useNativeDriver: false,
         }).start();
       }
@@ -55,10 +52,10 @@ function LoginScreen({ navigation }) {
 
     const keyboardWillHideListener = Keyboard.addListener(
       "keyboardWillHide",
-      (e) => {
+      () => {
         Animated.timing(animatedPageContentPaddingTop, {
           toValue: INITIAL_PADDING_TOP,
-          duration: e.duration,
+          duration: 200,
           useNativeDriver: false,
         }).start();
       }

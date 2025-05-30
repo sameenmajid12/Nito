@@ -20,7 +20,6 @@ function Input({
         textContentType=  "oneTimeCode"
         spellCheck={false}
         autoCorrect={false}
-        autoComplete="off"
         placeholder={placeholder}
         value={value}
         onChangeText={setValue}
