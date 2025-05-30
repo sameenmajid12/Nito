@@ -7,10 +7,15 @@ import Input from "../../components/common/Input";
 import { useEffect, useRef, useState } from "react";
 import Logo from "../../components/common/Logo";
 import SchoolSelector from "../../components/auth/SchoolSelector";
+
 function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [school, setSchool] = useState({ name: "Select School", img: null });
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
+  };
   const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -19,6 +24,12 @@ function LoginScreen({ navigation }) {
       useNativeDriver: true,
     }).start();
   }, [fadeAnim]);
+
+  // Define styles here to avoid creating new objects on every render
+  const emailInputContainerStyle = { marginBottom: 15 };
+  const passwordInputContainerStyle = { marginBottom: 25 };
+
+
   return (
     <SafeAreaView style={styles.page}>
       <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
@@ -33,16 +44,18 @@ function LoginScreen({ navigation }) {
           <Input
             label={"Email"}
             placeholder={"Enter email"}
-            containerStyle={{ marginBottom: 15 }}
+            containerStyle={emailInputContainerStyle} // Use the stable reference
             value={email}
             setValue={setEmail}
           ></Input>
           <Input
             label={"Password"}
             placeholder={"Enter password"}
-            containerStyle={{ marginBottom: 25 }}
+            containerStyle={passwordInputContainerStyle} // Use the stable reference
             value={password}
             setValue={setPassword}
+            secure={!passwordVisible}
+            togglePasswordVisibility={togglePasswordVisibility}
           ></Input>
 
           <Button title="Login" style={{ width: "80%", height: 45 }} />

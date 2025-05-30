@@ -8,7 +8,7 @@ import SchoolSelector from "../../components/auth/SchoolSelector";
 function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [school, setSchool] = useState({name:"Select School", img:null})
   const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -27,7 +27,7 @@ function RegisterScreen({ navigation }) {
           <Text style={[textStyles.h3, { marginBottom: 20 }]}>
             Start chatting anonymously.
           </Text>
-          <SchoolSelector />
+          <SchoolSelector school={school} setSchool={setSchool}/>
           <Button
             title="Register"
             style={{ width: "80%", height: 45, marginTop: 10 }}
