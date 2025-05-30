@@ -18,6 +18,7 @@ function Input({
       <Text style={[labelStyle, textStyles.inputLabel]}>{label}</Text>
       <TextInput
         textContentType=  "oneTimeCode"
+        spellCheck={false}
         autoCorrect={false}
         autoComplete="off"
         placeholder={placeholder}
