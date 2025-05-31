@@ -4,18 +4,20 @@ import { colors, textStyles, FONT_SIZE_L } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 
-function SchoolSelector({ school, setSchool, containerStyle, selectorStyle }) {
-  const [dropDownVisible, setDropDownVisible] = useState(false);
+function SchoolSelector({
+  school,
+  setSchool,
+  containerStyle,
+  selectorStyle,
+  dropDownVisible,
+  setDropDownVisible,
+}) {
   const [schoolSelected, setSchoolSelected] = useState(false);
 
   const rotateAnimation = useState(new Animated.Value(0))[0];
 
   const toggleDropDown = () => {
     setDropDownVisible((prev) => !prev);
-  };
-
-  const closeDropDown = () => {
-    setDropDownVisible(false);
   };
 
   useEffect(() => {
@@ -55,10 +57,6 @@ function SchoolSelector({ school, setSchool, containerStyle, selectorStyle }) {
 
   return (
     <>
-      {dropDownVisible && (
-        <Pressable style={styles.overlay} onPress={closeDropDown} />
-      )}
-
       <View style={[styles.selectorContainer, containerStyle]}>
         <Pressable onPress={toggleDropDown}>
           <Text style={textStyles.inputLabel}>School</Text>
@@ -127,18 +125,10 @@ function SchoolSelector({ school, setSchool, containerStyle, selectorStyle }) {
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 99,
-  },
   selectorContainer: {
     width: "80%",
     marginBottom: 10,
-    zIndex: 100,
+    position:"relative"
   },
   selector: {
     borderWidth: 1,
@@ -149,7 +139,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     flexDirection: "row",
     justifyContent: "space-between",
-    color: colors.textPrimary,
+    color: colors.textPrimary,  
   },
   dropDownContainer: {
     position: "absolute",

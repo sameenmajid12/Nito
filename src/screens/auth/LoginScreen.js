@@ -4,9 +4,10 @@ import {
   View,
   Text,
   Animated,
-  Keyboard, 
+  Keyboard,
+  Pressable,
 } from "react-native";
-import { colors, FONT_SIZE_L, FONT_SIZE_M, textStyles } from "../../styles";
+import { colors, FONT_SIZE_M, textStyles } from "../../styles";
 import Button from "../../components/common/Button";
 import DecorationShapes from "../../components/auth/DecorationShapes";
 import Input from "../../components/common/Input";
@@ -21,6 +22,7 @@ function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [school, setSchool] = useState({ name: "Select School", img: null });
+  const [schoolDropDown, setSchoolDropDown] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
@@ -71,52 +73,64 @@ function LoginScreen({ navigation }) {
   const passwordInputContainerStyle = { marginBottom: 25 };
 
   return (
-    <SafeAreaView style={styles.page}>
-      <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
-        <DecorationShapes variant={"login"} />
-        <Animated.View
-          style={[
-            styles.pageContentContainer,
-            { paddingTop: animatedPageContentPaddingTop },
-          ]}
-        >
-          <Logo style={{ marginBottom: 10 }} width={150} height={80} />
-          <Text style={[textStyles.h3, { marginBottom: 10 }]}>
-            Chat freely. Chat anonymously.
-          </Text>
-          <SchoolSelector school={school} setSchool={setSchool} />
-          <Input
-            label={"Email"}
-            placeholder={"Enter email"}
-            containerStyle={emailInputContainerStyle}
-            value={email}
-            setValue={setEmail}
-          ></Input>
-          <Input
-            label={"Password"}
-            placeholder={"Enter password"}
-            containerStyle={passwordInputContainerStyle}
-            value={password}
-            setValue={setPassword}
-            secure={!passwordVisible}
-            togglePasswordVisibility={togglePasswordVisibility}
-          ></Input>
-
-          <Button title="Login" style={{ width: "80%", height: 45 }} />
-        </Animated.View>
-
-        <View style={{ flex: 1 }} />
-        <Text style={styles.noAccountText}>
-          Don't have an account?{" "}
-          <Text
-            onPress={() => navigation.replace("Register")}
-            style={{ color: colors.primary, fontFamily: "Nunito-Bold" }}
+    <>
+      <SafeAreaView style={styles.page}>
+        <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+          <DecorationShapes variant={"login"} />
+          <Animated.View
+            style={[
+              styles.pageContentContainer,
+              { paddingTop: animatedPageContentPaddingTop },
+            ]}
           >
-            Register
-          </Text>
-        </Text>
-      </Animated.View>
-    </SafeAreaView>
+            <Logo style={{ marginBottom: 10 }} width={150} height={80} />
+            <Text style={[textStyles.h3, { marginBottom: 10 }]}>
+              Chat freely. Chat anonymously.
+            </Text>
+            <SchoolSelector
+              school={school}
+              setSchool={setSchool}
+              dropDownVisible={schoolDropDown}
+              setDropDownVisible={setSchoolDropDown}
+            />
+            <Input
+              label={"Email"}
+              placeholder={"Enter email"}
+              containerStyle={emailInputContainerStyle}
+              value={email}
+              setValue={setEmail}
+            ></Input>
+            <Input
+              label={"Password"}
+              placeholder={"Enter password"}
+              containerStyle={passwordInputContainerStyle}
+              value={password}
+              setValue={setPassword}
+              secure={!passwordVisible}
+              togglePasswordVisibility={togglePasswordVisibility}
+            ></Input>
+
+            <Button title="Login" style={{ width: "80%", height: 45 }} />
+            <View style={{ flex: 1 }} />
+            <Text style={styles.noAccountText}>
+              Don't have an account?{" "}
+              <Text
+                onPress={() => navigation.replace("Register")}
+                style={{ color: colors.primary, fontFamily: "Nunito-Bold" }}
+              >
+                Register
+              </Text>
+            </Text>
+            {schoolDropDown && (
+              <Pressable
+                onPress={() => setSchoolDropDown(false)}
+                style={styles.overlay}
+              ></Pressable>
+            )}
+          </Animated.View>
+        </Animated.View>
+      </SafeAreaView>
+    </>
   );
 }
 
@@ -125,9 +139,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     flex: 1,
   },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 99,
+  },
   pageContentContainer: {
     width: "100%",
     alignItems: "center",
+    zIndex: 11,
+    flex: 1,
   },
   noAccountText: {
     fontFamily: "Nunito-Medium",
