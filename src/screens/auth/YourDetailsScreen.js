@@ -1,9 +1,8 @@
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { Image } from "expo-image";
 import { colors, FONT_SIZE_XL, FONT_SIZE_XS } from "../../styles";
-import { Ionicons } from "@expo/vector-icons";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
+import AddProfilePicture from "../../components/auth/AddProfilePicture";
 import { useState } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
 function YourDetailsScreen({ navigation }) {
@@ -13,6 +12,14 @@ function YourDetailsScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [retypePassword, setRetypePassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [retypePasswordVisible, setRetypePasswordVisible] = useState(false);
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
+  };
+  const toggleRetypedPasswordVisibility = () => {
+    setRetypePasswordVisible((prev) => !prev);
+  };
   const continueRegistration = () => {
     updateRegistrationData({ fullname, username, email, password });
     navigation.replace("Register2");
@@ -30,15 +37,7 @@ function YourDetailsScreen({ navigation }) {
           Your details
         </Text>
         <View style={styles.inputContainer}>
-          <View style={styles.cameraContainer}>
-            <Image
-              source={require("../../assets/icons/camera.svg")}
-              style={styles.cameraIcon}
-            ></Image>
-            <View style={styles.plusIconContainer}>
-              <Ionicons name="add-outline" style={styles.plusIcon}></Ionicons>
-            </View>
-          </View>
+          <AddProfilePicture />
           <Input
             placeholder={"Enter fullname"}
             label={"Fullname"}
@@ -66,7 +65,8 @@ function YourDetailsScreen({ navigation }) {
             containerStyle={{ width: "100%" }}
             value={password}
             setValue={setPassword}
-            secure={true}
+            secure={!passwordVisible}
+            togglePasswordVisibility={togglePasswordVisibility}
           ></Input>
           <Input
             placeholder={"Enter password"}
@@ -74,7 +74,8 @@ function YourDetailsScreen({ navigation }) {
             containerStyle={{ width: "100%" }}
             value={retypePassword}
             setValue={setRetypePassword}
-            se={true}
+            secure={!retypePasswordVisible}
+            togglePasswordVisibility={toggleRetypedPasswordVisibility}
           ></Input>
           <Button
             onPress={continueRegistration}
@@ -100,37 +101,6 @@ const styles = StyleSheet.create({
   page: {
     flex: 1,
     backgroundColor: colors.background,
-  },
-  cameraContainer: {
-    width: 140,
-    height: 140,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 999,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  cameraIcon: {
-    width: 80,
-    height: 80,
-    opacity: 0.4,
-  },
-  plusIconContainer: {
-    position: "absolute",
-    right: 5,
-    bottom: 5,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 20,
-    backgroundColor: colors.background,
-    padding: 5,
-  },
-  plusIcon: {
-    width: 20,
-    height: 20,
-    fontSize: 20,
-    color: colors.border,
   },
   inputContainer: {
     paddingTop: 40,
