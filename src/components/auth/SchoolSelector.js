@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Pressable, Animated } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  Animated,
+  ScrollView,
+  TextInput,
+} from "react-native";
 import { colors, textStyles, FONT_SIZE_L } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
@@ -12,8 +20,17 @@ function SchoolSelector({
   dropDownVisible,
   setDropDownVisible,
 }) {
+  const allSchools = [
+    {
+      name: "Rutgers University-New Brunswick",
+      img: require("../../assets/images/rutgers.png"),
+    },
+    { name: "Rowan University", img: require("../../assets/images/rowan.png") },
+    { name: "SUNY Cortland", img: require("../../assets/images/cortland.png") },
+  ];
+  const [filteredSchools, setFilteredSchools] = useState(allSchools);
   const [schoolSelected, setSchoolSelected] = useState(false);
-
+  const [searchQuery, setSearchQuery] = useState("");
   const rotateAnimation = useState(new Animated.Value(0))[0];
 
   const toggleDropDown = () => {
@@ -35,7 +52,16 @@ function SchoolSelector({
       useNativeDriver: true,
     }).start();
   }, [dropDownVisible]);
-
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      const newSchools = allSchools.filter((schoolItem) =>
+        schoolItem.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredSchools(newSchools);
+    } else {
+      setFilteredSchools(allSchools);
+    }
+  }, [searchQuery]);
   const rotateDegree = rotateAnimation.interpolate({
     inputRange: [0, 1],
     outputRange: ["0deg", "180deg"],
@@ -45,15 +71,6 @@ function SchoolSelector({
     setSchool(name);
     setDropDownVisible(false);
   };
-
-  const schools = [
-    {
-      name: "Rutgers University-New Brunswick",
-      img: require("../../assets/images/rutgers.png"),
-    },
-    { name: "Rowan University", img: require("../../assets/images/rowan.png") },
-    { name: "SUNY Cortland", img: require("../../assets/images/cortland.png") },
-  ];
 
   return (
     <>
@@ -102,8 +119,18 @@ function SchoolSelector({
         </Pressable>
 
         {dropDownVisible && (
-          <View style={styles.dropDownContainer}>
-            {schools.map((s, index) => (
+          <ScrollView style={styles.dropDownContainer}>
+            <View style={styles.searchContainer}>
+              <Ionicons size={16} name="search-outline"></Ionicons>
+              <TextInput
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                placeholder="Search school"
+                style={{ flex: 1, height: "100%" }}
+              ></TextInput>
+            </View>
+            <View style={styles.divider}></View>
+            {filteredSchools.map((s, index) => (
               <Pressable
                 key={index}
                 onPress={() => selectSchool(s)}
@@ -117,7 +144,8 @@ function SchoolSelector({
                 />
               </Pressable>
             ))}
-          </View>
+            {filteredSchools.length === 0 && <Text>{"No results found :("}</Text>}
+          </ScrollView>
         )}
       </View>
     </>
@@ -128,7 +156,7 @@ const styles = StyleSheet.create({
   selectorContainer: {
     width: "80%",
     marginBottom: 10,
-    position:"relative"
+    position: "relative",
   },
   selector: {
     borderWidth: 1,
@@ -139,7 +167,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     flexDirection: "row",
     justifyContent: "space-between",
-    color: colors.textPrimary,  
+    color: colors.textPrimary,
   },
   dropDownContainer: {
     position: "absolute",
@@ -154,12 +182,31 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderTopEndRadius: 0,
     borderTopStartRadius: 0,
+    maxHeight: 250,
   },
   dropDownSchool: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 8,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    columnGap: 5,
+    backgroundColor: colors.white,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.1)",
+  },
+  divider: {
+    width: "100%",
+    height: 1,
+    backgroundColor: "rgba(0,0,0,0.1)",
+    marginTop: 10,
+    marginBottom: 4,
   },
 });
 
