@@ -125,7 +125,7 @@ function SchoolSelector({
               <TextInput
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                placeholder="Search school"
+                placeholder="Search"
                 style={{ flex: 1, height: "100%" }}
               ></TextInput>
             </View>
