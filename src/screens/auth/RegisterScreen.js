@@ -1,4 +1,12 @@
-import { SafeAreaView, StyleSheet, View, Text, Animated, Pressable } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  Animated,
+  Pressable,
+  Keyboard,
+} from "react-native";
 import { colors, FONT_SIZE_M, textStyles } from "../../styles";
 import Button from "../../components/common/Button";
 import DecorationShapes from "../../components/auth/DecorationShapes";
@@ -9,19 +17,56 @@ function RegisterScreen({ navigation }) {
   const [school, setSchool] = useState({ name: "Select School", img: null });
   const [schoolDropDown, setSchoolDropDown] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const INITIAL_PADDING_TOP = 250;
+  const KEYBOARD_ACTIVE_PADDING_TOP = 120;
+  const animatedPageContentPaddingTop = useRef(
+    new Animated.Value(INITIAL_PADDING_TOP)
+  ).current;
+
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 700,
       useNativeDriver: true,
     }).start();
+    const keybaordWillShowListener = Keyboard.addListener(
+      "keyboardWillShow",
+      () => {
+        Animated.timing(animatedPageContentPaddingTop, {
+          toValue: KEYBOARD_ACTIVE_PADDING_TOP,
+          duration: 250,
+          useNativeDriver: false,
+        }).start();
+      }
+    );
+
+    const keyboardWillHideListener = Keyboard.addListener(
+      "keyboardWillHide",
+      () => {
+        Animated.timing(animatedPageContentPaddingTop, {
+          toValue: INITIAL_PADDING_TOP,
+          duration: 200,
+          useNativeDriver: false,
+        }).start();
+      }
+    );
+
+    return () => {
+      keybaordWillShowListener.remove();
+      keyboardWillHideListener.remove();
+    };
   }, [fadeAnim]);
   return (
     <SafeAreaView style={styles.page}>
       <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
         <DecorationShapes />
 
-        <View style={styles.pageContentContainer}>
+        <Animated.View
+          style={[
+            styles.pageContentContainer,
+            { paddingTop: animatedPageContentPaddingTop },
+          ]}
+        >
           <Logo style={{ marginBottom: 10 }} width={150} height={80} />
           <Text style={[textStyles.h3, { marginBottom: 20 }]}>
             Start chatting anonymously.
@@ -54,7 +99,7 @@ function RegisterScreen({ navigation }) {
               style={styles.overlay}
             ></Pressable>
           )}
-        </View>
+        </Animated.View>
       </Animated.View>
     </SafeAreaView>
   );
@@ -68,8 +113,8 @@ const styles = StyleSheet.create({
   pageContentContainer: {
     width: "100%",
     alignItems: "center",
-    paddingTop: 250,
     flex: 1,
+    zIndex: 11,
   },
   overlay: {
     position: "absolute",
