@@ -1,10 +1,18 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  Keyboard,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  LayoutAnimation, 
+} from "react-native";
 import { colors, FONT_SIZE_XL, FONT_SIZE_XS } from "../../styles";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import AddProfilePicture from "../../components/auth/AddProfilePicture";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
+
 function YourDetailsScreen({ navigation }) {
   const { updateRegistrationData } = useRegistration();
   const [fullname, setFullname] = useState("");
@@ -14,6 +22,30 @@ function YourDetailsScreen({ navigation }) {
   const [retypePassword, setRetypePassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [retypePasswordVisible, setRetypePasswordVisible] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keybaordWillShowListener = Keyboard.addListener(
+      "keyboardWillShow",
+      () => {
+        LayoutAnimation.configureNext({...LayoutAnimation.Presets.easeInEaseOut, duration:250});
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardWillHideListener = Keyboard.addListener(
+      "keyboardWillHide", 
+      () => {
+        LayoutAnimation.configureNext({...LayoutAnimation.Presets.easeInEaseOut, duration:250});
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keybaordWillShowListener.remove();
+      keyboardWillHideListener.remove();
+    };
+  }, []); 
+
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
@@ -24,20 +56,24 @@ function YourDetailsScreen({ navigation }) {
     updateRegistrationData({ fullname, username, email, password });
     navigation.replace("Register2");
   };
+
   return (
     <SafeAreaView style={styles.page}>
       <View style={{ paddingHorizontal: 40, paddingVertical: 20 }}>
-        <Text
-          style={{
-            color: colors.textPrimary,
-            fontFamily: "Nunito-SemiBold",
-            fontSize: FONT_SIZE_XL,
-          }}
-        >
-          Your details
-        </Text>
+        {!keyboardVisible && (
+          <Text
+            style={{
+              color: colors.textPrimary,
+              fontFamily: "Nunito-SemiBold",
+              fontSize: FONT_SIZE_XL,
+            }}
+          >
+            Your details
+          </Text>
+        )}
         <View style={styles.inputContainer}>
-          <AddProfilePicture />
+          {!keyboardVisible && <AddProfilePicture />}
+
           <Input
             placeholder={"Enter fullname"}
             label={"Fullname"}
@@ -97,15 +133,19 @@ function YourDetailsScreen({ navigation }) {
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   page: {
     flex: 1,
     backgroundColor: colors.background,
   },
   inputContainer: {
+    // This paddingTop will now animate due to LayoutAnimation when its sibling changes size
+    // You might need to adjust this value to ensure inputs are sufficiently high
     paddingTop: 40,
     alignItems: "center",
     rowGap: 15,
   },
 });
+
 export default YourDetailsScreen;
