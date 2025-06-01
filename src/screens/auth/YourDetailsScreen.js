@@ -5,13 +5,14 @@ import {
   Text,
   View,
   LayoutAnimation, 
-  Pressable
+  Pressable,
+  Animated
 } from "react-native";
 import { colors, FONT_SIZE_XL, FONT_SIZE_XS } from "../../styles";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import AddProfilePicture from "../../components/auth/AddProfilePicture";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -26,6 +27,7 @@ function YourDetailsScreen({ navigation }) {
   const [retypePasswordVisible, setRetypePasswordVisible] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [image, setImage] = useState(null);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     const keybaordWillShowListener = Keyboard.addListener(
       "keyboardWillShow",
@@ -41,7 +43,11 @@ function YourDetailsScreen({ navigation }) {
         setKeyboardVisible(false);
       }
     );
-
+    Animated.timing(fadeAnim,{
+      toValue:1,
+      useNativeDriver:true,
+      duration:700
+    }).start();
     return () => {
       keybaordWillShowListener.remove();
       keyboardWillHideListener.remove();
@@ -63,7 +69,7 @@ function YourDetailsScreen({ navigation }) {
   }
   return (
     <SafeAreaView style={styles.page}>
-      <View style={{ paddingHorizontal: 40, paddingVertical: 20 }}>
+      <Animated.View style={{ paddingHorizontal: 40, paddingVertical: 20, opacity:fadeAnim }}>
         {!keyboardVisible && (
           <Pressable onPress={navigateBack} style={styles.headerContainer}>
           <Ionicons size={24} name="chevron-back-outline"></Ionicons>
@@ -135,7 +141,7 @@ function YourDetailsScreen({ navigation }) {
             unless you choose to reveal yourself after a chat
           </Text>
         </View>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 }

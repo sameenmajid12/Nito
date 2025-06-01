@@ -13,7 +13,7 @@ import { useEffect, useRef } from "react";
 
 function AccountCreatedScreen() {
   const scaleAnim = useRef(new Animated.Value(1)).current; 
-
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   const CIRCLE_BASE_SIZE = 240;
   const ICONS_SIZE = 150; 
 
@@ -34,7 +34,11 @@ function AccountCreatedScreen() {
         }),
       ])
     );
-
+    Animated.timing(fadeAnim,{
+      toValue:1,
+      useNativeDriver:true,
+      duration:700
+    }).start()
     animation.start();
 
     return () => {
@@ -44,7 +48,7 @@ function AccountCreatedScreen() {
 
   return (
     <SafeAreaView style={styles.page}>
-      <View style={styles.pageContainer}>
+      <Animated.View style={[styles.pageContainer,{opacity:fadeAnim}]}>
         <Logo width={75} height={50} style={{ marginBottom: "40%" }}></Logo>
         <View style={styles.mainContainer}>
           <View style={styles.circlesWrapper}>
@@ -89,7 +93,7 @@ function AccountCreatedScreen() {
             </View>
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 }

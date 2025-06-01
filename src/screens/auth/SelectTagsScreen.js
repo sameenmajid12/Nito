@@ -1,8 +1,8 @@
-import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Pressable, Animated } from "react-native";
 import { colors, FONT_SIZE_M, FONT_SIZE_XXL, textStyles } from "../../styles";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
-import { useState } from "react";
+import { useEffect, useState,useRef } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
 import { Ionicons } from "@expo/vector-icons";
 function SelectTagsScreen({ navigation }) {
@@ -15,9 +15,17 @@ function SelectTagsScreen({ navigation }) {
   const navigateBack=()=>{
     navigation.replace("Register1");
   }
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  useEffect(()=>{
+    Animated.timing(fadeAnim,{
+      toValue:1,
+      duration:700,
+      useNativeDriver:true
+    }).start();
+  },[])
   return (
     <SafeAreaView style={styles.page}>
-      <View style={styles.pageContainer}>
+      <Animated.View style={[styles.pageContainer,{opacity:fadeAnim}]}>
         <Pressable onPress={navigateBack} style={styles.navigateBack}>
           <Ionicons size={16} name="chevron-back-outline"></Ionicons>
           <Text style={{fontFamily:"Nunito-SemiBold"}}>Back</Text>
@@ -57,7 +65,7 @@ function SelectTagsScreen({ navigation }) {
             style={{ width: "48%", height: 45 }}
           ></Button>
         </View>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 }
