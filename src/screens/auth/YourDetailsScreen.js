@@ -23,19 +23,19 @@ function YourDetailsScreen({ navigation }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [retypePasswordVisible, setRetypePasswordVisible] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-
+  const [image, setImage] = useState(null);
   useEffect(() => {
     const keybaordWillShowListener = Keyboard.addListener(
       "keyboardWillShow",
       () => {
-        LayoutAnimation.configureNext({...LayoutAnimation.Presets.easeInEaseOut, duration:250});
+        LayoutAnimation.configureNext({...LayoutAnimation.Presets.easeInEaseOut, duration:225});
         setKeyboardVisible(true);
       }
     );
     const keyboardWillHideListener = Keyboard.addListener(
       "keyboardWillHide", 
       () => {
-        LayoutAnimation.configureNext({...LayoutAnimation.Presets.easeInEaseOut, duration:250});
+        LayoutAnimation.configureNext({...LayoutAnimation.Presets.easeInEaseOut, duration:225});
         setKeyboardVisible(false);
       }
     );
@@ -72,7 +72,7 @@ function YourDetailsScreen({ navigation }) {
           </Text>
         )}
         <View style={styles.inputContainer}>
-          {!keyboardVisible && <AddProfilePicture />}
+          {!keyboardVisible && <AddProfilePicture image={image} setImage={setImage}/>}
 
           <Input
             placeholder={"Enter fullname"}
@@ -140,8 +140,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   inputContainer: {
-    // This paddingTop will now animate due to LayoutAnimation when its sibling changes size
-    // You might need to adjust this value to ensure inputs are sufficiently high
     paddingTop: 40,
     alignItems: "center",
     rowGap: 15,
