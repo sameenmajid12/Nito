@@ -1,19 +1,27 @@
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
-import { colors, FONT_SIZE_M, FONT_SIZE_XXL } from "../../styles";
+import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native";
+import { colors, FONT_SIZE_M, FONT_SIZE_XXL, textStyles } from "../../styles";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import { useState } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
+import { Ionicons } from "@expo/vector-icons";
 function SelectTagsScreen({ navigation }) {
   const [tags, setTags] = useState([]);
-  const {updateRegistrationData} = useRegistration();
+  const { updateRegistrationData } = useRegistration();
   const finishRegistration = () => {
     updateRegistrationData(tags);
-    navigation.replace("Register3")
+    navigation.replace("Register3");
+  };
+  const navigateBack=()=>{
+    navigation.replace("Register1");
   }
   return (
     <SafeAreaView style={styles.page}>
       <View style={styles.pageContainer}>
+        <Pressable onPress={navigateBack} style={styles.navigateBack}>
+          <Ionicons size={16} name="chevron-back-outline"></Ionicons>
+          <Text style={{fontFamily:"Nunito-SemiBold"}}>Back</Text>
+        </Pressable>
         <View style={styles.pageHeader}>
           <Text style={styles.mainHeader}>Select Tags</Text>
           <Text style={styles.subHeader}>
@@ -60,7 +68,7 @@ const styles = StyleSheet.create({
   },
   pageContainer: { flex: 1, paddingHorizontal: 40, paddingBottom: 20 },
   pageHeader: {
-    paddingTop: 50,
+    paddingTop: 20,
     paddingBottom: 30,
   },
   mainHeader: {
@@ -84,5 +92,10 @@ const styles = StyleSheet.create({
     width: "100%",
     columnGap: "4%",
   },
+  navigateBack:{
+    flexDirection:"row",
+    columnGap:3,
+    alignItems:"center"
+  }
 });
 export default SelectTagsScreen;

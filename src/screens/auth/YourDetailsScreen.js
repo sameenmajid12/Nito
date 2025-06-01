@@ -5,6 +5,7 @@ import {
   Text,
   View,
   LayoutAnimation, 
+  Pressable
 } from "react-native";
 import { colors, FONT_SIZE_XL, FONT_SIZE_XS } from "../../styles";
 import Input from "../../components/common/Input";
@@ -12,6 +13,7 @@ import Button from "../../components/common/Button";
 import AddProfilePicture from "../../components/auth/AddProfilePicture";
 import { useEffect, useState } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
+import { Ionicons } from "@expo/vector-icons";
 
 function YourDetailsScreen({ navigation }) {
   const { updateRegistrationData } = useRegistration();
@@ -56,11 +58,15 @@ function YourDetailsScreen({ navigation }) {
     updateRegistrationData({ fullname, username, email, password });
     navigation.replace("Register2");
   };
-
+  const navigateBack = () =>{
+    navigation.replace("Register");
+  }
   return (
     <SafeAreaView style={styles.page}>
       <View style={{ paddingHorizontal: 40, paddingVertical: 20 }}>
         {!keyboardVisible && (
+          <Pressable onPress={navigateBack} style={styles.headerContainer}>
+          <Ionicons size={24} name="chevron-back-outline"></Ionicons>
           <Text
             style={{
               color: colors.textPrimary,
@@ -69,7 +75,7 @@ function YourDetailsScreen({ navigation }) {
             }}
           >
             Your details
-          </Text>
+          </Text></Pressable>
         )}
         <View style={styles.inputContainer}>
           {!keyboardVisible && <AddProfilePicture image={image} setImage={setImage}/>}
@@ -144,6 +150,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     rowGap: 15,
   },
+  headerContainer:{
+    flexDirection:"row",
+    alignItems:'center',
+    columnGap:5
+  }
 });
 
 export default YourDetailsScreen;

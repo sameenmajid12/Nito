@@ -128,11 +128,11 @@ const styles = StyleSheet.create({
   },
   closeIconContainer: {
     position: "absolute",
-    right: 2,
+    right: 5,
     borderRadius: 20,
     backgroundColor: colors.primary,
     padding: 5,
-    top: 2,
+    top: 5,
   },
   closeIcon: {
     width: 20,
