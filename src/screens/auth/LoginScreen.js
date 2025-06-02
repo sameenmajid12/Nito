@@ -16,7 +16,7 @@ import Logo from "../../components/common/Logo";
 import SchoolSelector from "../../components/auth/SchoolSelector";
 
 const INITIAL_PADDING_TOP = 195;
-const KEYBOARD_ACTIVE_PADDING_TOP = 130;
+const KEYBOARD_ACTIVE_PADDING_TOP = 120;
 
 function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -111,6 +111,7 @@ function LoginScreen({ navigation }) {
             ></Input>
 
             <Button title="Login" style={{ width: "80%", height: 45 }} />
+            <Text style={styles.forgotPassword}>Forgot password?</Text>
             <View style={{ flex: 1 }} />
             <Text style={styles.noAccountText}>
               Don't have an account?{" "}
@@ -159,6 +160,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingBottom: 40,
     color: colors.textPrimary,
+  },
+  forgotPassword: {
+    fontFamily: "Nunito-Bold",
+    color: colors.primary,
+    marginTop: 15,
   },
 });
 

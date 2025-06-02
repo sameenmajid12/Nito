@@ -144,7 +144,12 @@ function SchoolSelector({
                 />
               </Pressable>
             ))}
-            {filteredSchools.length === 0 && <Text>{"No results found :("}</Text>}
+            {searchQuery === "" && (
+              <Text style={[textStyles.body, styles.endText]}>More coming soon :)</Text>
+            )}
+            {filteredSchools.length === 0 && (
+              <Text style={[textStyles.body, styles.endText]}>{"No results found :("}</Text>
+            )}
           </ScrollView>
         )}
       </View>
@@ -173,7 +178,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: "100%",
     paddingHorizontal: 18,
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 5,
     backgroundColor: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
@@ -207,6 +213,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.1)",
     marginTop: 10,
     marginBottom: 4,
+  },
+  endText: {
+    paddingTop: 10,
+    marginVertical: 7,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(0,0,0,0.1)",
   },
 });
 

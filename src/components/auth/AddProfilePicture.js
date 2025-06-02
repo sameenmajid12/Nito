@@ -76,7 +76,7 @@ function AddProfilePicture({ image, setImage }) {
             onPress={handleClearImage}
             style={styles.closeIconContainer}
           >
-            <Ionicons name="close-outline" style={styles.closeIcon}></Ionicons>
+            <Ionicons name="close" style={styles.closeIcon}></Ionicons>
           </Pressable>
         </>
       ) : (
