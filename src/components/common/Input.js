@@ -12,12 +12,14 @@ function Input({
   labelStyle,
   secure,
   togglePasswordVisibility,
+  onSubmitEditing,
+  returnKeyType
 }) {
   return (
     <View style={[styles.inputContainer, containerStyle]}>
       <Text style={[labelStyle, textStyles.inputLabel]}>{label}</Text>
       <TextInput
-        textContentType=  "oneTimeCode"
+        textContentType="oneTimeCode"
         spellCheck={false}
         autoCorrect={false}
         placeholder={placeholder}
@@ -25,6 +27,8 @@ function Input({
         onChangeText={setValue}
         style={[styles.input, inputStyle]}
         secureTextEntry={secure || false}
+        returnKeyType={returnKeyType}
+        onSubmitEditing={onSubmitEditing}
       ></TextInput>
       {secure !== undefined ? (
         <Pressable
