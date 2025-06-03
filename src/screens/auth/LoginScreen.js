@@ -14,8 +14,9 @@ import Input from "../../components/common/Input";
 import { useEffect, useRef, useState } from "react";
 import Logo from "../../components/common/Logo";
 import SchoolSelector from "../../components/auth/SchoolSelector";
+import ErrorMessage from "../../components/common/ErrorMessage";
 
-const INITIAL_PADDING_TOP = 195;
+const INITIAL_PADDING_TOP = 180;
 const KEYBOARD_ACTIVE_PADDING_TOP = 120;
 
 function LoginScreen({ navigation }) {
@@ -24,10 +25,11 @@ function LoginScreen({ navigation }) {
   const [school, setSchool] = useState({ name: "Select School", img: null });
   const [schoolDropDown, setSchoolDropDown] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loginError, setLoginError] = useState(false);
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
-
+  
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const animatedPageContentPaddingTop = useRef(
@@ -71,7 +73,9 @@ function LoginScreen({ navigation }) {
 
   const emailInputContainerStyle = { marginBottom: 15 };
   const passwordInputContainerStyle = { marginBottom: 25 };
-
+  const login = () =>{
+    setLoginError(true);
+  }
   return (
     <>
       <SafeAreaView style={styles.page}>
@@ -110,8 +114,9 @@ function LoginScreen({ navigation }) {
               togglePasswordVisibility={togglePasswordVisibility}
             ></Input>
 
-            <Button title="Login" style={{ width: "80%", height: 45 }} />
-            <Text style={styles.forgotPassword}>Forgot password?</Text>
+            <Button onPress={login} title="Login" style={{ width: "80%", height: 45 }} />
+            {loginError && <ErrorMessage message={"Incorrect email or password. Please try again."} style={{marginTop:10}}/>}
+            <Text style={[styles.forgotPassword, loginError?{marginTop:10}:{marginTop:15}]}>Forgot password?</Text>
             <View style={{ flex: 1 }} />
             <Text style={styles.noAccountText}>
               Don't have an account?{" "}
@@ -164,7 +169,6 @@ const styles = StyleSheet.create({
   forgotPassword: {
     fontFamily: "Nunito-Bold",
     color: colors.primary,
-    marginTop: 15,
   },
 });
 
