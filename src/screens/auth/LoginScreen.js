@@ -22,14 +22,17 @@ const KEYBOARD_ACTIVE_PADDING_TOP = 120;
 function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [school, setSchool] = useState({ name: "Select School", img: null });
+  const initialSchoolState = { name: "Select School", img: null }
+  const [school, setSchool] = useState(initialSchoolState);
   const [schoolDropDown, setSchoolDropDown] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [loginError, setLoginError] = useState(false);
+  const [authError, setAuthError] = useState(false);
+  const initialFormErrors = { email: null, password: null, school:null };
+  const [formErrors, setFormErrors] = useState(initialFormErrors);
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
-  
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const animatedPageContentPaddingTop = useRef(
@@ -70,12 +73,38 @@ function LoginScreen({ navigation }) {
       keyboardWillHideListener.remove();
     };
   }, [fadeAnim]);
-
+  const validateInput = () => {
+    setFormErrors(initialFormErrors);
+    setAuthError(false);
+    let errorsFound = false;
+    if (email === "") {
+      setFormErrors((prev) => ({ ...prev, email: "Please enter your email" }));
+      errorsFound = true;
+    }
+    if (password === "") {
+      setFormErrors((prev) => ({
+        ...prev,
+        password: "Please enter your password",
+      }));
+      errorsFound = true;
+    }
+    if(school.img === null || school === initialSchoolState){
+      setFormErrors((prev) => ({
+        ...prev,
+        school: "Please enter your school",
+      }));
+      errorsFound = true;
+    }
+    return errorsFound;
+  };
   const emailInputContainerStyle = { marginBottom: 15 };
   const passwordInputContainerStyle = { marginBottom: 25 };
-  const login = () =>{
-    setLoginError(true);
-  }
+  const login = () => {
+    const errorsFound = validateInput();
+    if (!errorsFound) {
+      setAuthError(true);
+    }
+  };
   return (
     <>
       <SafeAreaView style={styles.page}>
@@ -96,6 +125,7 @@ function LoginScreen({ navigation }) {
               setSchool={setSchool}
               dropDownVisible={schoolDropDown}
               setDropDownVisible={setSchoolDropDown}
+              errorText={formErrors.school}
             />
             <Input
               label={"Email"}
@@ -103,6 +133,7 @@ function LoginScreen({ navigation }) {
               containerStyle={emailInputContainerStyle}
               value={email}
               setValue={setEmail}
+              errorText={formErrors.email}
             ></Input>
             <Input
               label={"Password"}
@@ -112,11 +143,28 @@ function LoginScreen({ navigation }) {
               setValue={setPassword}
               secure={!passwordVisible}
               togglePasswordVisibility={togglePasswordVisibility}
+              errorText={formErrors.password}
             ></Input>
 
-            <Button onPress={login} title="Login" style={{ width: "80%", height: 45 }} />
-            {loginError && <ErrorMessage message={"Incorrect email or password. Please try again."} style={{marginTop:10}}/>}
-            <Text style={[styles.forgotPassword, loginError?{marginTop:10}:{marginTop:15}]}>Forgot password?</Text>
+            <Button
+              onPress={login}
+              title="Login"
+              style={{ width: "80%", height: 45, marginTop:10 }}
+            />
+            {authError && (
+              <ErrorMessage
+                message={"Incorrect email or password. Please try again."}
+                style={{ marginTop: 10 }}
+              />
+            )}
+            <Text
+              style={[
+                styles.forgotPassword,
+                authError ? { marginTop: 10 } : { marginTop: 15 },
+              ]}
+            >
+              Forgot password?
+            </Text>
             <View style={{ flex: 1 }} />
             <Text style={styles.noAccountText}>
               Don't have an account?{" "}

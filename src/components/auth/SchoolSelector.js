@@ -8,9 +8,10 @@ import {
   ScrollView,
   TextInput,
 } from "react-native";
-import { colors, textStyles, FONT_SIZE_L } from "../../styles";
+import { colors, textStyles, FONT_SIZE_L, FONT_SIZE_XS } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import ErrorMessage from "../common/ErrorMessage";
 
 function SchoolSelector({
   school,
@@ -19,6 +20,7 @@ function SchoolSelector({
   selectorStyle,
   dropDownVisible,
   setDropDownVisible,
+  errorText,
 }) {
   const allSchools = [
     {
@@ -81,6 +83,9 @@ function SchoolSelector({
             style={[
               styles.selector,
               selectorStyle,
+              (errorText && !dropDownVisible)
+                ? { borderColor: "red" }
+                : { borderColor: colors.border },
               dropDownVisible
                 ? {
                     borderBottomEndRadius: 0,
@@ -117,7 +122,7 @@ function SchoolSelector({
             )}
           </View>
         </Pressable>
-
+        {(errorText && !dropDownVisible) && <ErrorMessage message={errorText} style={{fontSize:FONT_SIZE_XS}}/>}
         {dropDownVisible && (
           <ScrollView style={styles.dropDownContainer}>
             <View style={styles.searchContainer}>
@@ -145,10 +150,14 @@ function SchoolSelector({
               </Pressable>
             ))}
             {searchQuery === "" && (
-              <Text style={[textStyles.body, styles.endText]}>More coming soon :)</Text>
+              <Text style={[textStyles.body, styles.endText]}>
+                More coming soon :)
+              </Text>
             )}
             {filteredSchools.length === 0 && (
-              <Text style={[textStyles.body, styles.endText]}>{"No results found :("}</Text>
+              <Text style={[textStyles.body, styles.endText]}>
+                {"No results found :("}
+              </Text>
             )}
           </ScrollView>
         )}

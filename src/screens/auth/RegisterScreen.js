@@ -20,7 +20,7 @@ function RegisterScreen({ navigation }) {
   const initialSchoolState = { name: "Select School", img: null };
   const [school, setSchool] = useState(initialSchoolState);
   const [schoolDropDown, setSchoolDropDown] = useState(false);
-  const [registrationError, setRegistrationError] = useState(false);
+  const [formError, setFormError] = useState(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const INITIAL_PADDING_TOP = 250;
   const KEYBOARD_ACTIVE_PADDING_TOP = 120;
@@ -66,7 +66,7 @@ function RegisterScreen({ navigation }) {
       updateRegistrationData({school})
       navigation.replace("Register1");
     } else {
-      setRegistrationError(true);
+      setFormError("Please enter your school before continuing");
       return;
     }
   };
@@ -90,23 +90,15 @@ function RegisterScreen({ navigation }) {
             setSchool={setSchool}
             dropDownVisible={schoolDropDown}
             setDropDownVisible={setSchoolDropDown}
+            errorText={formError}
           />
           <Button
             title="Register"
             style={{ width: "80%", height: 45, marginTop: 10 }}
             onPress={continueRegistration}
           />
-          {registrationError && (
-            <ErrorMessage
-              message={"Please select your school before continuing"}
-              style={{ marginTop: 15 }}
-            />
-          )}
           <Text
-            style={[
-              styles.whyNito,
-              registrationError ? { marginTop: 10 } : { marginTop: 15 },
-            ]}
+            style={styles.whyNito}
           >
             Why use Nito?
           </Text>
@@ -161,6 +153,7 @@ const styles = StyleSheet.create({
   whyNito: {
     fontFamily: "Nunito-Bold",
     color: colors.primary,
+    marginTop:15
   },
 });
 

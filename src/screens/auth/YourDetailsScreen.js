@@ -122,7 +122,8 @@ function YourDetailsScreen({ navigation }) {
 
   //MAIN REGISTRATION FUNCTION
   const continueRegistration = () => {
-    if (!validateFields()) {
+    const errorsFound = validateFields();
+    if (!errorsFound) {
       updateRegistrationData({
         fullname: formData.fullname,
         username: formData.username,

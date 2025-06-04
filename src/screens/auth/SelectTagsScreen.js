@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     padding: 3,
   },
   tagItem: {
-    backgroundColor: colors.primary70,
+    backgroundColor: colors.accent70,
     paddingVertical: 10,
     paddingHorizontal: 15,
     flexDirection: "row",
