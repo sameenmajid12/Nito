@@ -7,7 +7,7 @@ function ErrorMessage({message, style}){
 }
 const styles = StyleSheet.create({
   text:{
-    color:colors.red,
+    color:'red',
     fontFamily:"Nunito-SemiBold",
   }
 })

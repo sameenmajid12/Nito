@@ -5,15 +5,9 @@ import {
   Text,
   Pressable,
   Animated,
-  ScrollView, 
+  ScrollView,
 } from "react-native";
-import {
-  colors,
-  FONT_SIZE_M,
-  FONT_SIZE_S,
-  FONT_SIZE_XXL,
-
-} from "../../styles";
+import { colors, FONT_SIZE_M, FONT_SIZE_S, FONT_SIZE_XXL } from "../../styles";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import { useEffect, useState, useRef } from "react";
@@ -23,17 +17,10 @@ import { Ionicons } from "@expo/vector-icons";
 function SelectTagsScreen({ navigation }) {
   const [tags, setTags] = useState([]);
   const [tagText, setTagText] = useState("");
+  const [error, setError] = useState(false);
   const { updateRegistrationData } = useRegistration();
 
-  const finishRegistration = () => {
-    updateRegistrationData(tags);
-    navigation.replace("Register3");
-  };
-
-  const navigateBack = () => {
-    navigation.replace("Register1");
-  };
-
+  
   const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -43,18 +30,33 @@ function SelectTagsScreen({ navigation }) {
     }).start();
   }, []);
 
+
   const addTag = () => {
+    setError(false);
     if (tagText.length > 0) {
       setTags((prev) => [...prev, tagText]);
       setTagText("");
     }
   };
-
   const removeTag = (index) => {
     const updatedTags = tags.filter((_, i) => i !== index);
     setTags(updatedTags);
   };
 
+  const skip = () => {
+    navigation.replace("Register3");
+  };
+  const navigateBack = () => {
+    navigation.replace("Register1");
+  };
+  const finishRegistration = () => {
+    if (tags.length === 0) {
+      setError(true);
+    } else {
+      updateRegistrationData({ tags });
+      navigation.replace("Register3");
+    }
+  };
   return (
     <SafeAreaView style={styles.page}>
       <Animated.View style={[styles.pageContainer, { opacity: fadeAnim }]}>
@@ -78,6 +80,9 @@ function SelectTagsScreen({ navigation }) {
             placeholder={"Enter tag(eg. Gaming)"}
             onSubmitEditing={addTag}
             returnKeyType="done"
+            errorText={
+              error ? "Please select at least one tag to continue." : null
+            }
           ></Input>
           <View style={{ justifyContent: "flex-end" }}>
             <Button
@@ -89,31 +94,39 @@ function SelectTagsScreen({ navigation }) {
           </View>
         </View>
 
-        {tags.length > 0 ? <View style={styles.tagsMainContainer}>
-          <View style={styles.tagHeader}>
-            <Text style={styles.tagHeaderText}>Selected Tags</Text>
-            <Ionicons  size={14} color={colors.textLight} name="bookmark-outline"></Ionicons>
-          </View>
-          <ScrollView style={styles.tagsScrollView}>
-            <View style={styles.tagsContentWrapper}>
-              {tags.map((tag, index) => (
-                <View key={index} style={styles.tagItem}>
-                  <Text style={styles.tagsText}>{tag}</Text>
-                  <Pressable onPress={() => removeTag(index)}>
-                    <Ionicons
-                      size={20}
-                      color={colors.white}
-                      name="close"
-                    ></Ionicons>
-                  </Pressable>
-                </View>
-              ))}
+        {tags.length > 0 ? (
+          <View style={styles.tagsMainContainer}>
+            <View style={styles.tagHeader}>
+              <Text style={styles.tagHeaderText}>Selected Tags</Text>
+              <Ionicons
+                size={14}
+                color={colors.textLight}
+                name="bookmark-outline"
+              ></Ionicons>
             </View>
-          </ScrollView>
-        </View>: <View style={{flex:1}}/>}
+            <ScrollView style={styles.tagsScrollView}>
+              <View style={styles.tagsContentWrapper}>
+                {tags.map((tag, index) => (
+                  <View key={index} style={styles.tagItem}>
+                    <Text style={styles.tagsText}>{tag}</Text>
+                    <Pressable onPress={() => removeTag(index)}>
+                      <Ionicons
+                        size={20}
+                        color={colors.white}
+                        name="close"
+                      ></Ionicons>
+                    </Pressable>
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+        ) : (
+          <View style={{ flex: 1 }} />
+        )}
         <View style={styles.buttonContainer}>
           <Button
-            onPress={() => navigation.replace("Register3")}
+            onPress={skip}
             title="Skip"
             style={{ width: "48%", height: 45 }}
             variant={"secondary"}
@@ -153,7 +166,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     alignItems: "flex-end",
-    rowGap: 15,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -168,21 +180,21 @@ const styles = StyleSheet.create({
   tagsMainContainer: {
     flex: 1,
     rowGap: 10,
-    marginTop:10
+    marginTop: 10,
   },
   tagsScrollView: {
     marginBottom: 20,
   },
   tagsContentWrapper: {
     flexDirection: "row",
-    flexWrap: "wrap",     
-    columnGap: 5,        
-    rowGap: 5,           
-    width: '100%',
+    flexWrap: "wrap",
+    columnGap: 5,
+    rowGap: 5,
+    width: "100%",
   },
   tagHeader: {
-    flexDirection:"row",
-    alignItems:"center",
+    flexDirection: "row",
+    alignItems: "center",
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
   },

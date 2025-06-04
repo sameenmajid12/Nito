@@ -5,8 +5,9 @@ const RegistrationContext = createContext();
 const initialRegistrationState = {
   fullname: "",
   email: "",
+  password:"",
   schoolId: "",
-  selectedTags: [],
+  tags: [],
 };
 
 export const RegistrationProvider = ({ children }) => {

@@ -20,6 +20,5 @@ const colors = {
   textLight: "#A49CA6", 
   border: "#B6ACB8",
   black: "#000000", 
-  error:'red'
 }
 export default colors;
