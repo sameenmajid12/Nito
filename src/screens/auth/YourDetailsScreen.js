@@ -4,163 +4,208 @@ import {
   StyleSheet,
   Text,
   View,
-  LayoutAnimation, 
+  LayoutAnimation,
   Pressable,
-  Animated
+  Animated,
 } from "react-native";
 import { colors, FONT_SIZE_XL, FONT_SIZE_XS } from "../../styles";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
-import AddProfilePicture from "../../components/auth/AddProfilePicture";
 import { useEffect, useRef, useState } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
 import { Ionicons } from "@expo/vector-icons";
-
+import RegistrationFormFields from "../../components/auth/RegistrationFormFields";
 function YourDetailsScreen({ navigation }) {
-  const { updateRegistrationData } = useRegistration();
-  const [fullname, setFullname] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [retypePassword, setRetypePassword] = useState("");
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [retypePasswordVisible, setRetypePasswordVisible] = useState(false);
+  const { updateRegistrationData, registrationData } = useRegistration();
+
+  //USER INFORMATION STATE
+  const school = registrationData.school;
+  const [formData, setFormData] = useState({
+    fullname: "",
+    username: "",
+    email: "",
+    password: "",
+    retypePassword: "",
+  });
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [image, setImage] = useState(null);
+
+  //FORM ERRORS
+  const initialFormErrors = {
+    fullname: null,
+    username: null,
+    email: null,
+    password: null,
+    retypePassword: null,
+  };
+  const [formErrors, setFormErrors] = useState(initialFormErrors);
+
+  //ANIMATIONS
   const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     const keybaordWillShowListener = Keyboard.addListener(
       "keyboardWillShow",
       () => {
-        LayoutAnimation.configureNext({...LayoutAnimation.Presets.easeInEaseOut, duration:225});
+        LayoutAnimation.configureNext({
+          ...LayoutAnimation.Presets.easeInEaseOut,
+          duration: 225,
+        });
         setKeyboardVisible(true);
       }
     );
     const keyboardWillHideListener = Keyboard.addListener(
-      "keyboardWillHide", 
+      "keyboardWillHide",
       () => {
-        LayoutAnimation.configureNext({...LayoutAnimation.Presets.easeInEaseOut, duration:225});
+        LayoutAnimation.configureNext({
+          ...LayoutAnimation.Presets.easeInEaseOut,
+          duration: 225,
+        });
         setKeyboardVisible(false);
       }
     );
-    Animated.timing(fadeAnim,{
-      toValue:1,
-      useNativeDriver:true,
-      duration:700
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      duration: 700,
     }).start();
     return () => {
       keybaordWillShowListener.remove();
       keyboardWillHideListener.remove();
     };
-  }, []); 
+  }, []);
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible((prev) => !prev);
+  //USER INPUT VALIDATION
+  const validateFields = () => {
+    let currentErrors = { ...initialFormErrors };
+    let errorsFound = false;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    const rutgersEmailRegex = /^[a-zA-Z0-9.-]+@scarletmail\.rutgers\.edu$/;
+
+    if (formData.fullname === "") {
+      currentErrors.fullname = "Please enter your full name";
+      errorsFound = true;
+    }
+    if (formData.username === "") {
+      currentErrors.username = "Please enter your username";
+      errorsFound = true;
+    }
+
+    //CHECK IF EMAIL IS EMPTY OR IF IT IS A VALID RUTGERS EMAIL
+    if (formData.email === "") {
+      currentErrors.email = "Please enter your school email";
+      errorsFound = true;
+    } else if (!rutgersEmailRegex.test(formData.email)) {
+      currentErrors.email = "Email must end with @scarletmail.rutgers.edu";
+      errorsFound = true;
+    }
+
+    //CHECK IF PASSWORD IS EMPTY OR CONTAINS THE REQUIRED CHARACTER
+    if (formData.password === "") {
+      currentErrors.password = "Please enter a password for your account.";
+      errorsFound = true;
+    } else if (!passwordRegex.test(formData.password)) {
+      currentErrors.password =
+        "Password must be at least 8 chars, contain one uppercase, one lowercase, and one number.";
+      errorsFound = true;
+    }
+    if (
+      formData.retypePassword !== formData.password ||
+      formData.retypePassword === ""
+    ) {
+      currentErrors.retypePassword = "Passwords don't match";
+      errorsFound = true;
+    }
+
+    setFormErrors(currentErrors);
+    return errorsFound;
   };
-  const toggleRetypedPasswordVisibility = () => {
-    setRetypePasswordVisible((prev) => !prev);
-  };
+
+  //MAIN REGISTRATION FUNCTION
   const continueRegistration = () => {
-    updateRegistrationData({ fullname, username, email, password });
-    navigation.replace("Register2");
+    if (!validateFields()) {
+      updateRegistrationData({
+        fullname: formData.fullname,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      });
+      navigation.replace("Register2");
+    }
   };
-  const navigateBack = () =>{
+
+  const navigateBack = () => {
     navigation.replace("Register");
-  }
+  };
+
   return (
     <SafeAreaView style={styles.page}>
-      <Animated.View style={{ paddingHorizontal: 40, paddingVertical: 20, opacity:fadeAnim }}>
+      <Animated.View
+        style={{
+          paddingHorizontal: 40,
+          paddingVertical: 20,
+          opacity: fadeAnim,
+        }}
+      >
+        {/*HIDE PROFILE PICTURE AND BACK BUTTON WHEN KEYBOARD IS VISIBLE*/}
         {!keyboardVisible && (
           <Pressable onPress={navigateBack} style={styles.headerContainer}>
-          <Ionicons size={24} name="chevron-back-outline"></Ionicons>
-          <Text
-            style={{
-              color: colors.textPrimary,
-              fontFamily: "Nunito-SemiBold",
-              fontSize: FONT_SIZE_XL,
-            }}
-          >
-            Your details
-          </Text></Pressable>
+            <Ionicons size={24} name="chevron-back-outline"></Ionicons>
+            <Text
+              style={{
+                color: colors.textPrimary,
+                fontFamily: "Nunito-SemiBold",
+                fontSize: FONT_SIZE_XL,
+              }}
+            >
+              Your details
+            </Text>
+          </Pressable>
         )}
-        <View style={styles.inputContainer}>
-          {!keyboardVisible && <AddProfilePicture image={image} setImage={setImage}/>}
-
-          <Input
-            placeholder={"Enter fullname"}
-            label={"Fullname"}
-            containerStyle={{ width: "100%" }}
-            value={fullname}
-            setValue={setFullname}
-          ></Input>
-          <Input
-            placeholder={"Enter username"}
-            label={"Username"}
-            containerStyle={{ width: "100%" }}
-            value={username}
-            setValue={setUsername}
-          ></Input>
-          <Input
-            placeholder={"Enter email"}
-            label={"Email"}
-            containerStyle={{ width: "100%" }}
-            value={email}
-            setValue={setEmail}
-          ></Input>
-          <Input
-            placeholder={"Enter password"}
-            label={"Password"}
-            containerStyle={{ width: "100%" }}
-            value={password}
-            setValue={setPassword}
-            secure={!passwordVisible}
-            togglePasswordVisibility={togglePasswordVisibility}
-          ></Input>
-          <Input
-            placeholder={"Enter password"}
-            label={"Retype password"}
-            containerStyle={{ width: "100%" }}
-            value={retypePassword}
-            setValue={setRetypePassword}
-            secure={!retypePasswordVisible}
-            togglePasswordVisibility={toggleRetypedPasswordVisibility}
-          ></Input>
-          <Button
-            onPress={continueRegistration}
-            title={"Continue"}
-            style={{ width: "100%", height: 45, marginTop: 10 }}
-          ></Button>
-          <Text
-            style={{
-              fontSize: FONT_SIZE_XS,
-              fontFamily: "Nunito-SemiBold",
-              textAlign: "center",
-            }}
-          >
-            Note: Your name and profile picture cannot be seen by other users
-            unless you choose to reveal yourself after a chat
-          </Text>
-        </View>
+        <RegistrationFormFields
+          formData={formData}
+          setFormData={setFormData}
+          formErrors={formErrors}
+          setFormErrors={setFormErrors}
+          image={image}
+          setImage={setImage}
+          keyboardVisible={keyboardVisible}
+        />
+        <Button
+          onPress={continueRegistration}
+          title={"Continue"}
+          style={{
+            width: "100%",
+            height: 45,
+            marginTop: 10,
+            marginBottom: 15,
+          }}
+        ></Button>
+        <Text
+          style={{
+            fontSize: FONT_SIZE_XS,
+            fontFamily: "Nunito-SemiBold",
+            textAlign: "center",
+          }}
+        >
+          Note: Your name and profile picture cannot be seen by other users
+          unless you choose to reveal yourself after a chat
+        </Text>
       </Animated.View>
     </SafeAreaView>
   );
 }
 
+//STYLES
 const styles = StyleSheet.create({
   page: {
     flex: 1,
     backgroundColor: colors.background,
   },
-  inputContainer: {
-    paddingTop: 40,
+  headerContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    rowGap: 15,
+    columnGap: 5,
   },
-  headerContainer:{
-    flexDirection:"row",
-    alignItems:'center',
-    columnGap:5
-  }
 });
 
 export default YourDetailsScreen;
