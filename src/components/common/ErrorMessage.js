@@ -1,5 +1,5 @@
 import { StyleSheet, Text } from "react-native";
-
+import { colors } from "../../styles";
 function ErrorMessage({message, style}){
   return(
     <Text style={[styles.text, style]}>{message}</Text>
@@ -7,8 +7,8 @@ function ErrorMessage({message, style}){
 }
 const styles = StyleSheet.create({
   text:{
-    color:"red",
-    fontFamily:"Nunito-SemiBold"
+    color:colors.red,
+    fontFamily:"Nunito-SemiBold",
   }
 })
 export default ErrorMessage;
