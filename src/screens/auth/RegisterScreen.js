@@ -14,7 +14,9 @@ import { useEffect, useState, useRef } from "react";
 import Logo from "../../components/common/Logo";
 import SchoolSelector from "../../components/auth/SchoolSelector";
 import ErrorMessage from "../../components/common/ErrorMessage";
+import { useRegistration } from "../../contexts/RegistrationContext";
 function RegisterScreen({ navigation }) {
+  const {updateRegistrationData} = useRegistration();
   const initialSchoolState = { name: "Select School", img: null };
   const [school, setSchool] = useState(initialSchoolState);
   const [schoolDropDown, setSchoolDropDown] = useState(false);
@@ -61,6 +63,7 @@ function RegisterScreen({ navigation }) {
   }, [fadeAnim]);
   const continueRegistration = () => {
     if (school !== initialSchoolState && school.img !== null) {
+      updateRegistrationData({school})
       navigation.replace("Register1");
     } else {
       setRegistrationError(true);
