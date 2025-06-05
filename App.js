@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {LoginScreen} from './src/screens/auth/LoginScreen';
 import { useFonts } from 'expo-font';
 import AuthNavigator from './src/navigation/AuthNavigator';
+import MainNavigation from './src/navigation/MainNavigator';
 export default function App() {
   const [fontsLoaded] = useFonts({
     'Nunito-Regular': require('./src/assets/fonts/Nunito-Regular.ttf'),
@@ -16,7 +17,7 @@ export default function App() {
   const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
-      <AuthNavigator/>
+      <MainNavigation/>
     </NavigationContainer>
   );
 }
