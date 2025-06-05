@@ -1,0 +1,41 @@
+import { Ionicons } from "@expo/vector-icons";
+import { View, Text, StyleSheet } from "react-native";
+import { colors } from "../../styles";
+function NextMatchIn(){
+  return(
+    <View style={styles.mainContainer}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Next match in</Text>
+        <Ionicons size={36} color={colors.primary} name="time-outline"></Ionicons>
+      </View>
+      <Text style={styles.mainText}>17m 22s</Text>
+    </View>
+  )
+}
+const styles = StyleSheet.create({
+  mainContainer:{
+    borderWidth:2,
+    borderColor:colors.primary50,
+    width:"45%",
+    paddingHorizontal:15,
+    paddingVertical:10,
+    borderRadius:10,
+    rowGap:15
+  },
+  header:{
+    flexDirection:"row"
+    ,alignItems:"center",
+    justifyContent:"space-between"
+  },
+  headerText:{
+    color:colors.primary70,
+    fontFamily:"Nunito-Bold",
+    fontSize: 14
+  },
+  mainText:{
+    fontFamily:"Nunito-Bold",
+    color:colors.primary,
+    fontSize:30
+  }
+})
+export default NextMatchIn;
