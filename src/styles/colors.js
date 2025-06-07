@@ -1,6 +1,6 @@
 const colors = {
   background:"#FDF0FF",
-  borderLight:"#CAC0CC",
+  borderLight:"rgba(0,0,0,0.15)",
   primary:"#7F68FF",
   primary50:"#BEACFF",
   primary70:"#A591FF",

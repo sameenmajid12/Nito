@@ -1,23 +1,29 @@
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, ScrollView } from "react-native";
 import Header from "../../components/common/Header";
 import { colors, FONT_SIZE_L, textStyles } from "../../styles";
 import YouHaveAMatch from "../../components/home/YouHaveAMatch";
 import NextMatchIn from "../../components/home/NextMatchIn";
 import DailyPoll from "../../components/home/DailyPoll";
+import Connections from "../../components/home/Connections";
 
 function HomeScreen() {
   return (
     <SafeAreaView style={styles.page}>
       <Header />
-      <View style={styles.pageContainer}>
-        <Text style={styles.greeting}>Hello, Sameen Majid</Text>
+      <ScrollView>
+        <View style={styles.pageContainer}>
+          <Text style={styles.greeting}>Welcome, Sameen Majid!</Text>
 
-        <YouHaveAMatch />
-        <View style={{ flexDirection: "row", columnGap: 10 }}>
-          <NextMatchIn />
-          <DailyPoll />
+          <YouHaveAMatch />
+          <View
+            style={{ flexDirection: "row", columnGap: 10, marginBottom: 20 }}
+          >
+            <NextMatchIn />
+            <DailyPoll />
+          </View>
+          <Connections />
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -28,12 +34,12 @@ const styles = StyleSheet.create({
   },
   pageContainer: {
     padding: 20,
-    rowGap:10
+    rowGap: 10,
   },
-  greeting:{
-    fontFamily:"Nunito-SemiBold",
-    fontSize:FONT_SIZE_L,
-    color:colors.textPrimary,
-  }
+  greeting: {
+    fontFamily: "Nunito-Bold",
+    fontSize: FONT_SIZE_L,
+    color: colors.textPrimary,
+  },
 });
 export default HomeScreen;
