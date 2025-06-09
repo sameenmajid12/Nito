@@ -14,23 +14,22 @@ function NextMatchIn(){
 }
 const styles = StyleSheet.create({
   mainContainer:{
-    borderWidth:2,
+    borderWidth:1,
     borderColor:colors.primary50,
-    width:"45%",
     paddingHorizontal:15,
     paddingVertical:10,
     borderRadius:10,
     rowGap:15
   },
   header:{
-    flexDirection:"row"
-    ,alignItems:"center",
-    justifyContent:"space-between"
+    flexDirection:"row",
+    alignItems:"center",
+    columnGap:10
   },
   headerText:{
     color:colors.primary70,
     fontFamily:"Nunito-Bold",
-    fontSize: 14
+    fontSize: 16
   },
   mainText:{
     fontFamily:"Nunito-Bold",

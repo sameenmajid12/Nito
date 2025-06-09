@@ -1,22 +1,31 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { Text, StyleSheet, Pressable } from "react-native";
+import { Text, StyleSheet, Pressable, View } from "react-native";
 import { colors, FONT_SIZE_S, FONT_SIZE_XXL } from "../../styles";
 function YouHaveAMatch() {
   return (
-    <LinearGradient
-      style={styles.container}
-      start={{ x: 0.5, y: 0 }}
-      end={{ x: 0.5, y: 0.9 }}
-      colors={[colors.accent70, colors.primary]}
+    <View
+      style={{
+        shadowColor: "#000000",
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+      }}
     >
-      <Text style={styles.mainHeader}>You have a match!</Text>
-      <Text style={styles.subHeader}>
-        Dont lose this opportunity to make a new friend
-      </Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Chat now</Text>
-      </Pressable>
-    </LinearGradient>
+      <LinearGradient
+        style={styles.container}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 0.9 }}
+        colors={[colors.accent70, colors.primary]}
+      >
+        <Text style={styles.mainHeader}>You have a match!</Text>
+        <Text style={styles.subHeader}>
+          Dont lose this opportunity to make a new friend
+        </Text>
+        <Pressable style={styles.button}>
+          <Text style={styles.buttonText}>Chat now</Text>
+        </Pressable>
+      </LinearGradient>
+    </View>
   );
 }
 const styles = StyleSheet.create({
@@ -25,8 +34,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
-    paddingTop:30,
-    paddingBottom:25,
+    paddingTop: 30,
+    paddingBottom: 25,
   },
   mainHeader: {
     color: colors.white,
