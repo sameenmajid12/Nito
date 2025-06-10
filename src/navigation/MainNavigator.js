@@ -1,13 +1,14 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CustomTabBar from "../components/common/CustomTabBar";
-
+import { useNavigationState } from "@react-navigation/native";
 import HomeScreen from "../screens/main/HomeScreen";
 import ProfileScreen from "../screens/main/ProfileScreen";
-import ChatScreen from "../screens/main/ChatScreen";
+import ChatListScreen from "../screens/main/ChatListScreen";
 import Header from "../components/common/Header";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { colors } from "../styles";
+import ChatScreen from "../screens/main/ChatScreen";
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -25,7 +26,8 @@ function HomeStackScreen() {
 function ChatStackScreen() {
   return (
     <ChatStack.Navigator screenOptions={{ headerShown: false }}>
-      <ChatStack.Screen name="Chat" component={ChatScreen} />
+      <ChatStack.Screen name="ChatList" component={ChatListScreen} />
+      <ChatStack.Screen name="Chat" component={ChatScreen}></ChatStack.Screen>
     </ChatStack.Navigator>
   );
 }
@@ -39,11 +41,30 @@ function ProfileStackScreen() {
 }
 
 function MainNavigator() {
+
+  const routeState = useNavigationState(state => state);
+  const getActiveRouteName = (state) => {
+    if (!state || !state.routes || state.routes.length === 0) {
+      return null;
+    }
+
+    const route = state.routes[state.index];
+
+    if (route.state) {
+      return getActiveRouteName(route.state);
+    }
+
+    return route.name;
+  };
+  const currentRouteName = getActiveRouteName(routeState);
+  const hideComponents = currentRouteName === "Chat";
+
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Header/>
+      {!hideComponents && <Header/>}
       <Tab.Navigator
-        tabBar={(props) => <CustomTabBar {...props} />}
+        tabBar={(props) => <CustomTabBar {...props} visible={!hideComponents}/>}
         screenOptions={{
           headerShown: false,
         }}
@@ -56,7 +77,7 @@ function MainNavigator() {
         <Tab.Screen
           name="ChatTab"
           component={ChatStackScreen}
-          options={{ tabBarLabel: "Chat" }}
+          options={{ tabBarLabel: "ChatList" }}
         />
         <Tab.Screen
           name="ProfileTab"
