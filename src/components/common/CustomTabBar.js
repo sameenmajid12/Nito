@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     borderColor:colors.blue50,
     borderRadius: 999, 
     marginHorizontal: 40, 
-    marginBottom: 50, 
+    marginBottom: 10, 
     position: 'absolute',
     bottom: 0, 
     left: 0,

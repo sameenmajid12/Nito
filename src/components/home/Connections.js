@@ -128,8 +128,9 @@ const styles = StyleSheet.create({
   searchIcon:{
     position:"absolute",
     top:"50%",
+    fontSize:12,
     transform:[
-      {translateY:"-50%"}
+      {translateY:-6}
     ],
     left:10,
   },
