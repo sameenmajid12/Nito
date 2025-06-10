@@ -9,7 +9,6 @@ import Connections from "../../components/home/Connections";
 function HomeScreen() {
   return (
     <SafeAreaView style={styles.page}>
-      <Header />
       <ScrollView>
         <View style={styles.pageContainer}>
           <Text style={styles.greeting}>Welcome, Sameen Majid!</Text>
