@@ -1,3 +1,5 @@
+import React, { useRef, useEffect } from "react"; // Import useRef and useEffect
+import { Animated } from "react-native"; // Import Animated
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CustomTabBar from "../components/common/CustomTabBar";
@@ -41,8 +43,10 @@ function ProfileStackScreen() {
 }
 
 function MainNavigator() {
+  const routeState = useNavigationState((state) => state);
 
-  const routeState = useNavigationState(state => state);
+  const tabBarOpacity = useRef(new Animated.Value(1)).current;
+
   const getActiveRouteName = (state) => {
     if (!state || !state.routes || state.routes.length === 0) {
       return null;
@@ -56,33 +60,45 @@ function MainNavigator() {
 
     return route.name;
   };
-  const currentRouteName = getActiveRouteName(routeState);
-  const hideComponents = currentRouteName === "Chat";
 
+  const currentRouteName = getActiveRouteName(routeState);
+  const shouldHideTabBar = currentRouteName === "Chat";
+
+  useEffect(() => {
+    if (shouldHideTabBar) {
+      tabBarOpacity.setValue(0);
+    } else {
+      Animated.timing(tabBarOpacity, {
+        toValue: shouldHideTabBar ? 0 : 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [shouldHideTabBar]);
 
   return (
-      <Tab.Navigator
-        tabBar={(props) => <CustomTabBar {...props} visible={!hideComponents}/>}
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Tab.Screen
-          name="HomeTab"
-          component={HomeStackScreen}
-          options={{ tabBarLabel: "Home" }}
-        />
-        <Tab.Screen
-          name="ChatTab"
-          component={ChatStackScreen}
-          options={{ tabBarLabel: "ChatList" }}
-        />
-        <Tab.Screen
-          name="ProfileTab"
-          component={ProfileStackScreen}
-          options={{ tabBarLabel: "Profile" }}
-        />
-      </Tab.Navigator>
+    <Tab.Navigator
+      tabBar={(props) => <CustomTabBar {...props} opacity={tabBarOpacity} />}
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Tab.Screen
+        name="HomeTab"
+        component={HomeStackScreen}
+        options={{ tabBarLabel: "Home" }}
+      />
+      <Tab.Screen
+        name="ChatTab"
+        component={ChatStackScreen}
+        options={{ tabBarLabel: "ChatList" }}
+      />
+      <Tab.Screen
+        name="ProfileTab"
+        component={ProfileStackScreen}
+        options={{ tabBarLabel: "Profile" }}
+      />
+    </Tab.Navigator>
   );
 }
 

@@ -1,13 +1,11 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, FONT_FAMILY_SEMIBOLD, FONT_SIZE_XS } from '../../styles'; 
 
-function CustomTabBar({ state, descriptors, navigation, visible }) {
-  if(!visible){
-    return;
-  }
+function CustomTabBar({ state, descriptors, navigation, opacity }) {
+  
   return (
-    <View style={styles.tabBarContainer}>
+    <Animated.View style={[styles.tabBarContainer, {opacity:opacity}]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -76,7 +74,7 @@ function CustomTabBar({ state, descriptors, navigation, visible }) {
           </Pressable>
         );
       })}
-    </View>
+    </Animated.View>
   );
 }
 
