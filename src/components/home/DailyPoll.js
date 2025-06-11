@@ -23,7 +23,7 @@ function DailyPoll() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: colors.accent70,
+    backgroundColor: colors.accent55,
     borderRadius: 10,
     paddingHorizontal: 15,
     paddingVertical: 15,

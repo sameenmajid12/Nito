@@ -6,6 +6,7 @@ const colors = {
   primary70:"#A591FF",
   accent:"#EA80FC",
   accent40:"#F5C3FE",
+  accent55:"#F3B2FD",
   accent70:"#F0A2FD",
   blue:"#5B3FFC",
   blue50:"#A690FF",
