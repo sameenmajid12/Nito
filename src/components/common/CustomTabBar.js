@@ -2,7 +2,10 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, FONT_FAMILY_SEMIBOLD, FONT_SIZE_XS } from '../../styles'; 
 
-function CustomTabBar({ state, descriptors, navigation }) {
+function CustomTabBar({ state, descriptors, navigation, visible }) {
+  if(!visible){
+    return;
+  }
   return (
     <View style={styles.tabBarContainer}>
       {state.routes.map((route, index) => {
@@ -89,7 +92,7 @@ const styles = StyleSheet.create({
     borderColor:colors.blue50,
     borderRadius: 999, 
     marginHorizontal: 40, 
-    marginBottom: 10, 
+    marginBottom: 40, 
     position: 'absolute',
     bottom: 0, 
     left: 0,
