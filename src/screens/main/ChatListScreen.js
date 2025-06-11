@@ -14,6 +14,7 @@ import {
   FONT_SIZE_XS,
 } from "../../styles";
 import { Image } from "expo-image";
+import Header from "../../components/common/Header";
 const chats = [1, 2, 3, 4, 5];
 function ChatListScreen({ navigation }) {
   const enterChat = (chat) => {
@@ -21,6 +22,7 @@ function ChatListScreen({ navigation }) {
   };
   return (
     <SafeAreaView style={styles.page}>
+      <Header/>
       <ScrollView>
         <View style={styles.chatListContainer}>
           <Text style={styles.containerHeader}>Current match</Text>

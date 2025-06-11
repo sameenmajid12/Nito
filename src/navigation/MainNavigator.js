@@ -61,8 +61,6 @@ function MainNavigator() {
 
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      {!hideComponents && <Header/>}
       <Tab.Navigator
         tabBar={(props) => <CustomTabBar {...props} visible={!hideComponents}/>}
         screenOptions={{
@@ -85,13 +83,7 @@ function MainNavigator() {
           options={{ tabBarLabel: "Profile" }}
         />
       </Tab.Navigator>
-    </SafeAreaView>
   );
 }
-const styles = StyleSheet.create({
-  safeArea:{
-    flex:1, 
-    backgroundColor:colors.background
-  }
-})
+
 export default MainNavigator;
