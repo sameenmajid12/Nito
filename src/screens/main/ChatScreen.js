@@ -8,14 +8,13 @@ import { colors } from "../../styles";
 import MessageInput from "../../components/chat/MessageInput";
 import { useState } from "react";
 import ChatHeader from "../../components/chat/ChatHeader";
+import MessagesContainer from "../../components/chat/MessagesContainer";
 function ChatScreen() {
   const [message, setMessage] = useState("");
   return (
     <SafeAreaView style={styles.page}>
       <ChatHeader/>
-      <ScrollView style={styles.mainChat}>
-
-      </ScrollView>
+      <MessagesContainer/>
       <MessageInput message={message} setMessage={setMessage}></MessageInput>
     </SafeAreaView>
   );

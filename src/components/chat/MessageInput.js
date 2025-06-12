@@ -7,21 +7,28 @@ import {
 } from "react-native";
 import { colors } from "../../styles";
 import { FONT_SIZE_XL } from "../../styles";
-function MessageInput({message, setMessage}) {
-  
+const ICON_SIZE = 36;
+const MIN_INPUT_HEIGHT = 45;
+function MessageInput({ message, setMessage }) {
   return (
     <KeyboardAvoidingView behavior={"padding"} keyboardVerticalOffset={10}>
       <View style={styles.inputContainer}>
         <Ionicons style={styles.attachmentIcon} name="add-circle"></Ionicons>
-        {message === "" ? <Ionicons style={styles.voiceIcon} name="mic"></Ionicons>:<Ionicons style={styles.sendIcon} name="arrow-up-circle"></Ionicons>}
-        <TextInput
-        value={message}
-        onChangeText={setMessage}
-          style={styles.messageInput}
-          placeholder="Enter message"
-          multiline={true}
-          placeholderTextColor={colors.textPlaceholder}
-        ></TextInput>
+        <View style={styles.inputContainerRight}>
+          <TextInput
+            value={message}
+            onChangeText={setMessage}
+            style={styles.messageInput}
+            placeholder="Enter message"
+            multiline={true}
+            placeholderTextColor={colors.textPlaceholder}
+          ></TextInput>
+          {message === "" ? (
+            <Ionicons style={styles.voiceIcon} name="mic"></Ionicons>
+          ) : (
+            <Ionicons style={styles.sendIcon} name="arrow-up-circle"></Ionicons>
+          )}
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -31,44 +38,37 @@ const styles = StyleSheet.create({
     marginHorizontal: 25,
     borderWidth: 1,
     borderColor: colors.border,
-    minHeight: 45,
-    borderRadius: 22.5,
+    minHeight: MIN_INPUT_HEIGHT,
+    borderRadius: MIN_INPUT_HEIGHT/2,
     flexDirection: "row",
     alignItems: "center",
+    paddingLeft: 5,
+    paddingRight: 10,
+    columnGap: 5,
   },
   attachmentIcon: {
-    position: "absolute",
-    fontSize: 36,
+    fontSize: ICON_SIZE,
     color: colors.primary,
-    bottom: 22,
-    transform: [{ translateY: (36 / 2) }],
-    left: 5,
   },
   voiceIcon: {
-    position: "absolute",
     fontSize: FONT_SIZE_XL,
-    right: 10,
-    bottom: 22,
-    transform: [{ translateY: (FONT_SIZE_XL / 2) }],
     color: colors.primary,
   },
-  sendIcon:{
-    position:"absolute",
-    right:5,
-    fontSize:36,
-    bottom:22,
-    transform:[
-      {translateY:18}
-    ],
-    color:colors.primary
+  sendIcon: {
+    fontSize: ICON_SIZE,
+    color: colors.primary,
   },
   messageInput: {
-    paddingHorizontal: 50,
-
-    flex: 1,
     fontFamily: "Nunito-SemiBold",
     color: colors.textPrimary,
-    paddingVertical:10
+    paddingVertical: 10,
+    flex: 1,
+  },
+  inputContainerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flex: 1,
   },
 });
 export default MessageInput;
