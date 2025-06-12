@@ -17,7 +17,7 @@ import SchoolSelector from "../../components/auth/SchoolSelector";
 import ErrorMessage from "../../components/common/ErrorMessage";
 
 const INITIAL_PADDING_TOP = 180;
-const KEYBOARD_ACTIVE_PADDING_TOP = 120;
+const KEYBOARD_ACTIVE_PADDING_TOP = 80;
 
 function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");

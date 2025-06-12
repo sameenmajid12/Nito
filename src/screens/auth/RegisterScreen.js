@@ -23,7 +23,7 @@ function RegisterScreen({ navigation }) {
   const [formError, setFormError] = useState(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const INITIAL_PADDING_TOP = 250;
-  const KEYBOARD_ACTIVE_PADDING_TOP = 120;
+  const KEYBOARD_ACTIVE_PADDING_TOP = 110;
   const animatedPageContentPaddingTop = useRef(
     new Animated.Value(INITIAL_PADDING_TOP)
   ).current;
