@@ -6,6 +6,7 @@ import {
   Animated,
   Keyboard,
   Pressable,
+  Easing,
 } from "react-native";
 import { colors, FONT_SIZE_M, textStyles } from "../../styles";
 import Button from "../../components/common/Button";
@@ -22,12 +23,12 @@ const KEYBOARD_ACTIVE_PADDING_TOP = 80;
 function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const initialSchoolState = { name: "Select School", img: null }
+  const initialSchoolState = { name: "Select School", img: null };
   const [school, setSchool] = useState(initialSchoolState);
   const [schoolDropDown, setSchoolDropDown] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [authError, setAuthError] = useState(false);
-  const initialFormErrors = { email: null, password: null, school:null };
+  const initialFormErrors = { email: null, password: null, school: null };
   const [formErrors, setFormErrors] = useState(initialFormErrors);
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
@@ -53,6 +54,7 @@ function LoginScreen({ navigation }) {
           toValue: KEYBOARD_ACTIVE_PADDING_TOP,
           duration: 250,
           useNativeDriver: false,
+          easing: Easing.bezier(0, 0, 0.2, 1),
         }).start();
       }
     );
@@ -64,6 +66,7 @@ function LoginScreen({ navigation }) {
           toValue: INITIAL_PADDING_TOP,
           duration: 200,
           useNativeDriver: false,
+          easing: Easing.bezier(0, 0, 0.2, 1),
         }).start();
       }
     );
@@ -88,7 +91,7 @@ function LoginScreen({ navigation }) {
       }));
       errorsFound = true;
     }
-    if(school.img === null || school === initialSchoolState){
+    if (school.img === null || school === initialSchoolState) {
       setFormErrors((prev) => ({
         ...prev,
         school: "Please enter your school",
@@ -149,7 +152,7 @@ function LoginScreen({ navigation }) {
             <Button
               onPress={login}
               title="Login"
-              style={{ width: "80%", height: 45, marginTop:10 }}
+              style={{ width: "80%", height: 45, marginTop: 10 }}
             />
             {authError && (
               <ErrorMessage

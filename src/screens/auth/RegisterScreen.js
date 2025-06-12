@@ -6,6 +6,7 @@ import {
   Animated,
   Pressable,
   Keyboard,
+  Easing,
 } from "react-native";
 import { colors, FONT_SIZE_M, textStyles } from "../../styles";
 import Button from "../../components/common/Button";
@@ -16,7 +17,7 @@ import SchoolSelector from "../../components/auth/SchoolSelector";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import { useRegistration } from "../../contexts/RegistrationContext";
 function RegisterScreen({ navigation }) {
-  const {updateRegistrationData} = useRegistration();
+  const { updateRegistrationData } = useRegistration();
   const initialSchoolState = { name: "Select School", img: null };
   const [school, setSchool] = useState(initialSchoolState);
   const [schoolDropDown, setSchoolDropDown] = useState(false);
@@ -41,6 +42,7 @@ function RegisterScreen({ navigation }) {
           toValue: KEYBOARD_ACTIVE_PADDING_TOP,
           duration: 250,
           useNativeDriver: false,
+          easing: Easing.bezier(0, 0, 0.2, 1),
         }).start();
       }
     );
@@ -52,6 +54,7 @@ function RegisterScreen({ navigation }) {
           toValue: INITIAL_PADDING_TOP,
           duration: 200,
           useNativeDriver: false,
+          easing: Easing.bezier(0, 0, 0.2, 1),
         }).start();
       }
     );
@@ -63,7 +66,7 @@ function RegisterScreen({ navigation }) {
   }, [fadeAnim]);
   const continueRegistration = () => {
     if (school !== initialSchoolState && school.img !== null) {
-      updateRegistrationData({school})
+      updateRegistrationData({ school });
       navigation.replace("Register1");
     } else {
       setFormError("Please enter your school before continuing");
@@ -97,11 +100,7 @@ function RegisterScreen({ navigation }) {
             style={{ width: "80%", height: 45, marginTop: 10 }}
             onPress={continueRegistration}
           />
-          <Text
-            style={styles.whyNito}
-          >
-            Why use Nito?
-          </Text>
+          <Text style={styles.whyNito}>Why use Nito?</Text>
           <View style={{ flex: 1 }} />
           <Text style={styles.noAccountText}>
             Already have an account?{" "}
@@ -153,7 +152,7 @@ const styles = StyleSheet.create({
   whyNito: {
     fontFamily: "Nunito-Bold",
     color: colors.primary,
-    marginTop:15
+    marginTop: 15,
   },
 });
 

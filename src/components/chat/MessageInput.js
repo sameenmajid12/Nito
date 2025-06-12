@@ -1,17 +1,66 @@
 import { Ionicons } from "@expo/vector-icons";
 import {
-  KeyboardAvoidingView,
   View,
   TextInput,
   StyleSheet,
+  Animated,
+  Keyboard,
+  Easing,
 } from "react-native";
 import { colors } from "../../styles";
 import { FONT_SIZE_XL } from "../../styles";
+import { useEffect, useRef } from "react";
 const ICON_SIZE = 36;
 const MIN_INPUT_HEIGHT = 45;
+const INITIAL_BOTTOM_VALUE = -40;
+
 function MessageInput({ message, setMessage }) {
+  const messageInputTranslateY = useRef(
+    new Animated.Value(INITIAL_BOTTOM_VALUE)
+  ).current;
+
+  useEffect(() => {
+    const keyboardWillShowListener = Keyboard.addListener(
+      "keyboardWillShow",
+      (e) => {
+        const { duration, endCoordinates } = e;
+        Animated.timing(messageInputTranslateY, {
+          toValue: -(endCoordinates.height + 10),
+          duration: duration,
+          easing: Easing.bezier(0, 0, 0.2, 1),
+          useNativeDriver: true,
+        }).start();
+      }
+    );
+
+    const keyboardWillHideListener = Keyboard.addListener(
+      "keyboardWillHide",
+      (e) => {
+        const { duration } = e;
+        Animated.timing(messageInputTranslateY, {
+          toValue: INITIAL_BOTTOM_VALUE,
+          duration: duration,
+          easing: Easing.bezier(0, 0, 0.2, 1),
+          useNativeDriver: true,
+        }).start();
+      }
+    );
+
+    return () => {
+      keyboardWillShowListener.remove();
+      keyboardWillHideListener.remove();
+    };
+  }, []);
+
   return (
-    <KeyboardAvoidingView behavior={"padding"} keyboardVerticalOffset={10}>
+    <Animated.View
+      style={[
+        {
+          transform: [{ translateY: messageInputTranslateY }],
+        },
+        styles.mainContainer,
+      ]}
+    >
       <View style={styles.inputContainer}>
         <Ionicons style={styles.attachmentIcon} name="add-circle"></Ionicons>
         <View style={styles.inputContainerRight}>
@@ -30,16 +79,23 @@ function MessageInput({ message, setMessage }) {
           )}
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </Animated.View>
   );
 }
+
 const styles = StyleSheet.create({
+  mainContainer: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    left: 0,
+  },
   inputContainer: {
     marginHorizontal: 25,
     borderWidth: 1,
     borderColor: colors.border,
     minHeight: MIN_INPUT_HEIGHT,
-    borderRadius: MIN_INPUT_HEIGHT/2,
+    borderRadius: MIN_INPUT_HEIGHT / 2,
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: 5,
@@ -71,4 +127,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
 export default MessageInput;
