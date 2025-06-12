@@ -16,6 +16,7 @@ const colors = {
   textSecondary: "#7F7880", 
   textPlaceholder: "#B6ACB8", 
   error: "#FF0000", 
+  white70:"#FEFAFF",
   white: "#FFFFFF",
   purple: "#7F68FF", 
   textLight: "#A49CA6", 

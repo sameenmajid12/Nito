@@ -91,7 +91,7 @@ function MainNavigator() {
       <Tab.Screen
         name="ChatTab"
         component={ChatStackScreen}
-        options={{ tabBarLabel: "ChatList" }}
+        options={{ tabBarLabel: "Chat" }}
       />
       <Tab.Screen
         name="ProfileTab"
