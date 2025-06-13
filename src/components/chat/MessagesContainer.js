@@ -4,17 +4,15 @@ import {
   StyleSheet,
   Keyboard,
   Easing,
-  View,
 } from "react-native";
 import ReceivedMessage from "./ReceivedMessage";
 import SentMessage from "./SentMessage";
-import { Image } from "expo-image";
 import { useEffect, useRef } from "react";
 import { colors } from "../../styles";
 const INITIAL_BOTTOM_PADDING = 60;
-const KEYBOARD_ACTIVE_BOTTOM_PADDING = 400;
 function MessagesContainer({ messages }) {
   const scrollViewRef = useRef(null);
+
   const containerBottomPadding = useRef(
     new Animated.Value(INITIAL_BOTTOM_PADDING)
   ).current;
@@ -23,8 +21,8 @@ function MessagesContainer({ messages }) {
       "keyboardWillShow",
       (e) => {
         Animated.timing(containerBottomPadding, {
-          toValue: KEYBOARD_ACTIVE_BOTTOM_PADDING,
-          duration: 0,
+          toValue: e.endCoordinates.height + 40,
+          duration: 0, //Feels delayed if other durations used because of padding view having to grow
           easing: Easing.bezier(0, 0, 0.2, 1),
           useNativeDriver: false,
         }).start();
@@ -61,21 +59,19 @@ function MessagesContainer({ messages }) {
     }
   };
   return (
-    <View style={{ flex: 1, flexDirection: "column" }}>
-      <ScrollView
-        onContentSizeChange={() => scrollToBottom(true)}
-        style={[styles.mainContainer]}
-        contentContainerStyle={{}}
-        ref={scrollViewRef}
-      >
-        <Animated.View
-          style={{
-            height: containerBottomPadding,
-            backgroundColor: colors.background,
-          }}
-        ></Animated.View>
-      </ScrollView>
-    </View>
+    <ScrollView
+      onContentSizeChange={() => scrollToBottom(true)}
+      style={[styles.mainContainer]}
+      contentContainerStyle={{}}
+      ref={scrollViewRef}
+    >
+      <Animated.View
+        style={{
+          height: containerBottomPadding,
+          backgroundColor: colors.background,
+        }}
+      ></Animated.View>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
