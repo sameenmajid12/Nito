@@ -12,7 +12,7 @@ import { FONT_SIZE_XL } from "../../styles";
 import { useEffect, useRef } from "react";
 const ICON_SIZE = 36;
 const MIN_INPUT_HEIGHT = 45;
-const INITIAL_BOTTOM_VALUE = -40;
+const INITIAL_BOTTOM_VALUE = 0;
 
 function MessageInput({ message, setMessage }) {
   const messageInputTranslateY = useRef(
@@ -25,7 +25,7 @@ function MessageInput({ message, setMessage }) {
       (e) => {
         const { duration, endCoordinates } = e;
         Animated.timing(messageInputTranslateY, {
-          toValue: -(endCoordinates.height + 10),
+          toValue: -(endCoordinates.height - 20),
           duration: duration,
           easing: Easing.bezier(0, 0, 0.2, 1),
           useNativeDriver: true,
@@ -53,15 +53,12 @@ function MessageInput({ message, setMessage }) {
   }, []);
 
   return (
-    <Animated.View
-      style={[
-        {
-          transform: [{ translateY: messageInputTranslateY }],
-        },
-        styles.mainContainer,
-      ]}
-    >
-      <View style={styles.inputContainer}>
+    <Animated.View style={[styles.mainContainer, {transform:[{translateY:messageInputTranslateY}]}]}>
+      <Animated.View
+        style={[
+          styles.inputContainer,
+        ]}
+      >
         <Ionicons style={styles.attachmentIcon} name="add-circle"></Ionicons>
         <View style={styles.inputContainerRight}>
           <TextInput
@@ -78,19 +75,24 @@ function MessageInput({ message, setMessage }) {
             <Ionicons style={styles.sendIcon} name="arrow-up-circle"></Ionicons>
           )}
         </View>
-      </View>
+      </Animated.View>
     </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
+    backgroundColor: colors.background,
+    minHeight: 85,
     position: "absolute",
     bottom: 0,
     right: 0,
     left: 0,
+    justifyContent:"flex-start"
   },
   inputContainer: {
+    backgroundColor: colors.background,
+    
     marginHorizontal: 25,
     borderWidth: 1,
     borderColor: colors.border,
