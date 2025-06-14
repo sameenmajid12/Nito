@@ -13,6 +13,7 @@ const colors = {
   primaryDark:"#684EFF",
   primaryDark70:"#957FFF",
   textPrimary: "#333", 
+  textPrimary70:"#4C484D",
   textSecondary: "#7F7880", 
   textPlaceholder: "#B6ACB8", 
   error: "#FF0000", 
