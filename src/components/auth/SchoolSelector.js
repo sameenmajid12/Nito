@@ -85,7 +85,7 @@ function SchoolSelector({
               selectorStyle,
               (errorText && !dropDownVisible)
                 ? { borderColor: "red" }
-                : { borderColor: colors.border },
+                : { borderColor: colors.borderLight },
               dropDownVisible
                 ? {
                     borderBottomEndRadius: 0,
@@ -97,8 +97,8 @@ function SchoolSelector({
           >
             <Text
               style={{
-                fontFamily: "Nunito-SemiBold",
-                color: schoolSelected ? colors.textPrimary : colors.textLight,
+                fontFamily: "Nunito-Medium",
+                color: schoolSelected ? colors.textPrimary : colors.textPlaceholder,
               }}
             >
               {school.name}
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
   selector: {
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
     minHeight: 45,
     borderRadius: 10,
     alignItems: "center",
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
     width: "100%",
     zIndex: 100,
     borderRadius: 10,

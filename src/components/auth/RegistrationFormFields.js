@@ -1,4 +1,4 @@
-import { View, StyleSheet, } from "react-native";
+import { View, StyleSheet } from "react-native";
 import Input from "../common/Input";
 import AddProfilePicture from "./AddProfilePicture";
 import { useState } from "react";
@@ -17,8 +17,8 @@ function RegistrationFormFields({
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [retypePasswordVisible, setRetypePasswordVisible] = useState(false);
   const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    setFormErrors(prev => ({ ...prev, [field]: null }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormErrors((prev) => ({ ...prev, [field]: null }));
   };
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
@@ -27,7 +27,7 @@ function RegistrationFormFields({
     setRetypePasswordVisible((prev) => !prev);
   };
   return (
-    <View style={styles.inputContainer}>
+    <View style={styles.mainContainer}>
       {!keyboardVisible && (
         <AddProfilePicture image={image} setImage={setImage} />
       )}
@@ -35,7 +35,8 @@ function RegistrationFormFields({
       <Input
         placeholder={"Enter fullname"}
         label={"Fullname"}
-        containerStyle={styles.input}
+        containerStyle={styles.containerStyle}
+        inputStyle={styles.inputStyle}
         value={formData.fullname}
         setValue={(text) => handleChange("fullname", text)}
         errorText={formErrors.fullname}
@@ -43,7 +44,8 @@ function RegistrationFormFields({
       <Input
         placeholder={"Enter username"}
         label={"Username"}
-        containerStyle={styles.input}
+        containerStyle={styles.containerStyle}
+        inputStyle={styles.inputStyle}
         value={formData.username}
         setValue={(text) => handleChange("username", text)}
         errorText={formErrors.username}
@@ -51,7 +53,8 @@ function RegistrationFormFields({
       <Input
         placeholder={"Enter email"}
         label={"Email"}
-        containerStyle={styles.input}
+        containerStyle={styles.containerStyle}
+        inputStyle={styles.inputStyle}
         value={formData.email}
         setValue={(text) => handleChange("email", text)}
         errorText={formErrors.email}
@@ -60,7 +63,8 @@ function RegistrationFormFields({
       <Input
         placeholder={"Enter password"}
         label={"Password"}
-        containerStyle={styles.input}
+        containerStyle={styles.containerStyle}
+        inputStyle={styles.inputStyle}
         value={formData.password}
         setValue={(text) => handleChange("password", text)}
         secure={!passwordVisible}
@@ -70,7 +74,8 @@ function RegistrationFormFields({
       <Input
         placeholder={"Retype password"}
         label={"Retype password"}
-        containerStyle={styles.input}
+        containerStyle={styles.containerStyle}
+        inputStyle={styles.inputStyle}
         value={formData.retypePassword}
         setValue={(text) => handleChange("retypePassword", text)}
         secure={!retypePasswordVisible}
@@ -82,12 +87,16 @@ function RegistrationFormFields({
 }
 
 const styles = StyleSheet.create({
-  inputContainer: {
+  mainContainer: {
     paddingTop: 40,
     alignItems: "center",
   },
-  input: {
+  containerStyle: {
     width: "100%",
+  },
+  inputStyle: {
+    borderRadius: 10,
+    paddingHorizontal: 15,
   },
 });
 

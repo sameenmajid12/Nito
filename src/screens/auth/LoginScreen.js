@@ -100,8 +100,6 @@ function LoginScreen({ navigation }) {
     }
     return errorsFound;
   };
-  const emailInputContainerStyle = { marginBottom: 15 };
-  const passwordInputContainerStyle = { marginBottom: 25 };
   const login = () => {
     const errorsFound = validateInput();
     if (!errorsFound) {
@@ -133,20 +131,22 @@ function LoginScreen({ navigation }) {
             <Input
               label={"Email"}
               placeholder={"Enter email"}
-              containerStyle={emailInputContainerStyle}
               value={email}
               setValue={setEmail}
               errorText={formErrors.email}
+              containerStyle={[styles.containerStyle,{marginBottom:15}]}
+              inputStyle={styles.inputStyle}
             ></Input>
             <Input
               label={"Password"}
               placeholder={"Enter password"}
-              containerStyle={passwordInputContainerStyle}
               value={password}
               setValue={setPassword}
               secure={!passwordVisible}
               togglePasswordVisibility={togglePasswordVisibility}
               errorText={formErrors.password}
+              containerStyle={[styles.containerStyle,{marginBottom:25}]}
+              inputStyle={styles.inputStyle}
             ></Input>
 
             <Button
@@ -221,6 +221,10 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     color: colors.primary,
   },
+  containerStyle:{
+    width:"80%"
+  },
+  inputStyle:{borderRadius:10, paddingHorizontal:18}
 });
 
 export default LoginScreen;
