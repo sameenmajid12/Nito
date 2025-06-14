@@ -12,6 +12,7 @@ import { Image } from "expo-image";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import ProfileTop from "../../components/profile/ProfileTop";
 import ProfileActivity from "../../components/profile/ProfileActivity";
+import ProfileAboutMe from "../../components/profile/ProfileAboutMe";
 
 function ProfileScreen() {
   return (
@@ -20,7 +21,10 @@ function ProfileScreen() {
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.mainContainer}>
           <ProfileTop />
-          <ProfileActivity></ProfileActivity>
+          <View style={styles.detailsContainer}>
+            <ProfileActivity />
+            <ProfileAboutMe />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -34,8 +38,11 @@ const styles = StyleSheet.create({
   scrollContainer: {
     padding: 30,
   },
-  mainContainer:{
-    rowGap:5
+  mainContainer: {
+    rowGap: 5,
+  },
+  detailsContainer:{
+    rowGap:20
   }
 });
 export default ProfileScreen;
