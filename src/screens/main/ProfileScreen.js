@@ -40,9 +40,10 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     rowGap: 5,
+    marginBottom: 100,
   },
-  detailsContainer:{
-    rowGap:20
-  }
+  detailsContainer: {
+    rowGap: 20,
+  },
 });
 export default ProfileScreen;
