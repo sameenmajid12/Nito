@@ -160,7 +160,6 @@ const styles = StyleSheet.create({
     fontSize:FONT_SIZE_S
   },
   connectionsContainer:{
-    marginBottom:70,
     rowGap:15
   }
 })

@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
   pageContainer: {
     padding: 20,
     rowGap: 10,
+    marginBottom:70
   },
   greeting: {
     fontFamily: "Nunito-Bold",
