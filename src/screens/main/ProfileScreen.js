@@ -13,6 +13,7 @@ import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import ProfileTop from "../../components/profile/ProfileTop";
 import ProfileActivity from "../../components/profile/ProfileActivity";
 import ProfileAboutMe from "../../components/profile/ProfileAboutMe";
+import ProfileSettings from "../../components/profile/ProfileSettings";
 
 function ProfileScreen() {
   return (
@@ -24,6 +25,7 @@ function ProfileScreen() {
           <View style={styles.detailsContainer}>
             <ProfileActivity />
             <ProfileAboutMe />
+            <ProfileSettings/>
           </View>
         </View>
       </ScrollView>
