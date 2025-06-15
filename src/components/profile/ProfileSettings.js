@@ -6,12 +6,12 @@ import {
   FONT_SIZE_L,
   FONT_SIZE_M,
 } from "../../styles";
-function ProfileSettings() {
+function ProfileSettings({navigate}) {
   return (
     <View style={styles.mainContainer}>
       <ProfileSectionHeader header={"Settings"} />
       <View style={styles.buttonsContainer}>
-        <Pressable style={styles.button}>
+        <Pressable onPress={()=>navigate("AccountInformation")} style={styles.button}>
           <Ionicons
             size={28}
             color={colors.textPrimary}
@@ -41,7 +41,7 @@ function ProfileSettings() {
             ></Ionicons>
           </View>
         </Pressable>
-        <Pressable style={styles.button}>
+        <Pressable onPress={()=>navigate("TagsSelect")} style={styles.button}>
           <Ionicons
             size={28}
             color={colors.textPrimary}

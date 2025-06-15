@@ -13,7 +13,10 @@ import ProfileActivity from "../../../components/profile/ProfileActivity";
 import ProfileAboutMe from "../../../components/profile/ProfileAboutMe";
 import ProfileSettings from "../../../components/profile/ProfileSettings";
 
-function ProfileScreen() {
+function ProfileScreen({navigation}) {
+  const navigate=(route)=>{
+    navigation.navigate(route)
+  };
   return (
     <SafeAreaView style={styles.page}>
       <Header />
@@ -23,7 +26,7 @@ function ProfileScreen() {
           <View style={styles.detailsContainer}>
             <ProfileActivity />
             <ProfileAboutMe />
-            <ProfileSettings/>
+            <ProfileSettings navigate={navigate}/>
           </View>
         </View>
       </ScrollView>
