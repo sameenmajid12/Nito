@@ -76,6 +76,7 @@ function SelectTagsScreen({ navigation }) {
             value={tagText}
             setValue={setTagText}
             containerStyle={{ width: "100%" }}
+            inputStyle={styles.input}
             label={"Tag"}
             placeholder={"Enter tag(eg. Gaming)"}
             onSubmitEditing={addTag}
@@ -217,6 +218,10 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-SemiBold",
     fontSize: FONT_SIZE_S,
   },
+  input:{
+    paddingHorizontal:15,
+    borderRadius:10
+  }
 });
 
 export default SelectTagsScreen;
