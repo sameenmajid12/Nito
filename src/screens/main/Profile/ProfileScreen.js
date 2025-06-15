@@ -6,14 +6,12 @@ import {
   Text,
   View,
 } from "react-native";
-import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_S } from "../../styles";
-import Header from "../../components/common/Header";
-import { Image } from "expo-image";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
-import ProfileTop from "../../components/profile/ProfileTop";
-import ProfileActivity from "../../components/profile/ProfileActivity";
-import ProfileAboutMe from "../../components/profile/ProfileAboutMe";
-import ProfileSettings from "../../components/profile/ProfileSettings";
+import { colors } from "../../../styles";
+import Header from "../../../components/common/Header";
+import ProfileTop from "../../../components/profile/ProfileTop";
+import ProfileActivity from "../../../components/profile/ProfileActivity";
+import ProfileAboutMe from "../../../components/profile/ProfileAboutMe";
+import ProfileSettings from "../../../components/profile/ProfileSettings";
 
 function ProfileScreen() {
   return (

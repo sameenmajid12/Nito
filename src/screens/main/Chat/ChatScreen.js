@@ -4,11 +4,11 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { colors } from "../../styles";
-import MessageInput from "../../components/chat/MessageInput";
+import { colors } from "../../../styles";
+import MessageInput from "../../../components/chat/MessageInput";
 import { useState } from "react";
-import ChatHeader from "../../components/chat/ChatHeader";
-import MessagesContainer from "../../components/chat/MessagesContainer";
+import ChatHeader from "../../../components/chat/ChatHeader";
+import MessagesContainer from "../../../components/chat/MessagesContainer";
 function ChatScreen() {
   const [message, setMessage] = useState("");
   return (

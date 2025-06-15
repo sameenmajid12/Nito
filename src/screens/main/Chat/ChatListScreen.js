@@ -12,9 +12,9 @@ import {
   FONT_SIZE_M,
   FONT_SIZE_S,
   FONT_SIZE_XS,
-} from "../../styles";
+} from "../../../styles";
 import { Image } from "expo-image";
-import Header from "../../components/common/Header";
+import Header from "../../../components/common/Header";
 const chats = [1, 2, 3, 4, 5];
 function ChatListScreen({ navigation }) {
   const enterChat = (chat) => {
@@ -29,7 +29,7 @@ function ChatListScreen({ navigation }) {
           <View style={[styles.chat, styles.currentChat]}>
             <Image
               style={styles.chatProfilePic}
-              source={require("../../assets/images/mike.webp")}
+              source={require("../../../assets/images/mike.webp")}
             ></Image>
             <View style={styles.chatDetails}>
               <Text style={styles.chatName}>user84891378</Text>
@@ -50,7 +50,7 @@ function ChatListScreen({ navigation }) {
             >
               <Image
                 style={styles.chatProfilePic}
-                source={require("../../assets/images/mike.webp")}
+                source={require("../../../assets/images/mike.webp")}
               ></Image>
               <View style={styles.chatDetails}>
                 <Text style={styles.chatName}>Mike Ross</Text>

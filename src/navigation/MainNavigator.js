@@ -5,12 +5,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CustomTabBar from "../components/common/CustomTabBar";
 import { useNavigationState } from "@react-navigation/native";
 import HomeScreen from "../screens/main/HomeScreen";
-import ProfileScreen from "../screens/main/ProfileScreen";
-import ChatListScreen from "../screens/main/ChatListScreen";
+import ProfileScreen from "../screens/main/Profile/ProfileScreen";
+import ChatListScreen from "../screens/main/Chat/ChatListScreen";
 import Header from "../components/common/Header";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { colors } from "../styles";
-import ChatScreen from "../screens/main/ChatScreen";
+import ChatScreen from "../screens/main/Chat/ChatScreen";
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
