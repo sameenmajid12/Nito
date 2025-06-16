@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import TagConainer from "../../../components/common/TagContainer";
 import ProfileTagInput from "../../../components/profile/ProfileTagInput";
+import TextHeader from "../../../components/common/TextHeader";
 function ProfileTagsScreen({navigation}) {
   const [newTag, setNewTag] = useState("");
   const [tags, setTags] = useState(["Poop", "Loop", "Doop"]);
@@ -40,14 +41,7 @@ function ProfileTagsScreen({navigation}) {
   const save = () => {};
   return (
     <SafeAreaView style={styles.page}>
-      <Pressable onPress={()=>navigation.goBack()} style={styles.header}>
-        <Ionicons
-          size={FONT_SIZE_L}
-          color={colors.textPrimary}
-          name="chevron-back"
-        ></Ionicons>
-        <Text style={styles.headerText}>Tags</Text>
-      </Pressable>
+      <TextHeader navigation={navigation} text={"Tags"}/>
       <View style={styles.contentContainer}>
         <View>
           <Text style={styles.pageHeader}>Selected tags</Text>

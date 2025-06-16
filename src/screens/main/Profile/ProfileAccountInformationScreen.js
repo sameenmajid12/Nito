@@ -10,19 +10,13 @@ import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_S, FONT_SIZE_XL } from "../
 import ProfileAccountInfoInput from "../../../components/profile/ProfileAccountInfoInput";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
+import TextHeader from "../../../components/common/TextHeader";
 
 function ProfileAccountInformationScreen({navigation}) {
   const [edited, setEdited] = useState(false);
   return (
     <SafeAreaView style={styles.page}>
-      <Pressable onPress={()=>navigation.goBack()} style={styles.header}>
-        <Ionicons
-          size={FONT_SIZE_L}
-          color={colors.textPrimary}
-          name="chevron-back"
-        ></Ionicons>
-        <Text style={styles.headerText}>Account Information</Text>
-      </Pressable>
+      <TextHeader navigation={navigation} text={"Account information"}/>
       <View style={styles.contentContainer}>
         <View>
           <Text style={styles.pageHeader}>Details</Text>
@@ -82,20 +76,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-    columnGap: 5,
-    height: 41,
-  },
-  headerText: {
-    fontFamily: "Nunito-SemiBold",
-    fontSize: FONT_SIZE_M,
-  },
+  
   contentContainer: {
     padding: 30,
     rowGap: 15,
