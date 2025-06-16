@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { colors } from "../../styles";
-import SocialInput from "./SocialInput";
+import ProfileSocialInput from "./ProfileSocialInput";
 function ProfileSocialMedia() {
   return (
     <View style={{rowGap:15}}>
@@ -9,12 +9,12 @@ function ProfileSocialMedia() {
       </View>
       <View style={{rowGap:5}}>
         <View style={styles.sideBySide}>
-          <SocialInput socialMedia={"Instagram"} />
-          <SocialInput socialMedia={"Snapchat"} />
+          <ProfileSocialInput socialMedia={"Instagram"} />
+          <ProfileSocialInput socialMedia={"Snapchat"} />
         </View>
         <View style={styles.sideBySide}>
-          <SocialInput socialMedia={"LinkedIn"} />
-          <SocialInput socialMedia={"Discord"} />
+          <ProfileSocialInput socialMedia={"LinkedIn"} />
+          <ProfileSocialInput socialMedia={"Discord"} />
         </View>
       </View>
     </View>

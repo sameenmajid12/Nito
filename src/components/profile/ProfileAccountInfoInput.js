@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Text, TextInput, View, StyleSheet } from "react-native";
 import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_XL } from "../../styles";
-function AccountInformationInput({
+function ProfileAccountInfoInput({
   iconName,
   label,
   placeholder,
@@ -68,4 +68,4 @@ const styles = StyleSheet.create({
     height: "100%",
   },
 });
-export default AccountInformationInput;
+export default ProfileAccountInfoInput;

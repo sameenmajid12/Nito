@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import { TextInput, View, Text, StyleSheet } from "react-native";
 import { colors, FONT_SIZE_S, FONT_SIZE_XS, FONT_SIZE_XXS } from "../../styles";
 
-function SocialInput({ socialMedia }) {
+function ProfileSocialInput({ socialMedia }) {
   const placeholder =
     (socialMedia === "Instagram" || socialMedia === "Snapchat")
       ? "Username"
@@ -50,4 +50,4 @@ const styles = StyleSheet.create({
     flex:1
   }
 });
-export default SocialInput;
+export default ProfileSocialInput;

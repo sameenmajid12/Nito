@@ -4,58 +4,59 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_S, FONT_SIZE_XL } from "../../../styles";
-import AccountInformationInput from "../../../components/profile/AccountInformationInput";
+import ProfileAccountInfoInput from "../../../components/profile/ProfileAccountInfoInput";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 
-function ProfileAccountInformationScreen() {
+function ProfileAccountInformationScreen({navigation}) {
   const [edited, setEdited] = useState(false);
   return (
     <SafeAreaView style={styles.page}>
-      <View style={styles.header}>
+      <Pressable onPress={()=>navigation.goBack()} style={styles.header}>
         <Ionicons
           size={FONT_SIZE_L}
           color={colors.textPrimary}
           name="chevron-back"
         ></Ionicons>
         <Text style={styles.headerText}>Account Information</Text>
-      </View>
+      </Pressable>
       <View style={styles.contentContainer}>
         <View>
           <Text style={styles.pageHeader}>Details</Text>
           <Text style={styles.pageSubheader}>Here you can edit your account information</Text>
         </View>
 
-        <AccountInformationInput
+        <ProfileAccountInfoInput
           iconName={"person-circle-outline"}
           label={"Fullname"}
           value={"Sameen Majid"}
           placeholder={"Enter fullname"}
           editable={true}
         />
-        <AccountInformationInput
+        <ProfileAccountInfoInput
           iconName={"at-outline"}
           label={"Username"}
           value={"user21454295"}
           editable={false}
         />
-        <AccountInformationInput
+        <ProfileAccountInfoInput
           iconName={"mail-outline"}
           label={"Email"}
           value={"srm341@scarletmail.rutgers.edu"}
           placeholder={"Enter email"}
           editable={true}
         />
-        <AccountInformationInput
+        <ProfileAccountInfoInput
           iconName={"call-outline"}
           label={"Phone number"}
           value={"516-667-9552"}
           placeholder={"Enter phone number"}
           editable={true}
         />
-        <AccountInformationInput
+        <ProfileAccountInfoInput
           iconName={"shield-outline"}
           label={"Password"}
           value={"Samin123"}
