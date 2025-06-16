@@ -10,19 +10,18 @@ import {
   colors,
 } from "../../styles";
 import TextHeader from "../../components/common/TextHeader";
-import { Ionicons } from "@expo/vector-icons";
 import ConnectionList from '../../components/common/ConnectionList';
-import Sort from "../../components/connection/Sort";
-import Search from "../../components/connection/Search";
+import SortConnection from "../../components/connection/SortConnection";
+import SearchConnection from "../../components/connection/SearchConnection";
 function ConnectionScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.page}>
       <TextHeader navigation={navigation} text={"Connections"} />
       <ScrollView>
         <View style={styles.mainContainer}>
-          <Search/>
+          <SearchConnection/>
           <View style={styles.divider}></View>
-          <Sort/>
+          <SortConnection/>
           <ConnectionList connections={['s','s','s']} gap={15}/>
         </View>
       </ScrollView>
