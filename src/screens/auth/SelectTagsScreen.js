@@ -13,23 +13,13 @@ import Button from "../../components/common/Button";
 import { useEffect, useState, useRef } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
 import { Ionicons } from "@expo/vector-icons";
+import TagConainer from "../../components/common/TagContainer";
 
 function SelectTagsScreen({ navigation }) {
   const [tags, setTags] = useState([]);
   const [tagText, setTagText] = useState("");
   const [error, setError] = useState(false);
   const { updateRegistrationData } = useRegistration();
-
-  
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 700,
-      useNativeDriver: true,
-    }).start();
-  }, []);
-
 
   const addTag = () => {
     setError(false);
@@ -38,10 +28,14 @@ function SelectTagsScreen({ navigation }) {
       setTagText("");
     }
   };
-  const removeTag = (index) => {
-    const updatedTags = tags.filter((_, i) => i !== index);
-    setTags(updatedTags);
-  };
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 700,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   const skip = () => {
     navigation.replace("Register3");
@@ -105,22 +99,13 @@ function SelectTagsScreen({ navigation }) {
                 name="bookmark-outline"
               ></Ionicons>
             </View>
-            <ScrollView style={styles.tagsScrollView}>
-              <View style={styles.tagsContentWrapper}>
-                {tags.map((tag, index) => (
-                  <View key={index} style={styles.tagItem}>
-                    <Text style={styles.tagsText}>{tag}</Text>
-                    <Pressable onPress={() => removeTag(index)}>
-                      <Ionicons
-                        size={20}
-                        color={colors.white}
-                        name="close"
-                      ></Ionicons>
-                    </Pressable>
-                  </View>
-                ))}
-              </View>
-            </ScrollView>
+            <TagConainer
+              tagText={tagText}
+              setTagText={setTagText}
+              tags={tags}
+              setTags={setTags}
+              setError={setError}
+            />
           </View>
         ) : (
           <View style={{ flex: 1 }} />
@@ -218,10 +203,10 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-SemiBold",
     fontSize: FONT_SIZE_S,
   },
-  input:{
-    paddingHorizontal:15,
-    borderRadius:10
-  }
+  input: {
+    paddingHorizontal: 15,
+    borderRadius: 10,
+  },
 });
 
 export default SelectTagsScreen;

@@ -22,7 +22,6 @@ function ProfileAccountInformationScreen() {
         ></Ionicons>
         <Text style={styles.headerText}>Account Information</Text>
       </View>
-      <View></View>
       <View style={styles.contentContainer}>
         <View>
           <Text style={styles.pageHeader}>Details</Text>
@@ -97,8 +96,7 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_M,
   },
   contentContainer: {
-    paddingVertical: 30,
-    paddingHorizontal: 30,
+    padding: 30,
     rowGap: 15,
   },
   saveButton: {
@@ -126,7 +124,6 @@ const styles = StyleSheet.create({
     fontSize:FONT_SIZE_S,
     color:colors.textLight,
     textAlign:"center",
-    marginBottom:15
   }
 });
 export default ProfileAccountInformationScreen;
