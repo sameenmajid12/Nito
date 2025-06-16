@@ -9,6 +9,7 @@ import ReceivedMessage from "./ReceivedMessage";
 import SentMessage from "./SentMessage";
 import { useEffect, useRef } from "react";
 import { colors } from "../../styles";
+import ChatExpired from "./ChatExpired";
 const INITIAL_BOTTOM_PADDING = 60;
 function MessagesContainer({ messages }) {
   const scrollViewRef = useRef(null);
@@ -70,7 +71,9 @@ function MessagesContainer({ messages }) {
           height: containerBottomPadding,
           backgroundColor: colors.background,
         }}
-      ></Animated.View>
+      >
+        <ChatExpired/>
+      </Animated.View>
     </ScrollView>
   );
 }
