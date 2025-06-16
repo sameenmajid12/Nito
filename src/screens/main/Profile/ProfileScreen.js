@@ -24,7 +24,7 @@ function ProfileScreen({navigation}) {
         <View style={styles.mainContainer}>
           <ProfileTop />
           <View style={styles.detailsContainer}>
-            <ProfileActivity />
+            <ProfileActivity navigate={navigate}/>
             <ProfileAboutMe />
             <ProfileSettings navigate={navigate}/>
           </View>
