@@ -11,8 +11,9 @@ import Header from "../components/common/Header";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { colors } from "../styles";
 import ChatScreen from "../screens/main/Chat/ChatScreen";
-import ProfileAccountInformationScreen from '../screens/main/Profile/ProfileAccountInformationScreen';
-import ProfileTagsScreen from '../screens/main/Profile/ProfileTagsScreen';
+import ProfileAccountInformationScreen from "../screens/main/Profile/ProfileAccountInformationScreen";
+import ProfileTagsScreen from "../screens/main/Profile/ProfileTagsScreen";
+import ConnectionsScreen from "../screens/main/ConnectionScreen";
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
 const ChatStack = createNativeStackNavigator();
@@ -22,6 +23,7 @@ function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="Home" component={HomeScreen} />
+      <HomeStack.Screen name="ConnectionScreen" component={ConnectionsScreen} />
     </HomeStack.Navigator>
   );
 }
@@ -43,9 +45,10 @@ function ProfileStackScreen() {
         name="AccountInformation"
         component={ProfileAccountInformationScreen}
       />
+      <ProfileStack.Screen name="TagsSelect" component={ProfileTagsScreen} />
       <ProfileStack.Screen
-        name="TagsSelect"
-        component={ProfileTagsScreen}
+        name="ConnectionScreen"
+        component={ConnectionsScreen}
       />
     </ProfileStack.Navigator>
   );

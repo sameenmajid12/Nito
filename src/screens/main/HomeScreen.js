@@ -4,9 +4,12 @@ import { colors, FONT_SIZE_L, textStyles } from "../../styles";
 import YouHaveAMatch from "../../components/home/YouHaveAMatch";
 import NextMatchIn from "../../components/home/NextMatchIn";
 import DailyPoll from "../../components/home/DailyPoll";
-import Connections from "../../components/home/Connections";
+import HomeConnections from "../../components/home/HomeConnections";
 
-function HomeScreen() {
+function HomeScreen({navigation}) {
+  const navigate = (route) =>{
+    navigation.navigate(route);
+  }
   return (
     <SafeAreaView style={styles.page}>
       <Header></Header>
@@ -21,7 +24,7 @@ function HomeScreen() {
             <NextMatchIn />
             <DailyPoll />
           </View>
-          <Connections />
+          <HomeConnections navigate={navigate} />
         </View>
       </ScrollView>
     </SafeAreaView>
