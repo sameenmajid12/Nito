@@ -3,8 +3,8 @@ import { View } from "react-native";
 function ConnectionList({gap, connections}){
   return(
     <View style={{rowGap:gap}}>
-      {connections.map((connection)=>(
-        <ConnectionItem connection={connection}/>
+      {connections.map((connection, index)=>(
+        <ConnectionItem key={index} connection={connection}/>
       ))}
     </View>
   )

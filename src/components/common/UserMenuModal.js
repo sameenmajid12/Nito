@@ -4,15 +4,14 @@ import {
   Animated,
   StyleSheet,
   View,
-  Easing,
   Pressable,
   Text,
 } from "react-native";
 import { useModal } from "../../contexts/ModalContext";
-import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_S } from "../../styles";
+import { colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
 import { Image } from "expo-image";
 
-function UserMenuModal({ user, toggleVisibility }) {
+function UserMenuModal({ user }) {
   const { closeModal } = useModal();
   const slideAnim = useRef(new Animated.Value(600)).current;
   useEffect(() => {

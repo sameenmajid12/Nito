@@ -90,34 +90,34 @@ function MainNavigator() {
     }
   }, [shouldHideTabBar]);
 
-  const {visible} = useModal();
+  const { visible } = useModal();
 
   return (
-    <>    <Tab.Navigator
-      tabBar={(props) => <CustomTabBar {...props} opacity={tabBarOpacity} />}
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Tab.Screen
-        name="HomeTab"
-        component={HomeStackScreen}
-        options={{ tabBarLabel: "Home" }}
-      />
-      <Tab.Screen
-        name="ChatTab"
-        component={ChatStackScreen}
-        options={{ tabBarLabel: "Chat" }}
-      />
-      <Tab.Screen
-        name="ProfileTab"
-        component={ProfileStackScreen}
-        options={{ tabBarLabel: "Profile" }}
-      />
-    </Tab.Navigator>
-    {visible && <UserMenuModal/>}
+    <>
+      <Tab.Navigator
+        tabBar={(props) => <CustomTabBar {...props} opacity={tabBarOpacity} />}
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Tab.Screen
+          name="HomeTab"
+          component={HomeStackScreen}
+          options={{ tabBarLabel: "Home" }}
+        />
+        <Tab.Screen
+          name="ChatTab"
+          component={ChatStackScreen}
+          options={{ tabBarLabel: "Chat" }}
+        />
+        <Tab.Screen
+          name="ProfileTab"
+          component={ProfileStackScreen}
+          options={{ tabBarLabel: "Profile" }}
+        />
+      </Tab.Navigator>
+      {visible && <UserMenuModal />}
     </>
-
   );
 }
 

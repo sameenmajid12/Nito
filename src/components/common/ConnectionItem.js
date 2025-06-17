@@ -7,7 +7,7 @@ function ConnectionItem({ connection }) {
   const {openModal} = useModal();
   return (
     <>
-      <View key={connection} style={styles.connection}>
+      <View style={styles.connection}>
         <Image
           source={require("../../assets/images/mike.webp")}
           width={50}
