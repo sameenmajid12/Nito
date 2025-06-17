@@ -19,7 +19,7 @@ function ConnectionItem({ connection }) {
             <Text style={styles.connectionName}>Mike Ross</Text>
             <Text style={styles.connectionDate}>Connected - Today</Text>
           </View>
-          <Pressable onPress={openModal}>
+          <Pressable onPress={()=>openModal(connection, "userModal")}>
             <Ionicons
               size={20}
               color={colors.textPrimary}

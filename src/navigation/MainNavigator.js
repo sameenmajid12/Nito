@@ -7,9 +7,7 @@ import { useNavigationState } from "@react-navigation/native";
 import HomeScreen from "../screens/main/HomeScreen";
 import ProfileScreen from "../screens/main/Profile/ProfileScreen";
 import ChatListScreen from "../screens/main/Chat/ChatListScreen";
-import Header from "../components/common/Header";
-import { SafeAreaView, StyleSheet } from "react-native";
-import { colors } from "../styles";
+import ChatModal from "../components/chat/ChatModal";
 import ChatScreen from "../screens/main/Chat/ChatScreen";
 import ProfileAccountInformationScreen from "../screens/main/Profile/ProfileAccountInformationScreen";
 import ProfileTagsScreen from "../screens/main/Profile/ProfileTagsScreen";
@@ -55,7 +53,10 @@ function ProfileStackScreen() {
     </ProfileStack.Navigator>
   );
 }
-
+const MODAL_COMPONENTS = {
+  userModal: UserMenuModal,
+  chatModal: ChatModal,
+};
 function MainNavigator() {
   const routeState = useNavigationState((state) => state);
 
@@ -90,7 +91,8 @@ function MainNavigator() {
     }
   }, [shouldHideTabBar]);
 
-  const { visible } = useModal();
+  const { modalState } = useModal();
+  const ModalToRender = modalState.visible ? MODAL_COMPONENTS[modalState.name] : null;
 
   return (
     <>
@@ -116,7 +118,7 @@ function MainNavigator() {
           options={{ tabBarLabel: "Profile" }}
         />
       </Tab.Navigator>
-      {visible && <UserMenuModal />}
+      {ModalToRender && <ModalToRender/>}
     </>
   );
 }

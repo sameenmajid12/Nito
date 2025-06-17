@@ -21,8 +21,9 @@ function UserMenuModal({ user }) {
       useNativeDriver: true,
     }).start();
   }, []);
+  const containerRef = useRef(null);
   return (
-    <View style={styles.page}>
+    <Pressable onPress={closeModal} style={styles.page}>
       <Animated.View
         style={[
           styles.animatedContainer,
@@ -69,10 +70,11 @@ function UserMenuModal({ user }) {
               pressed && { backgroundColor: "rgba(0,0,0,0.05)" }, 
             ]}
           >
-            <Text style={styles.modalItemText}>Remove connection</Text>
+            <Text style={[styles.modalItemText, {color:"red"}]}>Remove connection</Text>
             <Ionicons
               style={styles.icon}
               name="person-remove-outline"
+              color={"red"}
             ></Ionicons>
           </Pressable>
           <Pressable
@@ -81,7 +83,7 @@ function UserMenuModal({ user }) {
               pressed && { backgroundColor: "rgba(0,0,0,0.05)" }, 
             ]}
           >
-            <Text style={styles.modalItemText}>Block</Text>
+            <Text style={[styles.modalItemText, {color:"red"}]}>Block</Text>
             <Ionicons
               style={styles.icon}
               color={"red"}
@@ -94,7 +96,7 @@ function UserMenuModal({ user }) {
               pressed && { backgroundColor: "rgba(0,0,0,0.05)" },
             ]}
           >
-            <Text style={styles.modalItemText}>Report</Text>
+            <Text style={[styles.modalItemText,{color:"red"}]}>Report</Text>
             <Ionicons
               style={styles.icon}
               color={"red"}
@@ -106,7 +108,7 @@ function UserMenuModal({ user }) {
           <Text style={styles.closeButtonText}>Close</Text>
         </Pressable>
       </Animated.View>
-    </View>
+    </Pressable>
   );
 }
 const styles = StyleSheet.create({
