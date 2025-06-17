@@ -14,6 +14,10 @@ import ConnectionList from '../../components/common/ConnectionList';
 import SortConnection from "../../components/connection/SortConnection";
 import SearchConnection from "../../components/connection/SearchConnection";
 function ConnectionScreen({ navigation }) {
+  const [showModal, setShowModal] = useState(false);
+  const toggleModalVisibility = () =>{
+    setShowModal((prev)=>!prev);
+  }
   return (
     <SafeAreaView style={styles.page}>
       <TextHeader navigation={navigation} text={"Connections"} />

@@ -14,6 +14,8 @@ import ChatScreen from "../screens/main/Chat/ChatScreen";
 import ProfileAccountInformationScreen from "../screens/main/Profile/ProfileAccountInformationScreen";
 import ProfileTagsScreen from "../screens/main/Profile/ProfileTagsScreen";
 import ConnectionsScreen from "../screens/main/ConnectionScreen";
+import { useModal } from "../contexts/ModalContext";
+import UserMenuModal from "../components/common/UserMenuModal";
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
 const ChatStack = createNativeStackNavigator();
@@ -88,8 +90,10 @@ function MainNavigator() {
     }
   }, [shouldHideTabBar]);
 
+  const {visible} = useModal();
+
   return (
-    <Tab.Navigator
+    <>    <Tab.Navigator
       tabBar={(props) => <CustomTabBar {...props} opacity={tabBarOpacity} />}
       screenOptions={{
         headerShown: false,
@@ -111,6 +115,9 @@ function MainNavigator() {
         options={{ tabBarLabel: "Profile" }}
       />
     </Tab.Navigator>
+    {visible && <UserMenuModal/>}
+    </>
+
   );
 }
 
