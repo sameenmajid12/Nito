@@ -124,11 +124,19 @@ function YourDetailsScreen({ navigation }) {
   const continueRegistration = () => {
     const errorsFound = validateFields();
     if (!errorsFound) {
+      console.log({
+        fullname:formData.fullname,
+        username:formData.username,
+        email:formData.email,
+        password:formData.password,
+        profilePic:image
+      })
       updateRegistrationData({
         fullname: formData.fullname,
         username: formData.username,
         email: formData.email,
         password: formData.password,
+        profilePic: image
       });
       navigation.replace("Register2");
     }

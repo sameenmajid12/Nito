@@ -66,7 +66,7 @@ function RegisterScreen({ navigation }) {
   }, [fadeAnim]);
   const continueRegistration = () => {
     if (school !== initialSchoolState && school.img !== null) {
-      updateRegistrationData({ school });
+      updateRegistrationData({ school:school.name });
       navigation.replace("Register1");
     } else {
       setFormError("Please enter your school before continuing");

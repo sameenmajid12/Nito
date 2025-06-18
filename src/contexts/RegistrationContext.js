@@ -8,6 +8,7 @@ const initialRegistrationState = {
   password:"",
   schoolId: "",
   tags: [],
+  profilePic:null
 };
 
 export const RegistrationProvider = ({ children }) => {

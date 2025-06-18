@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from "react"; // Import useRef and useEffect
-import { Animated } from "react-native"; // Import Animated
+import React, { useRef, useEffect } from "react"; 
+import { Animated } from "react-native"; 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CustomTabBar from "../components/common/CustomTabBar";
