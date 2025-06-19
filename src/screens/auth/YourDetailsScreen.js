@@ -16,19 +16,19 @@ import { useRegistration } from "../../contexts/RegistrationContext";
 import { Ionicons } from "@expo/vector-icons";
 import RegistrationFormFields from "../../components/auth/RegistrationFormFields";
 function YourDetailsScreen({ navigation }) {
-  const { updateRegistrationData, registrationData } = useRegistration();
+  const { updateRegistrationData, registrationData, initialRegistrationState } = useRegistration();
 
   //USER INFORMATION STATE
   const school = registrationData.school;
   const [formData, setFormData] = useState({
-    fullname: "",
-    username: "",
-    email: "",
-    password: "",
-    retypePassword: "",
+    fullname: registrationData.fullname || "",
+    username: registrationData.username || "",
+    email: registrationData.email || "",
+    password: registrationData.password || "",
+    retypePassword: registrationData.password || "",
   });
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(registrationData.image || null);
 
   //FORM ERRORS
   const initialFormErrors = {
@@ -137,6 +137,7 @@ function YourDetailsScreen({ navigation }) {
 
   const navigateBack = () => {
     navigation.replace("Register");
+    updateRegistrationData(initialRegistrationState)
   };
 
   return (

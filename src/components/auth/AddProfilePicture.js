@@ -11,7 +11,9 @@ import { colors } from "../../styles";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { useState } from "react";
+import { useRegistration } from "../../contexts/RegistrationContext";
 function AddProfilePicture({ image, setImage }) {
+  const { updateRegistrationData } = useRegistration();
   const [isLoadingImage, setIsLoadingImage] = useState(false);
 
   const pickProfilePic = async () => {
@@ -47,6 +49,7 @@ function AddProfilePicture({ image, setImage }) {
         });
         const resizedUri = manipulatedResult.uri;
         setImage(resizedUri);
+        updateRegistrationData({ image: resizedUri });
       } catch (error) {
         console.error("Error manipulating image:", error);
         Alert.alert(
@@ -54,6 +57,7 @@ function AddProfilePicture({ image, setImage }) {
           "Could not process the image. Please try another one."
         );
         setImage(null);
+        updateRegistrationData({ image: null });
       }
     } else {
       setImage(null);
@@ -66,7 +70,15 @@ function AddProfilePicture({ image, setImage }) {
   };
 
   return (
-    <Pressable onPress={pickProfilePic} style={[styles.cameraContainer,(image && !isLoadingImage)?{borderColor:"transparent"}:{borderColor:colors.border}]}>
+    <Pressable
+      onPress={pickProfilePic}
+      style={[
+        styles.cameraContainer,
+        image && !isLoadingImage
+          ? { borderColor: "transparent" }
+          : { borderColor: colors.border },
+      ]}
+    >
       {isLoadingImage ? (
         <ActivityIndicator size="large" color={colors.primary} />
       ) : image ? (

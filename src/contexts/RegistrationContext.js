@@ -28,6 +28,7 @@ export const RegistrationProvider = ({ children }) => {
     registrationData,
     updateRegistrationData,
     resetRegistration,
+    initialRegistrationState
   };
   return (
     <RegistrationContext.Provider value={value}>
@@ -35,12 +36,5 @@ export const RegistrationProvider = ({ children }) => {
     </RegistrationContext.Provider>
   );
 };
-export const useRegistration = () => {
-  const context = useContext(RegistrationContext);
-  if (context === null) {
-    throw new Error(
-      "useRegistration must be used within a RegistrationProvider"
-    );
-  }
-  return context;
-};
+export const useRegistration = () => useContext(RegistrationContext);
+ 
