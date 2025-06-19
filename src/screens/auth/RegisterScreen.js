@@ -14,7 +14,6 @@ import DecorationShapes from "../../components/auth/DecorationShapes";
 import { useEffect, useState, useRef } from "react";
 import Logo from "../../components/common/Logo";
 import SchoolSelector from "../../components/auth/SchoolSelector";
-import ErrorMessage from "../../components/common/ErrorMessage";
 import { useRegistration } from "../../contexts/RegistrationContext";
 function RegisterScreen({ navigation }) {
   const { updateRegistrationData } = useRegistration();
