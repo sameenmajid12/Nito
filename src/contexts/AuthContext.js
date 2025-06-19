@@ -6,8 +6,9 @@ export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState(false);
-  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
-  const [isLoadingRegistration, setIsLoadingRegistration] = useState(false);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(false);
+  const [isLoadingRegistration, setIsLoadingRegistration] = useState({skipButton:false, finishButton:false});
+  const [isRegistrationCompleted, setIsRegistrationCompleted] = useState(false);
   useEffect(() => {
     const loadTokensAndVerify = () => {
       try {
@@ -20,14 +21,17 @@ export const AuthProvider = ({ children }) => {
   };
   const verifyAccessToken = () => {
     try {
-    } catch (e) {}
+    } catch (e) {}  
   };
   const login = (loginData) => {
     try {
+      //API CALL TO LOGIN AND RECEIVE TOKEN
     } catch (e) {}
   };
-  const register = (registrationData) => {
+  const register = (registrationData, skipped) => {
     try {
+      setIsLoadingRegistration(skipped?{skipButton:true, finishButton:false}:{finishButton:true,skipButton:false});
+      //API CALL TO REGISTER THE USER, SETISLOADINGREGISTRATION TO FALSE AND SETISREGISTRATIONCOMPLETED TO TRUE
     } catch (e) {}
   };
   const logout = () => {};
@@ -42,6 +46,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         isLoadingAuth,
         isLoadingRegistration,
+        isRegistrationCompleted
       }}
     >
       {children}

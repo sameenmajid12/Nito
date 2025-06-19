@@ -14,7 +14,7 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [userError, setUserError] = useState(false);
-  const fetchUser = useCallback(() => {}, []);
+  const fetchUser = useCallback(() => {}, []); // WHEN THE USER BECOMES AUTHENTICATED AND A TOKEN IS RECEIVED FROM THE BACKEND FETCH THE USER
 
   useEffect(() => {
     if (isAuthenticated && token && !isLoadingAuth) {

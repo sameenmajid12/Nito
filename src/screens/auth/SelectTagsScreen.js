@@ -16,15 +16,17 @@ import { Ionicons } from "@expo/vector-icons";
 import TagConainer from "../../components/common/TagContainer";
 import { useAuth } from "../../contexts/AuthContext";
 function SelectTagsScreen({ navigation }) {
-  const [tags, setTags] = useState([]);
+  const { registrationData, updateRegistrationData } = useRegistration();
+  const [tags, setTags] = useState(registrationData.tags || []);
   const [tagText, setTagText] = useState("");
   const [error, setError] = useState(false);
-  const { registrationData } = useRegistration();
-  const { register, isLoadingRegistration } = useAuth();
+  const { register, isLoadingRegistration, isRegistrationCompleted } =
+    useAuth();
   const addTag = () => {
     setError(false);
     if (tagText.length > 0) {
       setTags((prev) => [...prev, tagText]);
+      updateRegistrationData({ tags: [...registrationData.tags, tagText] });
       setTagText("");
     }
   };
@@ -36,19 +38,24 @@ function SelectTagsScreen({ navigation }) {
       useNativeDriver: true,
     }).start();
   }, []);
-
-  const skip = () => {
-    navigation.replace("Register3");
-  };
   const navigateBack = () => {
     navigation.replace("Register1");
   };
-  const finishRegistration = () => {
-    if (tags.length === 0) {
+  const finishRegistration = (skipped) => {
+    //TAG SELECTION SKIPPED
+    if (skipped) {
+      register(registrationData, true);
+    }
+    //TAG SELECTION NOT SKIPPED BUT NO TAGS ENTERED
+    else if (tags.length === 0) {
       setError(true);
-    } else {
-      register({ registrationData, tags });
-
+    }
+    //TAG SELECTION NOT SKIPPED AND TAGS SELECTED
+    else {
+      register({ ...registrationData, tags }, false);
+    }
+    if (isRegistrationCompleted) {
+      navigation.navigate("Register3");
     }
   };
   return (
@@ -112,15 +119,16 @@ function SelectTagsScreen({ navigation }) {
         )}
         <View style={styles.buttonContainer}>
           <Button
-            onPress={skip}
+            onPress={() => finishRegistration(true)}
             title="Skip"
             style={{ width: "48%", height: 45 }}
             variant={"secondary"}
+            isLoading={isLoadingRegistration.skipButton}
           ></Button>
           <Button
-            onPress={finishRegistration}
-            title="Continue"
-            isLoading={isLoadingRegistration}
+            onPress={() => finishRegistration(false)}
+            title="Finish"
+            isLoading={isLoadingRegistration.finishButton}
             style={{ width: "48%", height: 45 }}
           ></Button>
         </View>
