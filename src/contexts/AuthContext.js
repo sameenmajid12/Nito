@@ -7,13 +7,29 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+  const [isLoadingRegistration, setIsLoadingRegistration] = useState(false);
   useEffect(() => {
-    const loadTokensAndVerify = () => {};
+    const loadTokensAndVerify = () => {
+      try {
+      } catch (e) {}
+    };
   }, []);
-  const refreshAccessToken = () => {};
-  const verifyAccessToken = () => {};
-  const login = () => {};
-  const register = () => {};
+  const refreshAccessToken = () => {
+    try {
+    } catch (e) {}
+  };
+  const verifyAccessToken = () => {
+    try {
+    } catch (e) {}
+  };
+  const login = (loginData) => {
+    try {
+    } catch (e) {}
+  };
+  const register = (registrationData) => {
+    try {
+    } catch (e) {}
+  };
   const logout = () => {};
   return (
     <AuthContext.Provider
@@ -25,6 +41,7 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         isLoadingAuth,
+        isLoadingRegistration,
       }}
     >
       {children}

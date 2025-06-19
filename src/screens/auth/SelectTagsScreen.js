@@ -14,13 +14,13 @@ import { useEffect, useState, useRef } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
 import { Ionicons } from "@expo/vector-icons";
 import TagConainer from "../../components/common/TagContainer";
-
+import { useAuth } from "../../contexts/AuthContext";
 function SelectTagsScreen({ navigation }) {
   const [tags, setTags] = useState([]);
   const [tagText, setTagText] = useState("");
   const [error, setError] = useState(false);
-  const { updateRegistrationData } = useRegistration();
-
+  const { registrationData } = useRegistration();
+  const { register, isLoadingRegistration } = useAuth();
   const addTag = () => {
     setError(false);
     if (tagText.length > 0) {
@@ -47,8 +47,8 @@ function SelectTagsScreen({ navigation }) {
     if (tags.length === 0) {
       setError(true);
     } else {
-      updateRegistrationData({ tags });
-      navigation.replace("Register3");
+      register({ registrationData, tags });
+
     }
   };
   return (
@@ -120,6 +120,7 @@ function SelectTagsScreen({ navigation }) {
           <Button
             onPress={finishRegistration}
             title="Continue"
+            isLoading={isLoadingRegistration}
             style={{ width: "48%", height: 45 }}
           ></Button>
         </View>
