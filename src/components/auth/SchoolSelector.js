@@ -25,10 +25,22 @@ function SchoolSelector({
   const allSchools = [
     {
       name: "Rutgers University-New Brunswick",
+      id: 85167512,
+      emailDomain: "scarletmail.rutgers.edu",
       img: require("../../assets/images/rutgers.png"),
     },
-    { name: "Rowan University", img: require("../../assets/images/rowan.png") },
-    { name: "SUNY Cortland", img: require("../../assets/images/cortland.png") },
+    {
+      name: "Rowan University",
+      id: 8592104,
+      emailDomain: "rowan.edu",
+      img: require("../../assets/images/rowan.png"),
+    },
+    {
+      name: "SUNY Cortland",
+      id: 8513648,
+      emailDomain: "cortland.edu",
+      img: require("../../assets/images/cortland.png"),
+    },
   ];
   const [filteredSchools, setFilteredSchools] = useState(allSchools);
   const [schoolSelected, setSchoolSelected] = useState(false);
@@ -69,8 +81,8 @@ function SchoolSelector({
     outputRange: ["0deg", "180deg"],
   });
 
-  const selectSchool = (name) => {
-    setSchool(name);
+  const selectSchool = (school) => {
+    setSchool(school);
     setDropDownVisible(false);
   };
 
@@ -83,7 +95,7 @@ function SchoolSelector({
             style={[
               styles.selector,
               selectorStyle,
-              (errorText && !dropDownVisible)
+              errorText && !dropDownVisible
                 ? { borderColor: "red" }
                 : { borderColor: colors.borderLight },
               dropDownVisible
@@ -98,7 +110,9 @@ function SchoolSelector({
             <Text
               style={{
                 fontFamily: "Nunito-Medium",
-                color: schoolSelected ? colors.textPrimary : colors.textPlaceholder,
+                color: schoolSelected
+                  ? colors.textPrimary
+                  : colors.textPlaceholder,
               }}
             >
               {school.name}
@@ -122,7 +136,12 @@ function SchoolSelector({
             )}
           </View>
         </Pressable>
-        {(errorText && !dropDownVisible) && <ErrorMessage message={errorText} style={{fontSize:FONT_SIZE_XS}}/>}
+        {errorText && !dropDownVisible && (
+          <ErrorMessage
+            message={errorText}
+            style={{ fontSize: FONT_SIZE_XS }}
+          />
+        )}
         {dropDownVisible && (
           <ScrollView style={styles.dropDownContainer}>
             <View style={styles.searchContainer}>

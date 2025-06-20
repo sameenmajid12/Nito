@@ -17,7 +17,7 @@ import SchoolSelector from "../../components/auth/SchoolSelector";
 import { useRegistration } from "../../contexts/RegistrationContext";
 function RegisterScreen({ navigation }) {
   const { updateRegistrationData } = useRegistration();
-  const initialSchoolState = { name: "Select School", img: null };
+  const initialSchoolState = { name: "Select School", id:null, emailDomain:null, img: null };
   const [school, setSchool] = useState(initialSchoolState);
   const [schoolDropDown, setSchoolDropDown] = useState(false);
   const [formError, setFormError] = useState(null);
@@ -64,8 +64,8 @@ function RegisterScreen({ navigation }) {
     };
   }, [fadeAnim]);
   const continueRegistration = () => {
-    if (school !== initialSchoolState && school.img !== null) {
-      updateRegistrationData({ school:school.name });
+    if (school.id !== null && school.img !== null) {
+      updateRegistrationData({school:{name:school.name, id:school.id, emailDomain:school.emailDomain}});
       navigation.replace("Register1");
     } else {
       setFormError("Please enter your school before continuing");
