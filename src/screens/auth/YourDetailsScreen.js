@@ -16,7 +16,8 @@ import { useRegistration } from "../../contexts/RegistrationContext";
 import { Ionicons } from "@expo/vector-icons";
 import RegistrationFormFields from "../../components/auth/RegistrationFormFields";
 function YourDetailsScreen({ navigation }) {
-  const { updateRegistrationData, registrationData, initialRegistrationState } = useRegistration();
+  const { updateRegistrationData, registrationData, resetRegistration } =
+    useRegistration();
 
   //USER INFORMATION STATE
   const school = registrationData.school;
@@ -79,7 +80,8 @@ function YourDetailsScreen({ navigation }) {
     let currentErrors = { ...initialFormErrors };
     let errorsFound = false;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-    const rutgersEmailRegex = /^[a-zA-Z0-9.-]+@scarletmail\.rutgers\.edu$/;
+    const escapedDomain = school.emailDomain.replace(/\./g, "\\.");
+    const emailRegex = new RegExp(`^[a-zA-Z0-9._%+-]+@${escapedDomain}$`);
 
     if (formData.fullname === "") {
       currentErrors.fullname = "Please enter your full name";
@@ -90,12 +92,15 @@ function YourDetailsScreen({ navigation }) {
       errorsFound = true;
     }
 
-    //CHECK IF EMAIL IS EMPTY OR IF IT IS A VALID RUTGERS EMAIL
+    //CHECK IF EMAIL IS EMPTY OR IF IT IS A VALID SCHOOl EMAIL
     if (formData.email === "") {
       currentErrors.email = "Please enter your school email";
       errorsFound = true;
-    } else if (!rutgersEmailRegex.test(formData.email)) {
-      currentErrors.email = "Email must end with @scarletmail.rutgers.edu";
+    } else if (!school || !school.emailDomain) {
+      currentErrors.email = "Please select your school first.";
+      errorsFound = true;
+    } else if (!emailRegex.test(formData.email)) {
+      currentErrors.email = `Email must end with @${registrationData.school.emailDomain}`;
       errorsFound = true;
     }
 
@@ -129,15 +134,15 @@ function YourDetailsScreen({ navigation }) {
         username: formData.username,
         email: formData.email,
         password: formData.password,
-        profilePic: image
+        profilePic: image,
       });
       navigation.replace("Register2");
     }
   };
 
   const navigateBack = () => {
+    resetRegistration();
     navigation.replace("Register");
-    updateRegistrationData(initialRegistrationState)
   };
 
   return (

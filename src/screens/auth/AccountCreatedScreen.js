@@ -10,8 +10,12 @@ import Logo from "../../components/common/Logo";
 import { colors, FONT_SIZE_M } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useRegistration } from "../../contexts/RegistrationContext";
 
 function AccountCreatedScreen() {
+  const {authenticateUser} = useAuth();
+  const {resetRegistration} = useRegistration();
   const scaleAnim = useRef(new Animated.Value(1)).current; 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const CIRCLE_BASE_SIZE = 240;
@@ -46,6 +50,10 @@ function AccountCreatedScreen() {
     };
   }, [scaleAnim]);
 
+  const handleGetStarted=()=>{
+    resetRegistration();
+    authenticateUser();
+  }
   return (
     <SafeAreaView style={styles.page}>
       <Animated.View style={[styles.pageContainer,{opacity:fadeAnim}]}>
@@ -76,7 +84,7 @@ function AccountCreatedScreen() {
           <Text style={styles.createdText}>
             Congrats! Your account has been created successfully.
           </Text>
-          <TouchableOpacity activeOpacity={0.9} style={styles.button}>
+          <TouchableOpacity activeOpacity={0.9} style={styles.button} onPress={handleGetStarted}>
             <View
               style={{
                 flexDirection: "row",

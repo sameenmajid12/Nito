@@ -5,7 +5,6 @@ import {
   Text,
   Pressable,
   Animated,
-  ScrollView,
 } from "react-native";
 import { colors, FONT_SIZE_M, FONT_SIZE_S, FONT_SIZE_XXL } from "../../styles";
 import Input from "../../components/common/Input";
@@ -41,21 +40,20 @@ function SelectTagsScreen({ navigation }) {
   const navigateBack = () => {
     navigation.replace("Register1");
   };
-  const finishRegistration = (skipped) => {
-    //TAG SELECTION SKIPPED
-    if (skipped) {
-      register(registrationData, true);
-    }
-    //TAG SELECTION NOT SKIPPED BUT NO TAGS ENTERED
-    else if (tags.length === 0) {
+  const finishRegistration = async (skipped) => {
+    setError(false);
+    if (!skipped && tags.length === 0) {
       setError(true);
+      return;
     }
-    //TAG SELECTION NOT SKIPPED AND TAGS SELECTED
-    else {
-      register({ ...registrationData, tags }, false);
-    }
-    if (isRegistrationCompleted) {
-      navigation.navigate("Register3");
+    try {
+      await register(
+        skipped ? registrationData : { ...registrationData, tags },
+        skipped
+      );
+    } catch (e) {
+      console.error("Failed to complete registration:", e);
+      setError(true); 
     }
   };
   return (
@@ -128,8 +126,8 @@ function SelectTagsScreen({ navigation }) {
           <Button
             onPress={() => finishRegistration(false)}
             title="Finish"
-            isLoading={isLoadingRegistration.finishButton}
             style={{ width: "48%", height: 45 }}
+            isLoading={isLoadingRegistration.finishButton}
           ></Button>
         </View>
       </Animated.View>
