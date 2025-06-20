@@ -76,7 +76,7 @@ function AddProfilePicture({ image, setImage }) {
         styles.cameraContainer,
         image && !isLoadingImage
           ? { borderColor: "transparent" }
-          : { borderColor: colors.border },
+          : { borderColor: colors.borderLight },
       ]}
     >
       {isLoadingImage ? (
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
     borderRadius: 999,
     justifyContent: "center",
     alignItems: "center",
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 5,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
     borderRadius: 20,
     backgroundColor: colors.background,
     padding: 5,
