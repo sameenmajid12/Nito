@@ -6,11 +6,11 @@ import MainNavigator from "./MainNavigator";
 
 function AppNavigator(){
   const {isLoadingAuth, isAuthenticated} = useAuth();
-  const {isLoadingUser} = useUser();
+  const {isLoadingUser, user} = useUser();
   if(isLoadingAuth || isLoadingUser){
     return <LoadingScreen></LoadingScreen>
   };
-  if(!isAuthenticated){
+  if(!isAuthenticated || !user){
     return <AuthNavigator/>
   }
   return <MainNavigator/>
