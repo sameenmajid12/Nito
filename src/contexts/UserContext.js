@@ -25,9 +25,12 @@ export const UserProvider = ({ children }) => {
     }
   }, [isAuthenticated, token, isLoadingAuth]);
   const updateUser = (updates) => {};
+  const removeConnection = (user) => {};
+  const reportUser = (user, data) => {};
+  const blockUser = (user) => {}
   return (
     <UserContext.Provider
-      value={{ user, updateUser, isLoadingUser, userError }}
+      value={{ user, updateUser, isLoadingUser, userError, removeConnection, reportUser, blockUser }}
     >
       {children}
     </UserContext.Provider>
