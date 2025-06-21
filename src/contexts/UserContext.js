@@ -138,7 +138,6 @@
     useEffect(() => {
       console.log('')
       if (isAuthenticated && token && !isLoadingAuth) {
-        console.log('user fetched');
         fetchUser();
       } else {
         setUser(null);
