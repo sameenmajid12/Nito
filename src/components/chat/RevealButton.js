@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   buttonText:{
     color:colors.white,
-    fontFamily:"Nunito-SemiBold",
+    fontFamily:"Nunito-Bold",
   }
 });
 export default RevealButton;

@@ -2,7 +2,6 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { colors } from "../../styles";
 
 function SectionSelector({ setSelectedSection, checkSelected }) {
-  
   return (
     <View style={styles.mainContainer}>
       <Pressable
