@@ -22,7 +22,8 @@ function Input({
   onSubmitEditing,
   returnKeyType,
   errorText,
-  textAlignVertical
+  textAlignVertical,
+  editable
 }) {
   return (
     <View style={[styles.inputContainer, containerStyle, errorText?{marginBottom:10}:{marginBottom:15}]}>
@@ -38,7 +39,7 @@ function Input({
           style={[
             styles.input,
             inputStyle,
-            errorText ? { borderColor: "red" } : { borderColor: colors.borderLight },
+            errorText ? { borderColor: "red" } : editable? {borderColor:colors.primary70} : { borderColor: colors.borderLight },
           ]}
           secureTextEntry={secure || false}
           returnKeyType={returnKeyType}
@@ -46,6 +47,8 @@ function Input({
           textAlignVertical={textAlignVertical?"top":"auto"}
           multiline={textAlignVertical}
           numberOfLines={3}
+          editable={editable}
+          
         ></TextInput>
         {secure !== undefined ? (
           <Pressable

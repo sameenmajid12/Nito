@@ -2,7 +2,8 @@ import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import { FONT_SIZE_S, colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
-function ProfileTop() {
+function ProfileTop({ editing, setEditing, saveChanges, resetChanges, changesMade }) {
+  
   return (
     <View style={styles.profileTop}>
       <Image
@@ -13,14 +14,32 @@ function ProfileTop() {
         <Text style={styles.fullname}>Mike Ross</Text>
         <Text style={styles.username}>@user21284912</Text>
       </View>
-      <Pressable style={styles.editButton}>
-        <Text style={styles.editText}>Edit</Text>
-        <Ionicons
-          name="create-outline"
-          size={FONT_SIZE_S}
-          color={colors.primary}
-        ></Ionicons>
-      </Pressable>
+      {!editing ? (
+        <Pressable onPress={() => setEditing(true)} style={styles.editButton}>
+          <Text style={styles.editText}>Edit</Text>
+          <Ionicons
+            name="create-outline"
+            size={FONT_SIZE_S}
+            color={colors.primary}
+          ></Ionicons>
+        </Pressable>
+      ) : (
+        <View style={styles.updateButtonsContainer}>
+          <Pressable
+            disabled={!changesMade}
+            style={[changesMade?styles.save:styles.noChange, styles.updateButton]}
+            onPress={saveChanges}
+          >
+            <Text style={styles.saveText}>Save</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.updateButton, styles.cancel]}
+            onPress={resetChanges}
+          >
+            <Text style={styles.cancelText}>Cancel</Text>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }
@@ -49,16 +68,47 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 5,
+    width: 90,
+    height: 30,
     columnGap: 5,
     position: "absolute",
     right: 0,
     borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
   },
   editText: {
     color: colors.primary,
     fontFamily: "Nunito-Regular",
   },
+  updateButtonsContainer: {
+    position: "absolute",
+    right: 0,
+    rowGap: 5,
+  },
+  updateButton: {
+    width: 90,
+    height: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+  },
+  save: {
+    backgroundColor: colors.primary,
+    shadowColor:"#000",
+    shadowOpacity:"0.1",
+    shadowOffset:{width:0, height:4}
+  },
+  noChange:{
+    backgroundColor:colors.primary70
+  },
+  saveText:{
+    fontFamily:"Nunito-SemiBold",
+    color:colors.white
+  },
+  cancelText:{
+    fontFamily:"Nunito-Medium",
+    color:colors.primary
+  }
 });
 export default ProfileTop;
