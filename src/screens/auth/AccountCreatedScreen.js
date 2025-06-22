@@ -149,10 +149,11 @@ const styles = StyleSheet.create({
   checkmark: {},
   createdText: {
     fontSize: 20,
-    fontFamily: "Nunito-SemiBold",
+    fontFamily: "Nunito-Medium",
     color: colors.textLight,
     lineHeight: 24,
     textAlign: "center",
+    marginBottom:20
   },
   button: {
     width: "100%",
