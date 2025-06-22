@@ -38,11 +38,15 @@
     tags:[“mma”, “money”, “web dev”],
     socialMedia:{instagram:”https://instagram
     .com/samin_raiyan”,linkedin:””,snapchat:””},
+    major:"Computer Science",
+    Year: 2027,
+    Bio:"My account bio"
     revealedUsers:[user],
     savedConversations:[conversation],
+    currentConversation:conversationObjectId,
+    archivedConversations:[conversation],
     blockedUsers:[user],
     phoneNumber:516-667-9552,
-    currentMatch:conversationObjectId
     createdAt: Date,
     updatedAt: Date
     lastActive:Date
@@ -80,6 +84,33 @@
     const [user, setUser] = useState(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
     const [userError, setUserError] = useState(false);
+    useEffect(()=>{
+      setUser({
+          id: "8914872198471982",
+          fullName: "Sameen Majid",
+          email: "srm341@scarletmail.rutgers.edu",
+          school: "Rutgers University",
+          profilePicUrl: null,
+          tags: ["mma", "money", "web dev"],
+          socialMedia: {
+            instagram: "samin_raiyan",
+            linkedin: "",
+            snapchat: "samin.raiyan1",
+            discord: "",
+          },
+          bio:"Hey guys! My name is Sameen, I am the creator of Nito and I'm happy to have matched with you and I hope all of you have a great time on my app!",
+          major:"Computer Science",
+          year:2025,
+          revealedUsers: [],
+          savedConversations: [],
+          blockedUsers: [],
+          phoneNumber: "516-667-9552",
+          currentMatch: null,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+          lastActive: Date.now(),
+        });
+    },[])
     const fetchUser = useCallback(async () => {
       setIsLoadingUser(true);
       try {
@@ -98,6 +129,9 @@
             snapchat: "samin.raiyan1",
             discord: "",
           },
+          bio:"Hey guys! My name is Sameen, I am the creator of Nito and I'm happy to have matched with you and I hope all of you have a great time on my app!",
+          major:"Computer Science",
+          year:2025,
           revealedUsers: [],
           savedConversations: [],
           blockedUsers: [],
@@ -107,28 +141,6 @@
           updatedAt: Date.now(),
           lastActive: Date.now(),
         });
-        console.log({
-          id: ObejctId,
-          fullName: "Sameen Majid",
-          email: "srm341@scarletmail.rutgers.edu",
-          school: "Rutgers University",
-          profilePicUrl: "",
-          tags: ["mma", "money", "web dev"],
-          socialMedia: {
-            instagram: "samin_raiyan",
-            linkedin: "",
-            snapchat: "samin.raiyan1",
-            discord: "",
-          },
-          revealedUsers: [],
-          savedConversations: [],
-          blockedUsers: [],
-          phoneNumber: "516-667-9552",
-          currentMatch: null,
-          createdAt: Date,
-          updatedAt: Date,
-          lastActive: Date,
-        })
       } catch (e) {
       } finally {
         setIsLoadingUser(false);
@@ -136,15 +148,15 @@
     }, []); // WHEN THE USER BECOMES AUTHENTICATED AND A TOKEN IS RECEIVED FROM THE BACKEND FETCH THE USER
 
     useEffect(() => {
-      console.log('')
       if (isAuthenticated && token && !isLoadingAuth) {
         fetchUser();
       } else {
-        setUser(null);
         setIsLoadingUser(false);
       }
     }, [isAuthenticated, token, isLoadingAuth]);
-    const updateUser = (updates) => {};
+    const updateUser = (updates) => {
+      setUser((prev)=>({...prev, ...updates}));
+    };
     const removeConnection = (user) => {};
     const reportUser = (user, data) => {};
     const blockUser = (user) => {};

@@ -22,36 +22,31 @@ function CurrentChat() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft]); 
+  }, [timeLeft]);
 
   const formatTime = (totalSeconds) => {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    return `${minutes} minute${
-      minutes !== 1 ? "s" : ""
-    } ${seconds} second${seconds !== 1 ? "s" : ""}`;
+    return `${minutes} minute${minutes !== 1 ? "s" : ""} ${seconds} second${
+      seconds !== 1 ? "s" : ""
+    }`;
   };
 
   return (
     <View style={styles.pageContainer}>
       <Text style={styles.time}>
-        {timeLeft > 0
-          ? formatTime(timeLeft)
-          : "Time's up!"}{" "}
-        {timeLeft > 0 && <Text style={styles.infoText}>remaining</Text>}
+        {timeLeft > 0 ? formatTime(timeLeft) : "Time's up!"}{" "}
       </Text>
       <View style={styles.mainContainer}>
-        <View style={styles.topContainer}>
-          <Image
-            source={require("../../assets/images/anonymous-user.png")}
-            style={styles.image}
-          ></Image>
-          <View>
-            <Text style={styles.username}>user924810421</Text>
-            <Text style={styles.lastMessage}>
-              You have 30 minutes, say hi and see if there’s a match!
-            </Text>
-          </View>
+        <Image
+          source={require("../../assets/images/anonymous-user.png")}
+          style={styles.image}
+        ></Image>
+        <View>
+          <Text style={styles.username}>user924810421</Text>
+          <Text style={styles.lastMessage}>
+            You have 30 minutes, say hi and see if there’s a match!
+          </Text>
         </View>
         <TouchableOpacity style={styles.buttonContainer} activeOpacity={0.8}>
           <Text style={styles.buttonText}>Chat now</Text>
@@ -74,7 +69,7 @@ function CurrentChat() {
 
 const styles = StyleSheet.create({
   pageContainer: {
-    paddingTop: 30,
+    paddingTop: 50,
     rowGap: 10,
     maxWidth: 350,
     alignItems: "center",
@@ -82,7 +77,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.05)",
-    paddingVertical: 70,
+    paddingVertical: 50,
     paddingHorizontal: 20,
     borderRadius: 30,
     rowGap: 30,
