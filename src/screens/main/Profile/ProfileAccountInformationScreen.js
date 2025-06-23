@@ -4,7 +4,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Pressable,
+  Keyboard,
+  LayoutAnimation,
 } from "react-native";
 import {
   colors,
@@ -14,12 +15,12 @@ import {
   FONT_SIZE_XL,
 } from "../../../styles";
 import ProfileAccountInfoInput from "../../../components/profile/ProfileAccountInfoInput";
-import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TextHeader from "../../../components/common/TextHeader";
 import { useUser } from "../../../contexts/UserContext";
+
 function ProfileAccountInformationScreen({ navigation }) {
-  const { user } = useUser();
+  const { user, updateUser } = useUser();
   const [changesMade, setChangesMade] = useState(false);
   const [infoValues, setInfoValues] = useState({
     fullName: user.fullName,
@@ -35,6 +36,35 @@ function ProfileAccountInformationScreen({ navigation }) {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  useEffect(() => {
+    const keyboardWillShowListener = Keyboard.addListener(
+      "keyboardWillShow",
+      () => {
+        LayoutAnimation.configureNext({
+          ...LayoutAnimation.Presets.easeInEaseOut,
+          duration: 225,
+        });
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardWillHideListener = Keyboard.addListener(
+      "keyboardWillHide",
+      () => {
+        LayoutAnimation.configureNext({
+          ...LayoutAnimation.Presets.easeInEaseOut,
+          duration: 225,
+        });
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardWillShowListener.remove();
+      keyboardWillHideListener.remove();
+    };
+  }, []);
+
   const validateInput = (field, value, userSchoolDomain) => {
     let errorMessage = "";
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
@@ -59,6 +89,7 @@ function ProfileAccountInformationScreen({ navigation }) {
     }
     return errorMessage;
   };
+
   const handleChange = (field, value) => {
     const errorMessage = validateInput(field, value, user.school.emailDomain);
     setErrors((prevErrors) => ({
@@ -80,17 +111,29 @@ function ProfileAccountInformationScreen({ navigation }) {
       return newValues;
     });
   };
-  const saveChanges = () => {};
+
+  const saveChanges = () => {
+    const hasErrors = Object.values(errors).some(
+      (val) => val?.length > 0
+    );
+    if (changesMade && !hasErrors) {
+      updateUser(infoValues);
+      setChangesMade(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.page}>
       <TextHeader navigation={navigation} text={"Account information"} />
       <View style={styles.contentContainer}>
-        <View>
-          <Text style={styles.pageHeader}>Details</Text>
-          <Text style={styles.pageSubheader}>
-            Here you can edit your account information
-          </Text>
-        </View>
+        {!keyboardVisible && (
+          <View>
+            <Text style={styles.pageHeader}>Details</Text>
+            <Text style={styles.pageSubheader}>
+              Here you can edit your account information
+            </Text>
+          </View>
+        )}
 
         <ProfileAccountInfoInput
           iconName={"person-circle-outline"}
@@ -138,6 +181,7 @@ function ProfileAccountInformationScreen({ navigation }) {
           error={errors.password}
         />
         <TouchableOpacity
+          onPress={saveChanges} // Added onPress handler for saveChanges
           style={[
             styles.saveButton,
             changesMade
@@ -147,12 +191,14 @@ function ProfileAccountInformationScreen({ navigation }) {
           disabled={!changesMade}
           activeOpacity={changesMade ? 0.9 : 1.0}
         >
+          {/* Removed disabled prop from Text as it's not valid */}
           <Text style={styles.saveButtonText}>Save changes</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   page: {
     flex: 1,
@@ -190,4 +236,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
 export default ProfileAccountInformationScreen;
