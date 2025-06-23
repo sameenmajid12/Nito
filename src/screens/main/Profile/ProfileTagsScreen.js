@@ -1,47 +1,59 @@
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-} from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native";
 import { colors } from "../../../styles";
-import { Ionicons } from "@expo/vector-icons";
-import {
-  FONT_SIZE_M,
-  FONT_SIZE_L,
-  FONT_SIZE_XL,
-  FONT_SIZE_S,
-} from "../../../styles";
-import { useState } from "react";
-import TagConainer from "../../../components/common/TagContainer";
+import { FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_S } from "../../../styles";
+import { useEffect, useState } from "react";
+import TagContainer from "../../../components/common/TagContainer";
 import ProfileTagInput from "../../../components/profile/ProfileTagInput";
 import TextHeader from "../../../components/common/TextHeader";
-function ProfileTagsScreen({navigation}) {
+import { useUser } from "../../../contexts/UserContext";
+function ProfileTagsScreen({ navigation }) {
+  const { user, updateUser } = useUser();
   const [newTag, setNewTag] = useState("");
-  const [tags, setTags] = useState(["Poop", "Loop", "Doop"]);
-  const [error, setError] = useState({ value: false, message: "" });
+  const [tags, setTags] = useState(user.tags);
+  const [error, setError] = useState("");
+  const [changesMade, setChangesMade] = useState(false);
+  useEffect(() => {
+    if (
+      !tags.every((val, i) => val === user.tags[i]) ||
+      user.tags.length !== tags.length
+    ) {
+      setChangesMade(true);
+    } else {
+      setChangesMade(false);
+    }
+  }, [tags]);
   const addTag = () => {
+    const cleanTag = newTag.trim();
     if (newTag.length > 15) {
-      setError({ value: true, message: "Tag is too long" });
+      setError("Tag is too long");
       return;
     } else if (tags.length > 15) {
-      setError({ value: true, message: "Too many tags" });
+      setError("Too many tags");
       return;
-    }
-      if (newTag.trim().length === 0) return;
-    setError({ value: false, message: "" });
-    setTags((prev) => [...prev, newTag]);
+    } else if (tags.includes(cleanTag)) {
+      setError("Tag already exists");
+      return;
+    } else if (cleanTag.length === 0) return;
+    setError("");
+    setTags((prev) => [...prev, cleanTag]);
     setNewTag("");
   };
 
-  const clear = () => {
-    setTags([]);
+  const reset = () => {
+    setTags(user.tags);
   };
-  const save = () => {};
+  const save = () => {
+    if (!changesMade) return;
+    else if (tags.length === 0) {
+      setError("Please keep at least one tag for better matches!");
+    } else {
+      updateUser({ tags: tags });
+      setChangesMade(false);
+    }
+  };
   return (
     <SafeAreaView style={styles.page}>
-      <TextHeader navigation={navigation} text={"Tags"}/>
+      <TextHeader navigation={navigation} text={"Tags"} />
       <View style={styles.contentContainer}>
         <View>
           <Text style={styles.pageHeader}>Selected tags</Text>
@@ -49,16 +61,38 @@ function ProfileTagsScreen({navigation}) {
             These are used to match you with students that similar interests
           </Text>
         </View>
-        <ProfileTagInput error={error} newTag={newTag} setNewTag={setNewTag} addTag={addTag}/>
-        <TagConainer tags={tags} setTags={setTags} />
+        <ProfileTagInput
+          error={error}
+          newTag={newTag}
+          setNewTag={setNewTag}
+          addTag={addTag}
+        />
+        <TagContainer tags={tags} setTags={setTags} />
         <View style={styles.buttonContainer}>
           <Pressable
-            onPress={clear}
-            style={[styles.clearButton, styles.button]}
+            onPress={reset}
+            style={[
+              changesMade ? styles.clearActive : styles.clearDisabled,
+              styles.button,
+            ]}
+            disabled={!changesMade}
           >
-            <Text style={styles.clearText}>Clear all</Text>
+            <Text
+              style={
+                changesMade ? styles.clearActiveText : styles.clearDisabledText
+              }
+            >
+              Reset
+            </Text>
           </Pressable>
-          <Pressable style={[styles.saveButton, styles.button]}>
+          <Pressable
+            style={[
+              changesMade ? styles.saveActive : styles.saveDisabled,
+              styles.button,
+            ]}
+            disabled={!changesMade}
+            onPress={save}
+          >
             <Text style={styles.saveText}>Save</Text>
           </Pressable>
         </View>
@@ -96,16 +130,16 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_S,
     color: colors.textLight,
     textAlign: "center",
-    marginBottom:20
+    marginBottom: 20,
   },
   contentContainer: {
     padding: 30,
   },
-  
+
   buttonContainer: {
     flexDirection: "row",
     columnGap: 5,
-    marginTop:10
+    marginTop: 10,
   },
   button: {
     width: 100,
@@ -114,21 +148,31 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  clearButton: {
+  clearActive: {
     borderWidth: 1,
     borderColor: colors.blue,
   },
-  clearText: {
+  clearDisabled: {
+    borderWidth: 1,
+    borderColor: colors.blue50,
+  },
+  clearActiveText: {
     color: colors.blue,
     fontFamily: "Nunito-SemiBold",
   },
-  saveButton: {
+  clearDisabledText: {
+    color: colors.blue50,
+    fontFamily: "Nunito-SemiBold",
+  },
+  saveActive: {
     backgroundColor: colors.primary,
+  },
+  saveDisabled: {
+    backgroundColor: colors.primary70,
   },
   saveText: {
     color: colors.white,
     fontFamily: "Nunito-SemiBold",
   },
-  
 });
 export default ProfileTagsScreen;

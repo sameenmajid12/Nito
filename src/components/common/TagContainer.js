@@ -2,7 +2,7 @@ import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../styles";
 import { FONT_SIZE_S } from "../../styles";
-function TagConainer({  tags, setTags }) {
+function TagContainer({  tags, setTags }) {
   const removeTag = (index) => {
     const updatedTags = tags.filter((_, i) => i !== index);
     setTags(updatedTags);
@@ -65,4 +65,4 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_S,
   },
 });
-export default TagConainer;
+export default TagContainer;

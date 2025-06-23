@@ -1,4 +1,4 @@
-import { View, TextInput, Pressable, StyleSheet } from "react-native";
+import { View, TextInput, Pressable, StyleSheet,Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_XXL } from "../../styles";
 function ProfileTagInput({ error, newTag, setNewTag, addTag }) {
@@ -7,7 +7,7 @@ function ProfileTagInput({ error, newTag, setNewTag, addTag }) {
       <View
         style={[
           styles.inputContainer,
-          error.value
+          error.length > 0
             ? { borderColor: "red" }
             : { borderColor: colors.borderLight },
         ]}
@@ -17,6 +17,8 @@ function ProfileTagInput({ error, newTag, setNewTag, addTag }) {
           onChangeText={setNewTag}
           style={styles.input}
           placeholder="Add new tag"
+          returnKeyType="done"
+          onSubmitEditing={addTag}
         ></TextInput>
         <Pressable onPress={addTag}>
           <Ionicons
@@ -30,15 +32,15 @@ function ProfileTagInput({ error, newTag, setNewTag, addTag }) {
           ></Ionicons>
         </Pressable>
       </View>
-      {error.value ? (
-        <Text style={styles.errorMessage}>{error.message}</Text>
+      {error.length > 0 ? (
+        <Text style={styles.errorMessage}>{error}</Text>
       ) : null}
     </View>
   );
 }
 const styles = StyleSheet.create({
-  mainContainer:{
-    marginBottom:20
+  mainContainer: {
+    marginBottom: 20,
   },
   inputContainer: {
     borderWidth: 1,
