@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Text, TextInput, View, StyleSheet } from "react-native";
+import { Text, TextInput, View, StyleSheet, Pressable } from "react-native";
 import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_XL } from "../../styles";
 function ProfileAccountInfoInput({
   iconName,
@@ -8,7 +8,10 @@ function ProfileAccountInfoInput({
   editable,
   value,
   setValue,
-  secure,
+  isPassword,
+  showPassword,
+  setShowPassword,
+  error,
 }) {
   return (
     <View style={styles.mainContainer}>
@@ -33,10 +36,30 @@ function ProfileAccountInfoInput({
           placeholder={placeholder}
           editable={editable}
           value={value}
-          setValue={setValue}
-          secureTextEntry={secure || false}
+          onChangeText={setValue}
+          secureTextEntry={(isPassword && !showPassword) || false}
         ></TextInput>
+        {isPassword ? (
+          showPassword ? (
+            <Pressable onPress={() => setShowPassword(false)}>
+              <Ionicons
+                name="eye-off-outline"
+                style={styles.eyeIcon}
+              ></Ionicons>
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => setShowPassword(true)}>
+              <Ionicons name="eye-outline" style={styles.eyeIcon}></Ionicons>
+            </Pressable>
+          )
+        ) : null}
       </View>
+      {error?.length > 0 ? (
+        <View style={styles.errorContainer}>
+          <Ionicons style={styles.errorIcon} name="alert-circle"></Ionicons>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -67,5 +90,23 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-SemiBold",
     height: "100%",
   },
+  eyeIcon: {
+    fontSize: 20,
+    color: colors.textLight,
+  },
+  errorText: {
+    fontFamily: "Nunito-SemiBold",
+    color: "red",
+  },
+  errorContainer:{
+    flexDirection:'row',
+    alignItems:"flex-start",
+    columnGap:5,
+    marginTop:2
+  },
+  errorIcon:{
+    fontSize:20,
+    color:"red"
+  }
 });
 export default ProfileAccountInfoInput;
