@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Pressable, Keyboard } from "react-native";
 import { colors } from "../../../styles";
 import { FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_S } from "../../../styles";
 import { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import TagContainer from "../../../components/common/TagContainer";
 import ProfileTagInput from "../../../components/profile/ProfileTagInput";
 import TextHeader from "../../../components/common/TextHeader";
 import { useUser } from "../../../contexts/UserContext";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 function ProfileTagsScreen({ navigation }) {
   const { user, updateUser } = useUser();
   const [newTag, setNewTag] = useState("");
@@ -51,53 +52,58 @@ function ProfileTagsScreen({ navigation }) {
       setChangesMade(false);
     }
   };
+  const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
   return (
-    <SafeAreaView style={styles.page}>
-      <TextHeader navigation={navigation} text={"Tags"} />
-      <View style={styles.contentContainer}>
-        <View>
-          <Text style={styles.pageHeader}>Selected tags</Text>
-          <Text style={styles.pageSubheader}>
-            These are used to match you with students that similar interests
-          </Text>
-        </View>
-        <ProfileTagInput
-          error={error}
-          newTag={newTag}
-          setNewTag={setNewTag}
-          addTag={addTag}
-        />
-        <TagContainer tags={tags} setTags={setTags} />
-        <View style={styles.buttonContainer}>
-          <Pressable
-            onPress={reset}
-            style={[
-              changesMade ? styles.clearActive : styles.clearDisabled,
-              styles.button,
-            ]}
-            disabled={!changesMade}
-          >
-            <Text
-              style={
-                changesMade ? styles.clearActiveText : styles.clearDisabledText
-              }
-            >
-              Reset
+    <GestureDetector gesture={tapGesture}>
+      <SafeAreaView style={styles.page}>
+        <TextHeader navigation={navigation} text={"Tags"} />
+        <View style={styles.contentContainer}>
+          <View>
+            <Text style={styles.pageHeader}>Selected tags</Text>
+            <Text style={styles.pageSubheader}>
+              These are used to match you with students that similar interests
             </Text>
-          </Pressable>
-          <Pressable
-            style={[
-              changesMade ? styles.saveActive : styles.saveDisabled,
-              styles.button,
-            ]}
-            disabled={!changesMade}
-            onPress={save}
-          >
-            <Text style={styles.saveText}>Save</Text>
-          </Pressable>
+          </View>
+          <ProfileTagInput
+            error={error}
+            newTag={newTag}
+            setNewTag={setNewTag}
+            addTag={addTag}
+          />
+          <TagContainer tags={tags} setTags={setTags} />
+          <View style={styles.buttonContainer}>
+            <Pressable
+              onPress={reset}
+              style={[
+                changesMade ? styles.clearActive : styles.clearDisabled,
+                styles.button,
+              ]}
+              disabled={!changesMade}
+            >
+              <Text
+                style={
+                  changesMade
+                    ? styles.clearActiveText
+                    : styles.clearDisabledText
+                }
+              >
+                Reset
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[
+                changesMade ? styles.saveActive : styles.saveDisabled,
+                styles.button,
+              ]}
+              disabled={!changesMade}
+              onPress={save}
+            >
+              <Text style={styles.saveText}>Save</Text>
+            </Pressable>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </GestureDetector>
   );
 }
 const styles = StyleSheet.create({

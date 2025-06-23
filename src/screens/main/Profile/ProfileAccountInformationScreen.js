@@ -18,6 +18,7 @@ import ProfileAccountInfoInput from "../../../components/profile/ProfileAccountI
 import { useState, useEffect } from "react";
 import TextHeader from "../../../components/common/TextHeader";
 import { useUser } from "../../../contexts/UserContext";
+import { GestureDetector, Gesture } from "react-native-gesture-handler";
 
 function ProfileAccountInformationScreen({ navigation }) {
   const { user, updateUser } = useUser();
@@ -64,7 +65,8 @@ function ProfileAccountInformationScreen({ navigation }) {
       keyboardWillHideListener.remove();
     };
   }, []);
-
+ const tapGesture = Gesture.Tap()
+  .onTouchesDown(() => Keyboard.dismiss());
   const validateInput = (field, value, userSchoolDomain) => {
     let errorMessage = "";
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
@@ -113,9 +115,7 @@ function ProfileAccountInformationScreen({ navigation }) {
   };
 
   const saveChanges = () => {
-    const hasErrors = Object.values(errors).some(
-      (val) => val?.length > 0
-    );
+    const hasErrors = Object.values(errors).some((val) => val?.length > 0);
     if (changesMade && !hasErrors) {
       updateUser(infoValues);
       setChangesMade(false);
@@ -123,79 +123,80 @@ function ProfileAccountInformationScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.page}>
-      <TextHeader navigation={navigation} text={"Account information"} />
-      <View style={styles.contentContainer}>
-        {!keyboardVisible && (
-          <View>
-            <Text style={styles.pageHeader}>Details</Text>
-            <Text style={styles.pageSubheader}>
-              Here you can edit your account information
-            </Text>
-          </View>
-        )}
+    <GestureDetector gesture={tapGesture}>
+      <SafeAreaView style={styles.page}>
+        <TextHeader navigation={navigation} text={"Account information"} />
+        <View style={styles.contentContainer}>
+          {!keyboardVisible && (
+            <View>
+              <Text style={styles.pageHeader}>Details</Text>
+              <Text style={styles.pageSubheader}>
+                Here you can edit your account information
+              </Text>
+            </View>
+          )}
 
-        <ProfileAccountInfoInput
-          iconName={"person-circle-outline"}
-          label={"Fullname"}
-          value={infoValues.fullName}
-          placeholder={"Enter fullname"}
-          editable={true}
-          setValue={(text) => handleChange("fullName", text)}
-          error={errors.fullName}
-        />
-        <ProfileAccountInfoInput
-          iconName={"at-outline"}
-          label={"Username"}
-          value={"user21454295"}
-          editable={false}
-        />
-        <ProfileAccountInfoInput
-          iconName={"mail-outline"}
-          label={"Email"}
-          value={infoValues.email}
-          placeholder={"Enter email"}
-          editable={true}
-          setValue={(text) => handleChange("email", text)}
-          error={errors.email}
-        />
-        <ProfileAccountInfoInput
-          iconName={"call-outline"}
-          label={"Phone number"}
-          value={infoValues.phoneNumber}
-          placeholder={"Enter phone number"}
-          editable={true}
-          setValue={(text) => handleChange("phoneNumber", text)}
-          error={errors.phoneNumber}
-        />
-        <ProfileAccountInfoInput
-          iconName={"shield-outline"}
-          label={"Password"}
-          value={infoValues.password}
-          placeholder={"Enter password"}
-          editable={true}
-          isPassword={true}
-          setValue={(text) => handleChange("password", text)}
-          showPassword={showPassword}
-          setShowPassword={setShowPassword}
-          error={errors.password}
-        />
-        <TouchableOpacity
-          onPress={saveChanges} // Added onPress handler for saveChanges
-          style={[
-            styles.saveButton,
-            changesMade
-              ? { backgroundColor: colors.primary }
-              : { backgroundColor: colors.primary50 },
-          ]}
-          disabled={!changesMade}
-          activeOpacity={changesMade ? 0.9 : 1.0}
-        >
-          {/* Removed disabled prop from Text as it's not valid */}
-          <Text style={styles.saveButtonText}>Save changes</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+          <ProfileAccountInfoInput
+            iconName={"person-circle-outline"}
+            label={"Fullname"}
+            value={infoValues.fullName}
+            placeholder={"Enter fullname"}
+            editable={true}
+            setValue={(text) => handleChange("fullName", text)}
+            error={errors.fullName}
+          />
+          <ProfileAccountInfoInput
+            iconName={"at-outline"}
+            label={"Username"}
+            value={"user21454295"}
+            editable={false}
+          />
+          <ProfileAccountInfoInput
+            iconName={"mail-outline"}
+            label={"Email"}
+            value={infoValues.email}
+            placeholder={"Enter email"}
+            editable={true}
+            setValue={(text) => handleChange("email", text)}
+            error={errors.email}
+          />
+          <ProfileAccountInfoInput
+            iconName={"call-outline"}
+            label={"Phone number"}
+            value={infoValues.phoneNumber}
+            placeholder={"Enter phone number"}
+            editable={true}
+            setValue={(text) => handleChange("phoneNumber", text)}
+            error={errors.phoneNumber}
+          />
+          <ProfileAccountInfoInput
+            iconName={"shield-outline"}
+            label={"Password"}
+            value={infoValues.password}
+            placeholder={"Enter password"}
+            editable={true}
+            isPassword={true}
+            setValue={(text) => handleChange("password", text)}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
+            error={errors.password}
+          />
+          <TouchableOpacity
+            onPress={saveChanges} 
+            style={[
+              styles.saveButton,
+              changesMade
+                ? { backgroundColor: colors.primary }
+                : { backgroundColor: colors.primary50 },
+            ]}
+            disabled={!changesMade}
+            activeOpacity={changesMade ? 0.9 : 1.0}
+          >
+            <Text style={styles.saveButtonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </GestureDetector>
   );
 }
 

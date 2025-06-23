@@ -10,7 +10,8 @@ import { useAuth } from "./src/contexts/AuthContext";
 import { useUser } from "./src/contexts/UserContext";
 import LoadingScreen from "./src/screens/LoadingScreen";
 import AppNavigator from "./src/navigation/AppNavigator";
-export default function App() {  
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+export default function App() {
   const [fontsLoaded] = useFonts({
     "Nunito-Regular": require("./src/assets/fonts/Nunito-Regular.ttf"),
     "Nunito-Bold": require("./src/assets/fonts/Nunito-Bold.ttf"),
@@ -21,14 +22,16 @@ export default function App() {
     return null;
   }
   return (
-    <NavigationContainer>
-      <AuthProvider>
-        <UserProvider>
-          <ModalProvider>
-            <AppNavigator />
-          </ModalProvider>
-        </UserProvider>
-      </AuthProvider>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer>
+        <AuthProvider>
+          <UserProvider>
+            <ModalProvider>
+              <AppNavigator />
+            </ModalProvider>
+          </UserProvider>
+        </AuthProvider>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }

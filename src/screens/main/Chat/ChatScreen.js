@@ -1,22 +1,23 @@
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Keyboard } from "react-native";
 import { colors } from "../../../styles";
 import MessageInput from "../../../components/chat/MessageInput";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChatHeader from "../../../components/chat/ChatHeader";
 import MessagesContainer from "../../../components/chat/MessagesContainer";
-function ChatScreen() {
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+function ChatScreen({ navigation }) {
   const [message, setMessage] = useState("");
+ const tapGesture = Gesture.Tap()
+  .onTouchesDown(() => Keyboard.dismiss());
+
   return (
-    <SafeAreaView style={styles.page}>
-      <ChatHeader/>
-      <MessagesContainer/>
-      <MessageInput message={message} setMessage={setMessage}></MessageInput>
-    </SafeAreaView>
+    <GestureDetector gesture={tapGesture}>
+      <SafeAreaView style={styles.page}>
+        <ChatHeader />
+        <MessagesContainer />
+        <MessageInput message={message} setMessage={setMessage}></MessageInput>
+      </SafeAreaView>
+    </GestureDetector>
   );
 }
 const styles = StyleSheet.create({
@@ -24,9 +25,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  mainChat:{
-    flex:1,
+  mainChat: {
+    flex: 1,
   },
-  
 });
 export default ChatScreen;
