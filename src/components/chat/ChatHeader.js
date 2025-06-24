@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import {
   colors,
   FONT_SIZE_L,
@@ -9,11 +9,13 @@ import {
 } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-function ChatHeader() {
+function ChatHeader({ navigation }) {
   return (
     <View style={styles.headerContainer}>
       <View style={styles.headerLeft}>
-        <Ionicons style={styles.icons} name="chevron-back"></Ionicons>
+        <Pressable onPress={()=>navigation.goBack()}>
+          <Ionicons style={styles.icons} name="chevron-back"></Ionicons>
+        </Pressable>
         <Image
           style={styles.receiverProfilePic}
           source={require("../../assets/images/mike.webp")}

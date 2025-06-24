@@ -7,17 +7,17 @@ import MessagesContainer from "../../../components/chat/MessagesContainer";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 function ChatScreen({ navigation }) {
   const [message, setMessage] = useState("");
- const tapGesture = Gesture.Tap()
-  .onTouchesDown(() => Keyboard.dismiss());
-
+  const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
   return (
-    <GestureDetector gesture={tapGesture}>
-      <SafeAreaView style={styles.page}>
-        <ChatHeader />
+    <SafeAreaView style={styles.page}>
+      <ChatHeader navigation={navigation} />
+
+      <GestureDetector gesture={tapGesture}>
         <MessagesContainer />
-        <MessageInput message={message} setMessage={setMessage}></MessageInput>
-      </SafeAreaView>
-    </GestureDetector>
+      </GestureDetector>
+
+      <MessageInput message={message} setMessage={setMessage}></MessageInput>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
