@@ -67,17 +67,17 @@ function ProfileAccountInformationScreen({ navigation }) {
   }, []);
  const tapGesture = Gesture.Tap()
   .onTouchesDown(() => Keyboard.dismiss());
-  const validateInput = (field, value, userSchoolDomain) => {
+  const validateInput = (field, value) => {
     let errorMessage = "";
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-    const escapedDomain = userSchoolDomain.replace(/\./g, "\\.");
+    const escapedDomain = user.school.emailDomain.replace(/\./g, "\\.");
     const emailRegex = new RegExp(`^[a-zA-Z0-9._%+-]+@${escapedDomain}$`);
 
     if (field === "email") {
       if (value.trim().length === 0) {
         errorMessage = "Email is required.";
       } else if (!emailRegex.test(value)) {
-        errorMessage = `Email must end with @${userSchoolDomain}`;
+        errorMessage = `Email must end with @${user.school.emailDomain}`;
       }
     } else if (field === "fullName") {
       if (value.trim().length === 0) {
@@ -93,7 +93,7 @@ function ProfileAccountInformationScreen({ navigation }) {
   };
 
   const handleChange = (field, value) => {
-    const errorMessage = validateInput(field, value, user.school.emailDomain);
+    const errorMessage = validateInput(field, value);
     setErrors((prevErrors) => ({
       ...prevErrors,
       [field]: errorMessage,
