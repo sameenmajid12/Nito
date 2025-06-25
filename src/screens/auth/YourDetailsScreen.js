@@ -9,7 +9,6 @@ import {
   Animated,
 } from "react-native";
 import { colors, FONT_SIZE_XL, FONT_SIZE_XS } from "../../styles";
-import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import { useEffect, useRef, useState } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
