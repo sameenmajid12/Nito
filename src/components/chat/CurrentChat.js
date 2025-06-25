@@ -9,20 +9,29 @@ import {
 import { Image } from "expo-image";
 import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_S } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
+import { useUser } from "../../contexts/UserContext";
 
-function CurrentChat() {
-  const initialTimeInSeconds = 30 * 60;
-  const [timeLeft, setTimeLeft] = useState(initialTimeInSeconds);
-
+function CurrentChat({ enterChat }) {
+  const { user } = useUser();
+  const [timeLeft, setTimeLeft] = useState(() => {
+    if (!user?.currentMatch?.endTime) return 0;
+    const diff = Math.floor(
+      (new Date(user.currentMatch.endTime) - Date.now()) / 1000
+    );
+    return diff > 0 ? diff : 0;
+  });
   useEffect(() => {
     if (timeLeft <= 0) return;
 
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => prevTime - 1);
+    const interval = setInterval(() => {
+      const diff = Math.floor(
+        (new Date(user.currentMatch.endTime) - Date.now()) / 1000
+      );
+      setTimeLeft(diff > 0 ? diff : 0);
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [timeLeft]);
+    return () => clearInterval(interval);
+  }, [user?.currentMatch?.endTime]);
 
   const formatTime = (totalSeconds) => {
     const minutes = Math.floor(totalSeconds / 60);
@@ -30,6 +39,16 @@ function CurrentChat() {
     return `${minutes} minute${minutes !== 1 ? "s" : ""} ${seconds} second${
       seconds !== 1 ? "s" : ""
     }`;
+  };
+  const formatTimestamp = (timestamp) => {
+    const secondsAgo = Math.floor((Date.now() - new Date(timestamp)) / 1000);
+
+    if (secondsAgo < 60) return "now";
+    if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)}m ago`;
+    if (secondsAgo < 86400) return `${Math.floor(secondsAgo / 3600)}h ago`;
+
+    const days = Math.floor(secondsAgo / 86400);
+    return `${days}d ago`;
   };
 
   return (
@@ -45,10 +64,18 @@ function CurrentChat() {
         <View>
           <Text style={styles.username}>user924810421</Text>
           <Text style={styles.lastMessage}>
-            You have 30 minutes, say hi and see if there’s a match!
+            {user?.currentMatch?.lastMessage?.text
+              ? `${user.currentMatch.lastMessage.text}... (${formatTimestamp(
+                  user.currentMatch.lastMessage.timestamp
+                )})`
+              : "You have 30 minutes, say hi and see if there’s a match!"}
           </Text>
         </View>
-        <TouchableOpacity style={styles.buttonContainer} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => enterChat(user.currentMatch)}
+          activeOpacity={0.8}
+        >
           <Text style={styles.buttonText}>Chat now</Text>
           <Ionicons
             name="arrow-forward"
@@ -60,7 +87,13 @@ function CurrentChat() {
       <Text style={styles.infoText}>
         You both like:{" "}
         <Text style={styles.interests}>
-          Valorant, Playboi Carti, Kendrick Lamar, Rihanna, Kai Cenat
+          {Array.isArray(user?.currentMatch?.similarTags) &&
+            user.currentMatch.similarTags.map(
+              (tag, i) =>
+                `${tag}${
+                  i === user.currentMatch.similarTags.length - 1 ? "" : ", "
+                }`
+            )}
         </Text>
       </Text>
     </View>
@@ -75,6 +108,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   mainContainer: {
+    minWidth: 350,
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.05)",
     paddingVertical: 50,

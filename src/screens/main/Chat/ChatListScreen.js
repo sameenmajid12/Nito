@@ -23,8 +23,8 @@ import SectionSelector from "../../../components/chat/SectionSelector";
 function ChatListScreen({ navigation }) {
   const { user } = useUser();
   const [selectedSection, setSelectedSection] = useState("current");
-  const enterChat = (chat) => {
-    navigation.navigate("Chat", chat);
+  const enterChat = (conversation) => {
+    navigation.navigate("Chat", {conversation});
   };
   const checkSelected = (name) => {
     return selectedSection === name;

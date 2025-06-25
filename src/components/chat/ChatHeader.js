@@ -1,15 +1,15 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import {
   colors,
-  FONT_SIZE_L,
   FONT_SIZE_M,
   FONT_SIZE_XL,
   FONT_SIZE_XXL,
-  SIZES,
 } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-function ChatHeader({ navigation }) {
+function ChatHeader({ navigation, usersRevealed, otherUser }) {
+  const name = usersRevealed?otherUser.fullName: otherUser.username;
+  const image = usersRevealed?require("../../assets/images/mike.webp"):require('../../assets/images/anonymous-user.png')
   return (
     <View style={styles.headerContainer}>
       <View style={styles.headerLeft}>
@@ -18,9 +18,9 @@ function ChatHeader({ navigation }) {
         </Pressable>
         <Image
           style={styles.receiverProfilePic}
-          source={require("../../assets/images/mike.webp")}
+          source={image}
         ></Image>
-        <Text style={styles.receiverName}>Mike Ross</Text>
+        <Text style={styles.receiverName}>{name}</Text>
       </View>
       <View style={styles.headerRight}>
         <Ionicons style={styles.timeIcon} name="time-outline"></Ionicons>
@@ -52,13 +52,13 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   receiverName: {
-    fontSize: FONT_SIZE_L,
+    fontSize: FONT_SIZE_M,
     fontFamily: "Nunito-SemiBold",
     color: colors.textPrimary,
   },
   receiverProfilePic: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     borderRadius: 999,
   },
   headerRight: {

@@ -17,6 +17,7 @@ function ChatExpired(){
 }
 const styles = StyleSheet.create({
   mainContainer:{
+    marginTop:30,
     rowGap:20
   },
   text:{

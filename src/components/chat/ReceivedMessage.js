@@ -1,17 +1,19 @@
 import { View, Text, StyleSheet } from "react-native";
-import { colors, FONT_SIZE_M, FONT_SIZE_S, FONT_SIZE_XS } from "../../styles";
+import { colors, FONT_SIZE_S, FONT_SIZE_XS } from "../../styles";
 import { Image } from "expo-image";
 const PROFILE_PIC_SIZE = 33;
 const TEXT_LEFT_MARGIN = 33 + 5;
 const NAME_HEIGHT = 16;
-function ReceivedMessage({ text, first, last, image }) {
+function ReceivedMessage({ text, first, last, usersRevealed, otherUser }) {
+  const image = usersRevealed ? require('../../assets/images/mike.webp'):require('../../assets/images/anonymous-user.png');
+  const name = usersRevealed?otherUser.fullName:otherUser.username
   return (
     <View style={{ flexDirection: "row", columnGap: 5 }}>
       {first && image && (
         <Image style={styles.profilePic} source={image}></Image>
       )}
       <View style={{ flex: 1 }}>
-        {first && <Text style={styles.name}>Mike Ross</Text>}
+        {first && <Text style={styles.name}>{name}</Text>}
         <View
           style={[
             styles.receivedMessage,

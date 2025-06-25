@@ -4,16 +4,18 @@ import {
   StyleSheet,
   Keyboard,
   Easing,
+  Text,
 } from "react-native";
 import ReceivedMessage from "./ReceivedMessage";
 import SentMessage from "./SentMessage";
 import { useEffect, useRef } from "react";
 import { colors } from "../../styles";
 import ChatExpired from "./ChatExpired";
+import { useUser } from "../../contexts/UserContext";
 const INITIAL_BOTTOM_PADDING = 60;
-function MessagesContainer({ messages }) {
+function MessagesContainer({ messages, usersRevealed, otherUser }) {
   const scrollViewRef = useRef(null);
-
+  const { user } = useUser();
   const containerBottomPadding = useRef(
     new Animated.Value(INITIAL_BOTTOM_PADDING)
   ).current;
@@ -23,7 +25,7 @@ function MessagesContainer({ messages }) {
       (e) => {
         Animated.timing(containerBottomPadding, {
           toValue: e.endCoordinates.height + 40,
-          duration: 0, //Feels delayed if other durations used because of padding view having to grow
+          duration: 0, //Feels delayed if higher duration used because of padding view having to increase in height
           easing: Easing.bezier(0, 0, 0.2, 1),
           useNativeDriver: false,
         }).start();
@@ -59,6 +61,9 @@ function MessagesContainer({ messages }) {
       scrollViewRef.current.scrollToEnd({ animated });
     }
   };
+  const isByUser = (message) => {
+    return message.sender === user.id;
+  };
   return (
     <ScrollView
       onContentSizeChange={() => scrollToBottom(true)}
@@ -72,7 +77,31 @@ function MessagesContainer({ messages }) {
           backgroundColor: colors.background,
         }}
       >
-        <ChatExpired/>
+        {messages?.length > 0 ? (
+          messages.map((message, i) => {
+            const first = messages[i - 1]?.sender !== message.sender;
+            const last = messages[i + 1]?.sender !== message.sender;
+            return isByUser(message) ? (
+              <SentMessage
+                key={message.id}
+                text={message.text}
+                first={first}
+                last={last}
+              />
+            ) : (
+              <ReceivedMessage
+                key={message.id}
+                text={message.text}
+                first={first}
+                last={last}
+                usersRevealed={usersRevealed}
+                otherUser={otherUser}
+              />
+            );
+          })
+        ) : (
+          <Text>No messages yet</Text>
+        )}
       </Animated.View>
     </ScrollView>
   );
