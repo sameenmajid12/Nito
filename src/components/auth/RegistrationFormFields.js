@@ -47,8 +47,8 @@ function RegistrationFormFields({
         containerStyle={styles.containerStyle}
         inputStyle={styles.inputStyle}
         value={formData.username}
-        setValue={(text) => handleChange("username", text)}
-        errorText={formErrors.username}
+        fixedValue={true}
+        editable={false}
       />
       <Input
         placeholder={"Enter email"}

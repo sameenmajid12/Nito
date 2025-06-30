@@ -20,9 +20,10 @@ function YourDetailsScreen({ navigation }) {
 
   //USER INFORMATION STATE
   const school = registrationData.school;
+  const username = `user${Date.now()}${Math.floor(Math.random() * 1000)}`;
   const [formData, setFormData] = useState({
     fullname: registrationData.fullname || "",
-    username: registrationData.username || "",
+    username: registrationData.username || username,
     email: registrationData.email || "",
     password: registrationData.password || "",
     retypePassword: registrationData.password || "",

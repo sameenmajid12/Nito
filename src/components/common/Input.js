@@ -23,7 +23,8 @@ function Input({
   returnKeyType,
   errorText,
   textAlignVertical,
-  editable
+  editable,
+  fixedValue
 }) {
   return (
     <View style={[styles.inputContainer, containerStyle, errorText?{marginBottom:10}:{marginBottom:15}]}>
@@ -40,6 +41,7 @@ function Input({
             styles.input,
             inputStyle,
             errorText ? { borderColor: "red" } : editable? {borderColor:colors.primary70} : { borderColor: colors.borderLight },
+            fixedValue ? {color:colors.textLight} : {color:colors.textPrimary}
           ]}
           secureTextEntry={secure || false}
           returnKeyType={returnKeyType}
@@ -78,7 +80,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    color: colors.textPrimary,
     fontFamily: "Nunito-Medium",
   },
   eyeIconContainer: {
