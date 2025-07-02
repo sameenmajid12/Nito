@@ -1,7 +1,28 @@
+import React, { useRef } from "react";
+import { Text, StyleSheet, View, Pressable, Animated } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Text, StyleSheet, Pressable, View } from "react-native";
 import { colors, FONT_SIZE_S, FONT_SIZE_XXL } from "../../styles";
-function YouHaveAMatch() {
+import { useUser } from "../../contexts/UserContext";
+
+function YouHaveAMatch({ enterChat }) {
+  const scale = useRef(new Animated.Value(1)).current;
+  const { user } = useUser();
+  const handlePressIn = () => {
+    Animated.spring(scale, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scale, {
+      toValue: 1,
+      friction: 3,
+      tension: 40,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
     <View
       style={{
@@ -19,15 +40,39 @@ function YouHaveAMatch() {
       >
         <Text style={styles.mainHeader}>You have a match!</Text>
         <Text style={styles.subHeader}>
-          Dont lose this opportunity to make a new friend
+          Don't lose this opportunity to make a new friend
         </Text>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Chat now</Text>
+
+        <Pressable
+          onPress={() => enterChat(user?.currentMatch)}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+        >
+          {({ pressed }) => (
+            <Animated.View
+              style={[
+                styles.button,
+                {
+                  transform: [{ scale }],
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.buttonText,
+                  { color: pressed ? colors.primaryDark : colors.primary },
+                ]}
+              >
+                Chat now
+              </Text>
+            </Animated.View>
+          )}
         </Pressable>
       </LinearGradient>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     borderRadius: 20,
@@ -46,9 +91,11 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.7)",
     fontFamily: "Nunito-SemiBold",
     fontSize: FONT_SIZE_S,
+    textAlign: "center",
+    paddingHorizontal: 20,
+    marginTop: 6,
   },
   button: {
-    backgroundColor: colors.white,
     width: 150,
     height: 40,
     marginTop: 20,
@@ -59,10 +106,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 5,
+    backgroundColor: colors.white,
   },
   buttonText: {
     fontFamily: "Nunito-Bold",
-    color: colors.primary,
   },
 });
+
 export default YouHaveAMatch;

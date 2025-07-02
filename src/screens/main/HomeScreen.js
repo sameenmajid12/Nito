@@ -6,10 +6,13 @@ import NextMatchIn from "../../components/home/NextMatchIn";
 import DailyPoll from "../../components/home/DailyPoll";
 import HomeConnections from "../../components/home/HomeConnections";
 
-function HomeScreen({navigation}) {
-  const navigate = (route) =>{
+function HomeScreen({ navigation }) {
+  const navigate = (route) => {
     navigation.navigate(route);
-  }
+  };
+  const enterChat = (conversation) => {
+    navigation.navigate("Chat", { conversation });
+  };
   return (
     <SafeAreaView style={styles.page}>
       <Header></Header>
@@ -17,7 +20,7 @@ function HomeScreen({navigation}) {
         <View style={styles.pageContainer}>
           <Text style={styles.greeting}>Welcome, Sameen Majid!</Text>
 
-          <YouHaveAMatch />
+          <YouHaveAMatch enterChat={enterChat} />
           <View
             style={{ flexDirection: "row", columnGap: 10, marginBottom: 20 }}
           >
@@ -38,7 +41,7 @@ const styles = StyleSheet.create({
   pageContainer: {
     padding: 20,
     rowGap: 10,
-    marginBottom:70
+    marginBottom: 70,
   },
   greeting: {
     fontFamily: "Nunito-Bold",

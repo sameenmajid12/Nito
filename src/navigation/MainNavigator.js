@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from "react"; 
-import { Animated } from "react-native"; 
+import React, { useRef, useEffect } from "react";
+import { Animated } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CustomTabBar from "../components/common/CustomTabBar";
@@ -24,6 +24,7 @@ function HomeStackScreen() {
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="Home" component={HomeScreen} />
       <HomeStack.Screen name="ConnectionScreen" component={ConnectionsScreen} />
+      <HomeStack.Screen name="Chat" component={ChatScreen}></HomeStack.Screen>
     </HomeStack.Navigator>
   );
 }
@@ -92,7 +93,9 @@ function MainNavigator() {
   }, [shouldHideTabBar]);
 
   const { modalState } = useModal();
-  const ModalToRender = modalState.visible ? MODAL_COMPONENTS[modalState.name] : null;
+  const ModalToRender = modalState.visible
+    ? MODAL_COMPONENTS[modalState.name]
+    : null;
 
   return (
     <>
@@ -118,7 +121,7 @@ function MainNavigator() {
           options={{ tabBarLabel: "Profile" }}
         />
       </Tab.Navigator>
-      {ModalToRender && <ModalToRender/>}
+      {ModalToRender && <ModalToRender />}
     </>
   );
 }
