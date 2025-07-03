@@ -1,19 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_S, FONT_SIZE_XL, FONT_SIZE_XS } from "../../styles";
 import ProfileSectionHeader from "./ProfileSectionHeader";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 function ProfileActivity({navigate}) {
   return (
     <View style={styles.mainContainer}>
       <ProfileSectionHeader header={"Activity"}></ProfileSectionHeader>
       <View style={styles.activityContainer}>
-        <Pressable onPress={()=>navigate("ConnectionScreen")} style={styles.activity}>
+        <TouchableOpacity activeOpacity={0.9} onPress={()=>navigate("ConnectionScreen")} style={styles.activity}>
           <View>
             <Text style={styles.number}>14</Text>
             <Text style={styles.description}>Connections made</Text>
           </View>
           <Ionicons style={styles.arrow} name="arrow-forward"></Ionicons>
-        </Pressable>
+        </TouchableOpacity>
         <Pressable style={styles.activity}>
           <View>
             <Text style={styles.number}>27</Text>
