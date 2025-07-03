@@ -120,6 +120,10 @@ function MainNavigator() {
           conversation={
             modalState.name === "chatModal" ? modalState.data : null
           }
+          sort={modalState.name === "sortModal" ? modalState.data.sort : null}
+          changeSort={
+            modalState.name === "sortModal" ? modalState.data.changeSort : null
+          }
         />
       )}
     </>

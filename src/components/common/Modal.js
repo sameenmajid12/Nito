@@ -5,11 +5,13 @@ import { useModal } from "../../contexts/ModalContext";
 import { colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
 import { Image } from "expo-image";
 import ConfirmationView from "./ConfirmationView";
+import SortConnectionsModal from "../connection/SortConnectionModal";
 
-function Modal({ user, conversation, type }) {
+function Modal({ user, conversation, type, sort, changeSort }) {
   if (
     (type === "chatModal" && !conversation) ||
-    (type === "userModal" && !user)
+    (type === "userModal" && !user) ||
+    (type === "sortModal" && (!sort || !changeSort))
   ) {
     return;
   }
@@ -191,9 +193,11 @@ function Modal({ user, conversation, type }) {
                 ></Ionicons>
               </Pressable>
             </>
+          ) : type === "sortModal" ? (
+            <SortConnectionsModal sort={sort} changeSort={changeSort} />
           ) : null}
         </View>
-        {!confirmationType && (
+        {!confirmationType && type !== "sortModal" && (
           <Pressable style={styles.closeButton} onPress={handleClose}>
             <Text style={styles.closeButtonText}>Close</Text>
           </Pressable>

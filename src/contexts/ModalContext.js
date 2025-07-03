@@ -18,9 +18,11 @@ export const ModalProvider = ({ children }) => {
   const closeModal = () => {
     setModalState({ visible: false, data: null, name: null });
   };
-
+  const updateModalData=(newData)=>{
+    setModalState((prev)=>({...prev, data:{...prev.data, ...newData }}));
+  }
   return (
-    <ModalContext.Provider value={{ modalState, openModal, closeModal }}>
+    <ModalContext.Provider value={{ modalState, openModal, closeModal, updateModalData }}>
       {children}
     </ModalContext.Provider>
   );

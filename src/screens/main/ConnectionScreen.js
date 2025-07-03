@@ -12,8 +12,10 @@ import ConnectionList from "../../components/common/ConnectionList";
 import SortConnection from "../../components/connection/SortConnection";
 import SearchConnection from "../../components/connection/SearchConnection";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
+import { useState } from "react";
 function ConnectionScreen({ navigation }) {
   const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
+  const [sortState, setSortState] = useState("newestfirst");
   return (
     <SafeAreaView style={styles.page}>
       <TextHeader navigation={navigation} text={"Connections"} />
@@ -22,8 +24,8 @@ function ConnectionScreen({ navigation }) {
           <View style={styles.mainContainer}>
             <SearchConnection />
             <View style={styles.divider}></View>
-            <SortConnection />
-            <ConnectionList connections={["s", "s", "s"]} gap={15} />
+            <SortConnection sortState={sortState} setSortState={setSortState}/>
+            <ConnectionList connections={["s", "s", "s"]} gap={15} sortState={sortState}/>
           </View>
         </ScrollView>
       </GestureDetector>
