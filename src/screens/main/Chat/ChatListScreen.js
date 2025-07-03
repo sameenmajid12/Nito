@@ -24,7 +24,14 @@ function ChatListScreen({ navigation }) {
   const { user } = useUser();
   const [selectedSection, setSelectedSection] = useState("current");
   const enterChat = (conversation) => {
-    navigation.navigate("Chat", {conversation});
+    navigation.navigate("Chat", {
+      conversation: {
+        ...conversation,
+        startTime: conversation.startTime.toISOString(),
+        endTime: conversation.endTime.toISOString(),
+        graceEndTime: conversation.graceEndTime.toISOString(),
+      },
+    });
   };
   const checkSelected = (name) => {
     return selectedSection === name;
@@ -37,11 +44,14 @@ function ChatListScreen({ navigation }) {
         setSelectedSection={setSelectedSection}
       />
 
-      <ScrollView scrollEnabled={!checkSelected("current") && !checkSelected("archived")} contentContainerStyle={{alignItems:"center"}}>
+      <ScrollView
+        scrollEnabled={!checkSelected("current") && !checkSelected("archived")}
+        contentContainerStyle={{ alignItems: "center" }}
+      >
         {checkSelected("current") ? (
-          <CurrentChat enterChat={enterChat}/>
+          <CurrentChat enterChat={enterChat} />
         ) : checkSelected("connections") ? (
-          <ConnectionChats enterChat={enterChat}/>
+          <ConnectionChats enterChat={enterChat} />
         ) : checkSelected("archived") ? (
           <ArchivedChats />
         ) : null}
