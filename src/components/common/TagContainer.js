@@ -2,36 +2,27 @@ import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../styles";
 import { FONT_SIZE_S } from "../../styles";
-function TagContainer({  tags, setTags }) {
+function TagContainer({ tags, setTags }) {
   const removeTag = (index) => {
     const updatedTags = tags.filter((_, i) => i !== index);
     setTags(updatedTags);
   };
   return tags.length > 0 ? (
-    <ScrollView style={styles.tagsScrollView}>
-      <View style={styles.tagsContentWrapper}>
-        {tags.map((tag, index) => (
-          <View key={index} style={styles.tagItem}>
-            <Text style={styles.tagsText}>{tag}</Text>
-            <Pressable onPress={() => removeTag(index)}>
-              <Ionicons size={20} color={colors.white} name="close"></Ionicons>
-            </Pressable>
-          </View>
-        ))}
-      </View>
-    </ScrollView>
+    <View style={styles.tagsContentWrapper}>
+      {tags.map((tag, index) => (
+        <View key={index} style={styles.tagItem}>
+          <Text style={styles.tagsText}>{tag}</Text>
+          <Pressable onPress={() => removeTag(index)}>
+            <Ionicons size={20} color={colors.white} name="close"></Ionicons>
+          </Pressable>
+        </View>
+      ))}
+    </View>
   ) : (
     <View style={{ flex: 1 }}></View>
   );
 }
 const styles = StyleSheet.create({
-  tagsMainContainer: {
-    flex: 1,
-    rowGap: 10,
-    marginTop: 10,
-  },
-  tagsScrollView: {
-  },
   tagsContentWrapper: {
     flexDirection: "row",
     flexWrap: "wrap",
