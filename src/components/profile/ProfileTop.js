@@ -1,9 +1,43 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  Animated,
+  TouchableOpacity,
+} from "react-native";
 import { Image } from "expo-image";
 import { FONT_SIZE_S, colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
-function ProfileTop({ editing, setEditing, saveChanges, resetChanges, changesMade }) {
-  
+import { useEffect, useRef } from "react";
+
+function ProfileTop({
+  editing,
+  setEditing,
+  saveChanges,
+  resetChanges,
+  changesMade,
+}) {
+  const scaleAnim = useRef(new Animated.Value(editing ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(scaleAnim, {
+      toValue: editing ? 1 : 0,
+      duration: 350,
+      useNativeDriver: true,
+    }).start();
+  }, [editing]);
+
+  const editScale = scaleAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
+
+  const saveCancelScale = scaleAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+
   return (
     <View style={styles.profileTop}>
       <Image
@@ -14,35 +48,65 @@ function ProfileTop({ editing, setEditing, saveChanges, resetChanges, changesMad
         <Text style={styles.fullname}>Mike Ross</Text>
         <Text style={styles.username}>@user21284912</Text>
       </View>
-      {!editing ? (
-        <Pressable onPress={() => setEditing(true)} style={styles.editButton}>
-          <Text style={styles.editText}>Edit</Text>
-          <Ionicons
-            name="create-outline"
-            size={FONT_SIZE_S}
-            color={colors.primary}
-          ></Ionicons>
-        </Pressable>
-      ) : (
-        <View style={styles.updateButtonsContainer}>
-          <Pressable
+
+      {!editing && (
+        <Animated.View
+          style={{
+            position: "absolute",
+            right: 0,
+            transform: [{ scale: editScale }],
+            opacity: editScale,
+          }}
+        >
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={() => setEditing(true)}
+            style={styles.editButton}
+          >
+            <Text style={styles.editText}>Edit</Text>
+            <Ionicons
+              name="create-outline"
+              size={FONT_SIZE_S}
+              color={colors.primary}
+            ></Ionicons>
+          </TouchableOpacity>
+        </Animated.View>
+      )}
+
+      {editing && (
+        <Animated.View
+          style={[
+            styles.updateButtonsContainer,
+            {
+              transform: [{ scale: saveCancelScale }],
+              opacity: saveCancelScale,
+            },
+          ]}
+        >
+          <TouchableOpacity
             disabled={!changesMade}
-            style={[changesMade?styles.save:styles.noChange, styles.updateButton]}
+            activeOpacity={0.75}
+            style={[
+              changesMade ? styles.save : styles.noChange,
+              styles.updateButton,
+            ]}
             onPress={saveChanges}
           >
             <Text style={styles.saveText}>Save</Text>
-          </Pressable>
-          <Pressable
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.5}
             style={[styles.updateButton, styles.cancel]}
             onPress={resetChanges}
           >
             <Text style={styles.cancelText}>Cancel</Text>
-          </Pressable>
-        </View>
+          </TouchableOpacity>
+        </Animated.View>
       )}
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   profileTop: {
     alignItems: "center",
@@ -71,8 +135,7 @@ const styles = StyleSheet.create({
     width: 90,
     height: 30,
     columnGap: 5,
-    position: "absolute",
-    right: 0,
+    position: "relative", // changed from absolute here since Animated.View handles positioning
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
@@ -95,20 +158,30 @@ const styles = StyleSheet.create({
   },
   save: {
     backgroundColor: colors.primary,
-    shadowColor:"#000",
-    shadowOpacity:"0.1",
-    shadowOffset:{width:0, height:4}
+    shadowColor: "#000",
+    shadowOpacity: "0.1",
+    shadowOffset: { width: 0, height: 4 },
   },
-  noChange:{
-    backgroundColor:colors.primary70
+  noChange: {
+    backgroundColor: colors.primary70,
   },
-  saveText:{
-    fontFamily:"Nunito-SemiBold",
-    color:colors.white
+  saveText: {
+    fontFamily: "Nunito-SemiBold",
+    color: colors.white,
   },
-  cancelText:{
-    fontFamily:"Nunito-Medium",
-    color:colors.primary
-  }
+  cancelText: {
+    fontFamily: "Nunito-Medium",
+    color: colors.primary,
+  },
+  updateButtonsCover: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    backgroundColor: colors.background,
+    zIndex: 100,
+  },
 });
+
 export default ProfileTop;
