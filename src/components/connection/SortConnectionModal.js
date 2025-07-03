@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, View, Text, Pressable } from "react-native";
-import { colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
+import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_XL } from "../../styles";
 import { useModal } from "../../contexts/ModalContext";
 
 function SortConnectionsModal({ sort, changeSort }) {
@@ -18,7 +18,10 @@ function SortConnectionsModal({ sort, changeSort }) {
         <Text style={styles.headerText}>Sort by</Text>
         <Ionicons name="close-outline" style={styles.close}></Ionicons>
       </View>
-      <Pressable style={styles.sortItem} onPress={() => updateSort("newestfirst")}>
+      <Pressable
+        style={styles.sortItem}
+        onPress={() => updateSort("newestfirst")}
+      >
         <Text style={styles.sortItemText}>Newest first (Default)</Text>
         {checkSort("newestfirst") ? (
           <Ionicons
@@ -73,16 +76,16 @@ const styles = StyleSheet.create({
   header: {
     width: "100%",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
+
     paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
+    flexDirection: "row",
   },
   close: {
     fontSize: FONT_SIZE_L,
-    position: "absolute",
-    top: FONT_SIZE_L / 2,
-    right: 20,
   },
   headerText: {
     fontFamily: "Nunito-SemiBold",
@@ -91,7 +94,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 15,
+    paddingVertical: 12,
     paddingHorizontal: 20,
   },
   sortItemText: {
@@ -100,11 +103,11 @@ const styles = StyleSheet.create({
   },
   radioOn: {
     color: colors.primary,
-    fontSize: FONT_SIZE_L,
+    fontSize: FONT_SIZE_XL,
   },
   radioOff: {
     color: colors.border,
-    fontSize: FONT_SIZE_L,
+    fontSize: FONT_SIZE_XL,
   },
 });
 export default SortConnectionsModal;
