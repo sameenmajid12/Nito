@@ -5,6 +5,8 @@ import {
   Text,
   Pressable,
   Animated,
+  Keyboard,
+  Easing,
 } from "react-native";
 import { colors, FONT_SIZE_M, FONT_SIZE_S, FONT_SIZE_XXL } from "../../styles";
 import Input from "../../components/common/Input";
@@ -12,7 +14,7 @@ import Button from "../../components/common/Button";
 import { useEffect, useState, useRef } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
 import { Ionicons } from "@expo/vector-icons";
-import TagConainer from "../../components/common/TagContainer";
+import TagContainer from "../../components/common/TagContainer";
 import { useAuth } from "../../contexts/AuthContext";
 function SelectTagsScreen({ navigation }) {
   const { registrationData, updateRegistrationData } = useRegistration();
@@ -28,14 +30,40 @@ function SelectTagsScreen({ navigation }) {
       updateRegistrationData({ tags: [...registrationData.tags, tagText] });
       setTagText("");
     }
+    inputRef.current?.focus();
   };
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const keyboardOffset = useRef(new Animated.Value(0)).current;
+  const inputRef = useRef(null);
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 700,
       useNativeDriver: true,
     }).start();
+    const keyboardWillShow = Keyboard.addListener("keyboardWillShow", (e) => {
+      Animated.timing(keyboardOffset, {
+        toValue: -e.endCoordinates.height + 30,
+        duration: e.duration,
+        easing: Easing.bezier(0, 0, 0.2, 1),
+
+        useNativeDriver: true,
+      }).start();
+    });
+
+    const keyboardWillHide = Keyboard.addListener("keyboardWillHide", (e) => {
+      Animated.timing(keyboardOffset, {
+        toValue: 0,
+        duration: e.duration,
+        useNativeDriver: true,
+        easing: Easing.bezier(0, 0, 0.2, 1),
+      }).start();
+    });
+
+    return () => {
+      keyboardWillShow.remove();
+      keyboardWillHide.remove();
+    };
   }, []);
   const navigateBack = () => {
     navigation.replace("Register1");
@@ -53,84 +81,92 @@ function SelectTagsScreen({ navigation }) {
       );
     } catch (e) {
       console.error("Failed to complete registration:", e);
-      setError(true); 
+      setError(true);
     }
   };
   return (
     <SafeAreaView style={styles.page}>
-      <Animated.View style={[styles.pageContainer, { opacity: fadeAnim }]}>
-        <Pressable onPress={navigateBack} style={styles.navigateBack}>
-          <Ionicons size={16} name="chevron-back-outline"></Ionicons>
-          <Text style={{ fontFamily: "Nunito-SemiBold" }}>Back</Text>
-        </Pressable>
-        <View style={styles.pageHeader}>
-          <Text style={styles.mainHeader}>Select Tags</Text>
-          <Text style={styles.subHeader}>
-            These are used to match you with students that have similar
-            interests
-          </Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <Input
-            value={tagText}
-            setValue={setTagText}
-            containerStyle={{ width: "100%" }}
-            inputStyle={styles.input}
-            label={"Tag"}
-            placeholder={"Enter tag(eg. Gaming)"}
-            onSubmitEditing={addTag}
-            returnKeyType="done"
-            errorText={
-              error ? "Please select at least one tag to continue." : null
-            }
-          ></Input>
-          <View style={{ justifyContent: "flex-end" }}>
-            <Button
-              title={"Add"}
-              style={{ width: 120, height: 35 }}
-              variant={"tertiary"}
-              onPress={addTag}
-            ></Button>
+      <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
+        <Animated.View style={[styles.pageContainer, { opacity: fadeAnim }]}>
+          <Pressable onPress={navigateBack} style={styles.navigateBack}>
+            <Ionicons size={16} name="chevron-back-outline"></Ionicons>
+            <Text style={{ fontFamily: "Nunito-SemiBold" }}>Back</Text>
+          </Pressable>
+          <View style={styles.pageHeader}>
+            <Text style={styles.mainHeader}>Select Tags</Text>
+            <Text style={styles.subHeader}>
+              These are used to match you with students that have similar
+              interests
+            </Text>
           </View>
-        </View>
-
-        {tags.length > 0 ? (
-          <View style={styles.tagsMainContainer}>
-            <View style={styles.tagHeader}>
-              <Text style={styles.tagHeaderText}>Selected Tags</Text>
-              <Ionicons
-                size={14}
-                color={colors.textLight}
-                name="bookmark-outline"
-              ></Ionicons>
+          <View style={styles.inputContainer}>
+            <Input
+              ref={inputRef}
+              value={tagText}
+              setValue={setTagText}
+              containerStyle={{ width: "100%" }}
+              inputStyle={styles.input}
+              label={"Tag"}
+              placeholder={"Enter tag(eg. Gaming)"}
+              onSubmitEditing={addTag}
+              returnKeyType="default"
+              errorText={
+                error ? "Please select at least one tag to continue." : null
+              }
+            ></Input>
+            <View style={{ justifyContent: "flex-end" }}>
+              <Button
+                title={"Add"}
+                style={{ width: 120, height: 35 }}
+                variant={"tertiary"}
+                onPress={addTag}
+              ></Button>
             </View>
-            <TagConainer
-              tagText={tagText}
-              setTagText={setTagText}
-              tags={tags}
-              setTags={setTags}
-              setError={setError}
-            />
           </View>
-        ) : (
-          <View style={{ flex: 1 }} />
-        )}
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={() => finishRegistration(true)}
-            title="Skip"
-            style={{ width: "48%", height: 45 }}
-            variant={"secondary"}
-            isLoading={isLoadingRegistration.skipButton}
-          ></Button>
-          <Button
-            onPress={() => finishRegistration(false)}
-            title="Finish"
-            style={{ width: "48%", height: 45 }}
-            isLoading={isLoadingRegistration.finishButton}
-          ></Button>
-        </View>
-      </Animated.View>
+
+          {tags.length > 0 ? (
+            <View style={styles.tagsMainContainer}>
+              <View style={styles.tagHeader}>
+                <Text style={styles.tagHeaderText}>Selected Tags</Text>
+                <Ionicons
+                  size={14}
+                  color={colors.textLight}
+                  name="bookmark-outline"
+                ></Ionicons>
+              </View>
+              <TagContainer
+                tagText={tagText}
+                setTagText={setTagText}
+                tags={tags}
+                setTags={setTags}
+                setError={setError}
+              />
+            </View>
+          ) : (
+            <View style={{ flex: 1 }} />
+          )}
+          <Animated.View
+            style={[
+              styles.buttonContainer,
+              { transform: [{ translateY: keyboardOffset }] },
+            ]}
+          >
+            <Button
+              onPress={() => finishRegistration(true)}
+              title="Skip"
+              style={{ width: "48%", height: 45 }}
+              variant={"secondary"}
+              isLoading={isLoadingRegistration.skipButton}
+            ></Button>
+            <Button
+              onPress={() => finishRegistration(false)}
+              title="Finish"
+              style={{ width: "48%", height: 45 }}
+              isLoading={isLoadingRegistration.finishButton}
+            ></Button>
+          </Animated.View>
+        </Animated.View>
+      </Pressable>
     </SafeAreaView>
   );
 }
