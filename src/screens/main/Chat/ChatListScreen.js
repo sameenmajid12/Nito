@@ -36,7 +36,8 @@ function ChatListScreen({ navigation }) {
         checkSelected={checkSelected}
         setSelectedSection={setSelectedSection}
       />
-      <ScrollView scrollEnabled={!checkSelected("current")} contentContainerStyle={{alignItems:"center"}}>
+
+      <ScrollView scrollEnabled={!checkSelected("current") && !checkSelected("archived")} contentContainerStyle={{alignItems:"center"}}>
         {checkSelected("current") ? (
           <CurrentChat enterChat={enterChat}/>
         ) : checkSelected("connections") ? (
