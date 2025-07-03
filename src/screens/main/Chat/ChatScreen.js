@@ -17,7 +17,7 @@ function ChatScreen({ navigation, route }) {
   const { user } = useUser();
   const { conversation } = route.params;
   const [messages, setMessages] = useState(conversation?.messages); // WILL SET IT TO JUST [] WHEN BACKEND IS CREATED
-  const [loadingMessages, setLoadingMessages] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(false);
   const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
   const usersRevealed =
     conversation.user1Revealed && conversation.user2Revealed;
