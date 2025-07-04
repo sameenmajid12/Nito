@@ -1,19 +1,13 @@
 import { View, TextInput, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_L } from "../../styles";
-function Search({search, setSearch}){
-  return(
+function Search({ search, setSearch }) {
+  return (
     <View style={styles.searchContainer}>
-            <Ionicons
-              style={styles.searchIcon}
-              name="search-outline"
-            ></Ionicons>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search"
-            ></TextInput>
-          </View>
-  )
+      <Ionicons style={styles.searchIcon} name="search-outline"></Ionicons>
+      <TextInput style={styles.searchInput} placeholder="Search"></TextInput>
+    </View>
+  );
 }
 const styles = StyleSheet.create({
   searchContainer: {
@@ -32,5 +26,5 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
   },
-})
+});
 export default Search;
