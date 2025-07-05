@@ -7,8 +7,6 @@ import {
 } from "react-native";
 import {
   colors,
-  FONT_SIZE_L,
-  FONT_SIZE_M,
   FONT_SIZE_S,
   FONT_SIZE_XS,
 } from "../../styles";
