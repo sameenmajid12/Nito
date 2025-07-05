@@ -12,7 +12,7 @@ import ProfileAccountInformationScreen from "../screens/main/Profile/ProfileAcco
 import ProfileTagsScreen from "../screens/main/Profile/ProfileTagsScreen";
 import ConnectionsScreen from "../screens/main/ConnectionScreen";
 import { useModal } from "../contexts/ModalContext";
-import Modal from "../components/common/Modal";
+import Modal from "../components/modal/Modal";
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
 const ChatStack = createNativeStackNavigator();
@@ -88,7 +88,7 @@ function MainNavigator() {
   }, [shouldHideTabBar]);
 
   const { modalState } = useModal();
-
+  console.log(modalState.data);
   return (
     <>
       <Tab.Navigator
@@ -124,6 +124,7 @@ function MainNavigator() {
           changeSort={
             modalState.name === "sortModal" ? modalState.data.changeSort : null
           }
+          pollData={modalState.name === "pollModal" ? modalState.data : null}
         />
       )}
     </>

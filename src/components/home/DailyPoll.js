@@ -6,16 +6,25 @@ import {
   FONT_SIZE_S,
   FONT_SIZE_XS,
 } from "../../styles";
+import { useModal } from "../../contexts/ModalContext";
 
 function DailyPoll() {
+  const { openModal } = useModal();
+  const pollData = {
+    question: "Favorite place to eat after a night out?",
+    options: ["El jefe's", "Guac time", "Daniel's Pizza", "RU Hungry"],
+  };
   return (
     <View style={styles.mainContainer}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Daily poll</Text>
         <Text style={styles.question}>Would you rather eat at...</Text>
       </View>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Show options</Text>
+      <Pressable
+        onPress={() => openModal(pollData, "pollModal")}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>Vote now</Text>
       </Pressable>
     </View>
   );
@@ -24,7 +33,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: colors.accent55,
-    borderRadius: 10,
+    borderRadius: 12,
     paddingHorizontal: 15,
     paddingVertical: 15,
     justifyContent: "space-between",
@@ -49,7 +58,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.1,
     shadowRadius: 5,
   },
   buttonText: {
