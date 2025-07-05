@@ -1,4 +1,10 @@
-import { Pressable, View, Text, StyleSheet } from "react-native";
+import {
+  Pressable,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import {
   colors,
   FONT_SIZE_L,
@@ -7,25 +13,39 @@ import {
   FONT_SIZE_XS,
 } from "../../styles";
 import { useModal } from "../../contexts/ModalContext";
+import { useEffect, useState } from "react";
 
 function DailyPoll() {
-  const { openModal } = useModal();
+  const [pollOpen, setPollOpen] = useState(false);
+  const { openModal, modalState } = useModal();
+  useEffect(() => {
+    if (modalState.name !== "pollModal") {
+      setPollOpen(false);
+    }
+  }, [modalState]);
   const pollData = {
     question: "Favorite place to eat after a night out?",
     options: ["El jefe's", "Guac time", "Daniel's Pizza", "RU Hungry"],
+  };
+  const showPollData = () => {
+    openModal(pollData, "pollModal");
+    setPollOpen(true);
   };
   return (
     <View style={styles.mainContainer}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Daily poll</Text>
-        <Text style={styles.question}>Would you rather eat at...</Text>
+        <Text style={styles.question} numberOfLines={1}>
+          {pollData.question}
+        </Text>
       </View>
-      <Pressable
-        onPress={() => openModal(pollData, "pollModal")}
-        style={styles.button}
+      <TouchableOpacity
+        activeOpacity={0.85}
+        onPress={showPollData}
+        style={[styles.button, pollOpen ? styles.pollOpen : styles.pollClosed]}
       >
         <Text style={styles.buttonText}>Vote now</Text>
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -56,10 +76,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     height: 30,
     borderRadius: 5,
+  },
+  pollClosed: {
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
+  },
+  pollOpen: {
+    opacity: 0.85,
   },
   buttonText: {
     fontSize: FONT_SIZE_XS,
