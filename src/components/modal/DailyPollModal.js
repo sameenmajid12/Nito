@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 25,
     paddingVertical: 20,
-    rowGap: 15,
+    rowGap: 5,
   },
   question: {
     color: colors.primaryDark,
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_L,
   },
   optionsContainer: {
-    paddingBottom: 10,
+    paddingBottom: 30,
   },
   option: {
     height: 40,
