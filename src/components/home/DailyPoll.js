@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 function DailyPoll() {
   const [pollOpen, setPollOpen] = useState(false);
   const { openModal, modalState } = useModal();
+
   useEffect(() => {
     if (modalState.name !== "pollModal") {
       setPollOpen(false);
@@ -25,12 +26,18 @@ function DailyPoll() {
   }, [modalState]);
   const pollData = {
     question: "Favorite place to eat after a night out?",
-    options: ["El jefe's", "Guac time", "Daniel's Pizza", "RU Hungry"],
+    options: [
+      { text: "El jefe's", votes: 50 },
+      { text: "Guac time", votes: 21 },
+      { text: "Daniel's Pizza", votes: 11 },
+      { text: "RU Hungry", votes: 25 },
+    ],
   };
   const showPollData = () => {
     openModal(pollData, "pollModal");
     setPollOpen(true);
   };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.header}>

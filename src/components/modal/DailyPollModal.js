@@ -5,23 +5,86 @@ import {
   Text,
   Pressable,
   TouchableOpacity,
+  ActivityIndicator,
+  Animated,
 } from "react-native";
-import { useState } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import {
   colors,
   FONT_SIZE_L,
   FONT_SIZE_M,
   FONT_SIZE_XL,
-  FONT_SIZE_XXL,
+  FONT_SIZE_XS,
 } from "../../styles";
 function DailyPollModal({ data, handleClose }) {
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [hasVoted, setHasVoted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [contentContainerWidth, setContentContainerWidth] = useState(0);
+  useEffect(() => {
+    if (hasVoted && contentContainerWidth > 0) {
+      animateResults(data.options, contentContainerWidth);
+    }
+  }, [hasVoted, data.options, contentContainerWidth, animateResults]);
+  const onContentContainerLayout = useCallback((event) => {
+    const { width } = event.nativeEvent.layout;
+    setContentContainerWidth(width);
+  }, []);
+  const animatedLineWidths = useRef(
+    data.options.map(() => new Animated.Value(0))
+  ).current;
+  const animateResults = useCallback(
+    (optionsWithVotes, measuredWidth) => {
+      if (measuredWidth === 0) return;
+
+      const totalVotes = optionsWithVotes.reduce(
+        (sum, option) => sum + option.votes,
+        0
+      );
+      const maxLineWidthForBars = measuredWidth - 20;
+
+      optionsWithVotes.forEach((option, index) => {
+        const percentage =
+          totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
+        const targetWidth = (percentage / 100) * maxLineWidthForBars;
+
+        Animated.timing(animatedLineWidths[index], {
+          toValue: targetWidth,
+          duration: 700,
+          useNativeDriver: false,
+          easing: require("react-native").Easing.out(
+            require("react-native").Easing.ease
+          ),
+        }).start();
+      });
+    },
+    [animatedLineWidths]
+  );
   const selectOption = (index) => {
-    setSelectedIndex(index);
+    if (!hasVoted) {
+      setSelectedIndex(index);
+    }
   };
   const checkSelected = (index) => {
     return index === selectedIndex;
   };
+  const handleVote = async () => {
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const updatedOptions = data.options.map((option, idx) => {
+      if (idx === selectedIndex) {
+        return { ...option, votes: option.votes + 1 };
+      }
+      return option;
+    });
+    setLoading(false);
+    setHasVoted(true);
+    animateResults(updatedOptions, contentContainerWidth);
+  };
+  const totalVotes = data.options.reduce(
+    (sum, option) => sum + option.votes,
+    0
+  );
   return (
     <Pressable style={styles.container}>
       <View style={styles.header}>
@@ -31,18 +94,22 @@ function DailyPollModal({ data, handleClose }) {
           <Ionicons name="close-circle" style={styles.closeIcon}></Ionicons>
         </Pressable>
       </View>
-      <View style={styles.contentContainer}>
+      <View style={styles.contentContainer} onLayout={onContentContainerLayout}>
         <Text style={styles.question}>{data.question}</Text>
 
         <View style={styles.optionsContainer}>
           {data.options.map((option, index) => {
+            const percentage =
+              totalVotes > 0
+                ? Math.round((option.votes / totalVotes) * 100)
+                : 0;
             return (
               <Pressable
                 style={styles.option}
                 onPress={() => selectOption(index)}
                 key={index}
               >
-                <Text style={styles.optionText}>{option}</Text>
+                <Text style={styles.optionText}>{option.text}</Text>
                 <Ionicons
                   name={
                     checkSelected(index)
@@ -53,6 +120,31 @@ function DailyPollModal({ data, handleClose }) {
                     checkSelected(index) ? styles.radioOn : styles.radioOff
                   }
                 ></Ionicons>
+                {hasVoted && contentContainerWidth > 0 && (
+                  <View style={styles.resultLineContainer}>
+                    <Animated.View
+                      style={[
+                        styles.resultLine,
+                        {
+                          width: animatedLineWidths[index],
+                        },
+                        index === selectedIndex
+                          ? { backgroundColor: colors.primary }
+                          : { backgroundColor: colors.borderLight },
+                      ]}
+                    />
+                    <Text
+                      style={[
+                        styles.resultPercentage,
+                        index === selectedIndex
+                          ? { color: colors.primaryDark }
+                          : { color: colors.textLight },
+                      ]}
+                    >
+                      {percentage}%
+                    </Text>
+                  </View>
+                )}
               </Pressable>
             );
           })}
@@ -65,9 +157,21 @@ function DailyPollModal({ data, handleClose }) {
               ? styles.buttonEnabled
               : styles.buttonDisabled,
           ]}
-          disabled={selectedIndex === null}
+          disabled={selectedIndex === null || hasVoted}
+          onPress={handleVote}
         >
-          <Text style={styles.voteButtonText}>Vote</Text>
+          {loading ? (
+            <ActivityIndicator
+              size={FONT_SIZE_M}
+              color={colors.white}
+            ></ActivityIndicator>
+          ) : (
+            <Text style={styles.voteButtonText}>
+              {hasVoted
+                ? `Thank you for voting! Next poll in 11 hours`
+                : "Vote"}
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
     </Pressable>
@@ -76,7 +180,7 @@ function DailyPollModal({ data, handleClose }) {
 const styles = StyleSheet.create({
   header: {
     paddingVertical: 7,
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     rowGap: 5,
     flexDirection: "row",
     alignItems: "center",
@@ -93,10 +197,10 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_XL,
     color: colors.borderLight,
   },
-  contentContainer:{
-    paddingHorizontal:25,
-    paddingVertical:20,
-    rowGap:15
+  contentContainer: {
+    paddingHorizontal: 25,
+    paddingVertical: 20,
+    rowGap: 15,
   },
   question: {
     color: colors.primaryDark,
@@ -145,6 +249,22 @@ const styles = StyleSheet.create({
   },
   voteButtonText: {
     color: colors.white,
+    fontFamily: "Nunito-SemiBold",
+  },
+  resultLineContainer: {
+    position: "absolute",
+    left: 0,
+    bottom: -5,
+    flexDirection: "row",
+    alignItems: "center",
+    columnGap: 5,
+  },
+  resultLine: {
+    height: 4,
+    borderRadius: 2,
+  },
+  resultPercentage: {
+    fontSize: FONT_SIZE_XS,
     fontFamily: "Nunito-SemiBold",
   },
 });
