@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { StyleSheet, View, Text, Pressable, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { FONT_SIZE_XL, FONT_SIZE_M, colors } from "../../styles";
 import { useModal } from "../../contexts/ModalContext";
@@ -14,7 +14,8 @@ function SortConnection({ sortState, setSortState }) {
         <Ionicons size={FONT_SIZE_XL} name="people-outline"></Ionicons>
         <Text style={styles.sortText}>Your connections</Text>
       </View>
-      <Pressable
+      <TouchableOpacity
+      activeOpacity={0.5}
         onPress={() => openModal({ sort: sortState, changeSort }, "sortModal")}
         style={styles.sortContainerSections}
       >
@@ -25,7 +26,7 @@ function SortConnection({ sortState, setSortState }) {
           size={FONT_SIZE_M}
           name="caret-down"
         ></Ionicons>
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // Import useState and useEffect
+import { useState, useEffect, useRef } from "react";
 import {
   Animated,
   StyleSheet,
@@ -13,6 +13,8 @@ import { useUser } from "../../contexts/UserContext";
 
 function CurrentChat({ enterChat }) {
   const { user } = useUser();
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
   const [timeLeft, setTimeLeft] = useState(() => {
     if (!user?.currentMatch?.endTime) return 0;
     const diff = Math.floor(
@@ -72,7 +74,23 @@ function CurrentChat({ enterChat }) {
           </Text>
         </View>
         <TouchableOpacity
-          style={styles.buttonContainer}
+          onPressIn={() => {
+            Animated.spring(scaleAnim, {
+              toValue: 0.95,
+              useNativeDriver: true,
+              speed: 50,
+              bounciness: 5,
+            }).start();
+          }}
+          onPressOut={() => {
+            Animated.spring(scaleAnim, {
+              toValue: 1,
+              useNativeDriver: true,
+              speed: 20,
+              bounciness: 15,
+            }).start();
+          }}
+          style={[styles.buttonContainer, {transform:[{scale:scaleAnim}]}]}
           onPress={() => enterChat(user.currentMatch)}
           activeOpacity={0.8}
         >
@@ -142,8 +160,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     columnGap: 2,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
+    shadowColor: colors.primary,
+    shadowOpacity: 0.25,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 5,
     backgroundColor: colors.primary,
@@ -156,7 +174,7 @@ const styles = StyleSheet.create({
   infoText: {
     textAlign: "center",
     fontFamily: "Nunito-SemiBold",
-    color: colors.textPrimary,
+    color: colors.textLight,
   },
   interests: {
     color: colors.accent,
@@ -165,6 +183,7 @@ const styles = StyleSheet.create({
   time: {
     fontFamily: "Nunito-Bold",
     fontSize: FONT_SIZE_M,
+    color: colors.textPrimary,
   },
 });
 export default CurrentChat;

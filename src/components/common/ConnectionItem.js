@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_M, FONT_SIZE_S } from "../../styles";
@@ -19,13 +19,13 @@ function ConnectionItem({ connection }) {
             <Text style={styles.connectionName}>Mike Ross</Text>
             <Text style={styles.connectionDate}>Connected - Today</Text>
           </View>
-          <Pressable onPress={()=>openModal(connection, "userModal")}>
+          <TouchableOpacity onPress={()=>openModal(connection, "userModal")}>
             <Ionicons
               size={20}
               color={colors.textPrimary}
               name="ellipsis-horizontal"
             ></Ionicons>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     </>

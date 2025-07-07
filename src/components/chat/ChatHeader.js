@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors, FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_XXL } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
@@ -21,9 +21,9 @@ function ChatHeader({ navigation, usersRevealed, otherUser, conversation }) {
       </View>
       <View style={styles.headerRight}>
         <Ionicons style={styles.timeIcon} name="time-outline"></Ionicons>
-        <Pressable onPress={()=>openModal(conversation, "chatModal")}>
+        <TouchableOpacity onPress={()=>openModal(conversation, "chatModal")}>
           <Ionicons style={styles.icons} name="ellipsis-horizontal"></Ionicons>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );

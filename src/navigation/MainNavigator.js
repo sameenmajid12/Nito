@@ -88,7 +88,6 @@ function MainNavigator() {
   }, [shouldHideTabBar]);
 
   const { modalState } = useModal();
-  console.log(modalState.data);
   return (
     <>
       <Tab.Navigator

@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, View, Text, Pressable, Keyboard } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Pressable, Keyboard, TouchableOpacity } from "react-native";
 import { colors } from "../../../styles";
 import { FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_S } from "../../../styles";
 import { useEffect, useState } from "react";
@@ -72,7 +72,8 @@ function ProfileTagsScreen({ navigation }) {
           />
           <TagContainer tags={tags} setTags={setTags} />
           <View style={styles.buttonContainer}>
-            <Pressable
+            <TouchableOpacity
+            activeOpacity={0.75}
               onPress={reset}
               style={[
                 changesMade ? styles.clearActive : styles.clearDisabled,
@@ -89,8 +90,9 @@ function ProfileTagsScreen({ navigation }) {
               >
                 Reset
               </Text>
-            </Pressable>
-            <Pressable
+            </TouchableOpacity>
+            <TouchableOpacity
+            activeOpacity={0.5}
               style={[
                 changesMade ? styles.saveActive : styles.saveDisabled,
                 styles.button,
@@ -99,7 +101,7 @@ function ProfileTagsScreen({ navigation }) {
               onPress={save}
             >
               <Text style={styles.saveText}>Save</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>

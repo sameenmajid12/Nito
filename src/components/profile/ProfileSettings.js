@@ -1,4 +1,4 @@
-import { Pressable, View, Text, StyleSheet, Switch } from "react-native";
+import { View, Text, StyleSheet, Switch, TouchableOpacity } from "react-native";
 import ProfileSectionHeader from "./ProfileSectionHeader";
 import { Ionicons } from "@expo/vector-icons";
 import {
@@ -11,7 +11,7 @@ function ProfileSettings({navigate}) {
     <View style={styles.mainContainer}>
       <ProfileSectionHeader header={"Settings"} />
       <View style={styles.buttonsContainer}>
-        <Pressable onPress={()=>navigate("AccountInformation")} style={styles.button}>
+        <TouchableOpacity onPress={()=>navigate("AccountInformation")} activeOpacity={0.4} style={styles.button}>
           <Ionicons
             size={28}
             color={colors.textPrimary}
@@ -25,8 +25,8 @@ function ProfileSettings({navigate}) {
               name="chevron-forward"
             ></Ionicons>
           </View>
-        </Pressable>
-        <Pressable style={styles.button}>
+        </TouchableOpacity>
+        <TouchableOpacity activeOpacity={0.4} style={styles.button}>
           <Ionicons
             size={28}
             color={colors.textPrimary}
@@ -40,8 +40,8 @@ function ProfileSettings({navigate}) {
               name="chevron-forward"
             ></Ionicons>
           </View>
-        </Pressable>
-        <Pressable onPress={()=>navigate("TagsSelect")} style={styles.button}>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigate("TagsSelect")} activeOpacity={0.4} style={styles.button}>
           <Ionicons
             size={28}
             color={colors.textPrimary}
@@ -55,7 +55,7 @@ function ProfileSettings({navigate}) {
               name="chevron-forward"
             ></Ionicons>
           </View>
-        </Pressable>
+        </TouchableOpacity>
         <View style={styles.button}>
           <Ionicons
             size={28}
@@ -67,10 +67,10 @@ function ProfileSettings({navigate}) {
             <Switch value={true} trackColor={{true:colors.primary}}></Switch>
           </View>
         </View>
-        <Pressable style={styles.button}>
+        <TouchableOpacity activeOpacity={0.4} style={styles.button}>
           <Ionicons size={28} color={"red"} name="log-out-outline"></Ionicons>
           <Text style={styles.logoutText}>Logout</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );
