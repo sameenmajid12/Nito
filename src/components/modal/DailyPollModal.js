@@ -183,7 +183,7 @@ function DailyPollModal({ data, handleClose }) {
 const styles = StyleSheet.create({
   header: {
     paddingVertical: 7,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     rowGap: 5,
     flexDirection: "row",
     alignItems: "center",
@@ -236,7 +236,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 35,
     borderRadius: 10,
-
     justifyContent: "center",
     alignItems: "center",
   },
