@@ -11,7 +11,14 @@ function HomeScreen({ navigation }) {
     navigation.navigate(route);
   };
   const enterChat = (conversation) => {
-    navigation.navigate("Chat", { conversation });
+    navigation.navigate("Chat", {
+      conversation: {
+        ...conversation,
+        startTime: conversation.startTime.toISOString(),
+        endTime: conversation.endTime.toISOString(),
+        graceEndTime: conversation.graceEndTime.toISOString(),
+      },
+    });
   };
   return (
     <SafeAreaView style={styles.page}>
