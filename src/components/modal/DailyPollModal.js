@@ -15,6 +15,7 @@ import {
   FONT_SIZE_M,
   FONT_SIZE_XL,
   FONT_SIZE_XS,
+  FONT_SIZE_XXL,
 } from "../../styles";
 function DailyPollModal({ data, handleClose }) {
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -33,6 +34,7 @@ function DailyPollModal({ data, handleClose }) {
   const animatedLineWidths = useRef(
     data.options.map(() => new Animated.Value(0))
   ).current;
+  let maxWidthForBars;
   const animateResults = useCallback(
     (optionsWithVotes, measuredWidth) => {
       if (measuredWidth === 0) return;
@@ -41,12 +43,12 @@ function DailyPollModal({ data, handleClose }) {
         (sum, option) => sum + option.votes,
         0
       );
-      const maxLineWidthForBars = measuredWidth - 20;
+      maxWidthForBars = measuredWidth - (60 + FONT_SIZE_XXL);
 
       optionsWithVotes.forEach((option, index) => {
         const percentage =
           totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
-        const targetWidth = (percentage / 100) * maxLineWidthForBars;
+        const targetWidth = (percentage / 100) * maxWidthForBars;
 
         Animated.timing(animatedLineWidths[index], {
           toValue: targetWidth,
@@ -127,6 +129,7 @@ function DailyPollModal({ data, handleClose }) {
                         styles.resultLine,
                         {
                           width: animatedLineWidths[index],
+                          maxWidth: maxWidthForBars
                         },
                         index === selectedIndex
                           ? { backgroundColor: colors.primary }
@@ -198,7 +201,7 @@ const styles = StyleSheet.create({
     color: colors.borderLight,
   },
   contentContainer: {
-    paddingHorizontal: 25,
+    paddingHorizontal: 20,
     paddingVertical: 20,
     rowGap: 5,
   },
@@ -208,7 +211,7 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_L,
   },
   optionsContainer: {
-    paddingBottom: 30,
+    paddingBottom:15
   },
   option: {
     height: 40,
@@ -254,7 +257,7 @@ const styles = StyleSheet.create({
   resultLineContainer: {
     position: "absolute",
     left: 0,
-    bottom: -5,
+    bottom: -7,
     flexDirection: "row",
     alignItems: "center",
     columnGap: 5,
