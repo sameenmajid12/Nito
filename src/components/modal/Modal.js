@@ -11,8 +11,6 @@ import UserModal from "./UserModal";
 import ChatModal from "./ChatModal";
 
 function Modal({ user, conversation, type, sort, changeSort, pollData }) {
-  console.log(type);
-  console.log(pollData);
   if (
     (type === "chatModal" && !conversation) ||
     (type === "userModal" && !user) ||
