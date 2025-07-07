@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     backgroundColor: colors.background,
-    
+    maxHeight:60,
     marginHorizontal: 25,
     borderWidth: 1,
     borderColor: colors.border,
