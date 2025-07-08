@@ -7,6 +7,7 @@ import {
   Keyboard,
   Pressable,
   Easing,
+  TouchableOpacity,
 } from "react-native";
 import { colors, FONT_SIZE_M, textStyles } from "../../styles";
 import Button from "../../components/common/Button";
@@ -134,7 +135,7 @@ function LoginScreen({ navigation }) {
               value={email}
               setValue={setEmail}
               errorText={formErrors.email}
-              containerStyle={[styles.containerStyle,{marginBottom:15}]}
+              containerStyle={[styles.containerStyle, { marginBottom: 15 }]}
               inputStyle={styles.inputStyle}
             ></Input>
             <Input
@@ -145,7 +146,7 @@ function LoginScreen({ navigation }) {
               secure={!passwordVisible}
               togglePasswordVisibility={togglePasswordVisibility}
               errorText={formErrors.password}
-              containerStyle={[styles.containerStyle,{marginBottom:25}]}
+              containerStyle={[styles.containerStyle, { marginBottom: 25 }]}
               inputStyle={styles.inputStyle}
             ></Input>
 
@@ -160,24 +161,26 @@ function LoginScreen({ navigation }) {
                 style={{ marginTop: 10 }}
               />
             )}
-            <Text
-              style={[
-                styles.forgotPassword,
-                authError ? { marginTop: 10 } : { marginTop: 15 },
-              ]}
-            >
-              Forgot password?
-            </Text>
-            <View style={{ flex: 1 }} />
-            <Text style={styles.noAccountText}>
-              Don't have an account?{" "}
+            <TouchableOpacity activeOpacity={0.5}>
               <Text
-                onPress={() => navigation.replace("Register")}
-                style={{ color: colors.primary, fontFamily: "Nunito-Bold" }}
+                style={[
+                  styles.forgotPassword,
+                  authError ? { marginTop: 10 } : { marginTop: 15 },
+                ]}
               >
-                Register
+                Forgot password?
               </Text>
-            </Text>
+            </TouchableOpacity>
+            <View style={{ flex: 1 }} />
+            <View style={{ flexDirection: "row", columnGap: 5 }}>
+              <Text style={styles.noAccountText}>Don't have an account?</Text>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => navigation.replace("Register")}
+              >
+                <Text style={styles.noAccountAction}>Register</Text>
+              </TouchableOpacity>
+            </View>
             {schoolDropDown && (
               <Pressable
                 onPress={() => setSchoolDropDown(false)}
@@ -217,14 +220,19 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     color: colors.textPrimary,
   },
+  noAccountAction: {
+    color: colors.primary,
+    fontFamily: "Nunito-Bold",
+    fontSize: FONT_SIZE_M,
+  },
   forgotPassword: {
     fontFamily: "Nunito-Bold",
     color: colors.primary,
   },
-  containerStyle:{
-    width:"80%"
+  containerStyle: {
+    width: "80%",
   },
-  inputStyle:{borderRadius:10, paddingHorizontal:18}
+  inputStyle: { borderRadius: 10, paddingHorizontal: 18 },
 });
 
 export default LoginScreen;

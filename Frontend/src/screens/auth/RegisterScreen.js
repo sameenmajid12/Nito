@@ -7,6 +7,7 @@ import {
   Pressable,
   Keyboard,
   Easing,
+  TouchableOpacity,
 } from "react-native";
 import { colors, FONT_SIZE_M, textStyles } from "../../styles";
 import Button from "../../components/common/Button";
@@ -17,7 +18,12 @@ import SchoolSelector from "../../components/auth/SchoolSelector";
 import { useRegistration } from "../../contexts/RegistrationContext";
 function RegisterScreen({ navigation }) {
   const { updateRegistrationData } = useRegistration();
-  const initialSchoolState = { name: "Select School", id:null, emailDomain:null, img: null };
+  const initialSchoolState = {
+    name: "Select School",
+    id: null,
+    emailDomain: null,
+    img: null,
+  };
   const [school, setSchool] = useState(initialSchoolState);
   const [schoolDropDown, setSchoolDropDown] = useState(false);
   const [formError, setFormError] = useState(null);
@@ -65,7 +71,13 @@ function RegisterScreen({ navigation }) {
   }, [fadeAnim]);
   const continueRegistration = () => {
     if (school.id !== null && school.img !== null) {
-      updateRegistrationData({school:{name:school.name, id:school.id, emailDomain:school.emailDomain}});
+      updateRegistrationData({
+        school: {
+          name: school.name,
+          id: school.id,
+          emailDomain: school.emailDomain,
+        },
+      });
       navigation.replace("Register1");
     } else {
       setFormError("Please enter your school before continuing");
@@ -99,17 +111,18 @@ function RegisterScreen({ navigation }) {
             style={{ width: "80%", height: 45, marginTop: 10 }}
             onPress={continueRegistration}
           />
-          <Text style={styles.whyNito}>Why use Nito?</Text>
+          <TouchableOpacity activeOpacity={0.5}>
+            <Text style={styles.whyNito}>Why use Nito?</Text>
+          </TouchableOpacity>
           <View style={{ flex: 1 }} />
-          <Text style={styles.noAccountText}>
-            Already have an account?{" "}
-            <Text
-              onPress={() => navigation.replace("Login")}
-              style={{ color: colors.primary, fontFamily: "Nunito-Bold" }}
-            >
-              Login
+          <View style={{ flexDirection: "row", columnGap: 5 }}>
+            <Text style={styles.accountAlreadyText}>
+              Already have an account?
             </Text>
-          </Text>
+            <TouchableOpacity onPress={() => navigation.replace("Login")}>
+              <Text style={styles.accountAlreadyAction}>Login</Text>
+            </TouchableOpacity>
+          </View>
           {schoolDropDown && (
             <Pressable
               onPress={() => setSchoolDropDown(false)}
@@ -141,12 +154,17 @@ const styles = StyleSheet.create({
     bottom: 0,
     zIndex: 99,
   },
-  noAccountText: {
+  accountAlreadyText: {
     fontFamily: "Nunito-Medium",
     fontSize: FONT_SIZE_M,
     textAlign: "center",
     paddingBottom: 40,
     color: colors.textPrimary,
+  },
+  accountAlreadyAction: {
+    color: colors.primary,
+    fontFamily: "Nunito-Bold",
+    fontSize: FONT_SIZE_M,
   },
   whyNito: {
     fontFamily: "Nunito-Bold",
