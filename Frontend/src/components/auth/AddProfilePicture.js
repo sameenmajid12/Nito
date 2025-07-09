@@ -49,7 +49,12 @@ function AddProfilePicture({ image, setImage }) {
         });
         const resizedUri = manipulatedResult.uri;
         setImage(resizedUri);
-        updateRegistrationData({ image: resizedUri });
+        const name = `photo_${Date.now()}.jpg`;
+        const extension = resizedUri.split(".").pop();
+        console.log({ uri: resizedUri, type: `image/${extension}`, name })
+        updateRegistrationData({
+          profilePic: { uri: resizedUri, type: `image/${extension}`, name },
+        });
       } catch (error) {
         console.error("Error manipulating image:", error);
         Alert.alert(
@@ -57,7 +62,7 @@ function AddProfilePicture({ image, setImage }) {
           "Could not process the image. Please try another one."
         );
         setImage(null);
-        updateRegistrationData({ image: null });
+        updateRegistrationData({ profilePic: null });
       }
     } else {
       setImage(null);

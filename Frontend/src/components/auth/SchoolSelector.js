@@ -12,7 +12,7 @@ import { colors, textStyles, FONT_SIZE_L, FONT_SIZE_XS } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import ErrorMessage from "../common/ErrorMessage";
-
+import axios from "axios";
 function SchoolSelector({
   school,
   setSchool,
@@ -22,29 +22,26 @@ function SchoolSelector({
   setDropDownVisible,
   errorText,
 }) {
-  const allSchools = [
-    {
-      name: "Rutgers University-New Brunswick",
-      id: 85167512,
-      emailDomain: "scarletmail.rutgers.edu",
-      img: require("../../assets/images/rutgers.png"),
-    },
-    {
-      name: "Rowan University",
-      id: 8592104,
-      emailDomain: "rowan.edu",
-      img: require("../../assets/images/rowan.png"),
-    },
-    {
-      name: "SUNY Cortland",
-      id: 8513648,
-      emailDomain: "cortland.edu",
-      img: require("../../assets/images/cortland.png"),
-    },
-  ];
-  const [filteredSchools, setFilteredSchools] = useState(allSchools);
+  const [allSchools, setAllSchools] = useState([]);
+  const [filteredSchools, setFilteredSchools] = useState([]);
   const [schoolSelected, setSchoolSelected] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const getSchools = async () => {
+      try {
+        const response = await axios.get("http://192.168.1.173:3002/school");
+        if (response.status === 200) {
+          setFilteredSchools(response.data.schools);
+          setAllSchools(response.data.schools);
+        } else {
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getSchools();
+  }, []);
   const rotateAnimation = useState(new Animated.Value(0))[0];
 
   const toggleDropDown = () => {
@@ -121,7 +118,7 @@ function SchoolSelector({
               <Image
                 contentFit="contain"
                 style={{ width: 20, height: 20 }}
-                source={school.img}
+                source={{uri: school.image}}
               ></Image>
             ) : (
               <Animated.View style={{ transform: [{ rotate: rotateDegree }] }}>
@@ -164,7 +161,7 @@ function SchoolSelector({
                 <Image
                   contentFit="contain"
                   style={{ width: 20, height: 20 }}
-                  source={s.img}
+                  source={{uri: s.image}}
                 />
               </Pressable>
             ))}
