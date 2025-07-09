@@ -1,11 +1,5 @@
 const mongoose = require("mongoose");
 
-const profilePicSchema = new mongoose.Schema({
-  filename: String,
-  fileUrl: String,
-  userId: String,
-  timestamp: { type: Date, default: Date.now },
-});
 
 const userSchema = new mongoose.Schema(
   {
@@ -31,12 +25,13 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     profilePic: {
-      type: profilePicSchema,
+      type: String,
       required: true,
     },
     school: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "School",
+      ref:"School",
+      required:true
     },
     tags: {
       type: [String],
