@@ -27,7 +27,9 @@
  */
 
 import { createContext, useContext, useEffect, useState } from "react";
-
+import * as SecureStore from "expo-secure-store";
+import { useUser } from "./UserContext";
+import axios from 'axios'
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -41,10 +43,50 @@ export const AuthProvider = ({ children }) => {
     finishButton: false,
   });
   useEffect(() => {
-    const loadTokensAndVerify = () => {
+    const loadTokensAndVerify = async () => {
       try {
-      } catch (e) {}
+        const storedAccessToken = await SecureStore.getItemAsync("accessToken");
+        if (storedAccessToken) {
+          const response = await axios.get("http://192.168.1.173:3002", {
+            headers: {
+              Authorization: `Bearer ${storedAccessToken}`,
+            },
+          });
+          if (response.status === 200) {
+            setToken(storedAccessToken);
+            setIsAuthenticated(true);
+          } else {
+            throw new Error("Token not valid");
+          }
+        }
+      } catch (e) {
+        try {
+          const storedRefreshToken = await SecureStore.getItemAsync(
+            "refreshToken"
+          );
+          if (storedRefreshToken) {
+            const refreshRes = await axios.post(
+              "http://192.168.1.173:3002/auth/refresh",
+              {
+                token: storedRefreshToken,
+              }
+            );
+
+            const { accessToken } = refreshRes.data;
+            await SecureStore.setItemAsync("accessToken", accessToken);
+            setToken(accessToken);
+            setIsAuthenticated(true);
+          } else {
+            logout();
+          }
+        } catch (e) {
+          logout();
+        }
+      } finally {
+        setIsLoadingAuth(false);
+      }
     };
+    loadTokensAndVerify();
   }, []);
   const authenticateUser = () => {
     setIsAuthenticated(true);
@@ -70,11 +112,31 @@ export const AuthProvider = ({ children }) => {
         : { skipButton: false, finishButton: true }
     );
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      //API CALL TO REGISTER THE USER, SETISLOADINGREGISTRATION TO FALSE AND SETISREGISTRATIONCOMPLETED TO TRUE
+      const formData = new FormData();
+      formData.append("fullname", registrationData.fullname);
+      formData.append("email", registrationData.email);
+      formData.append("password", registrationData.password);
+      formData.append("username", registrationData.username);
 
-      setIsRegistrationCompleted(true);
-      setToken("PoopToken");
+      formData.append("school", JSON.stringify(registrationData.school));
+      formData.append("tags", JSON.stringify(registrationData.tags));
+      formData.append("profilePic", registrationData.profilePic);
+
+      const response = await axios.post(
+        "http://192.168.1.173:3002/auth/register",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.status === 201) {
+        setIsRegistrationCompleted(true);
+        setToken("PoopToken");
+      } else {
+        setIsLoadingRegistration({ skipButton: false, finishButton: false });
+      }
     } catch (e) {
       console.error("Registration failed:", e);
       setIsRegistrationCompleted(false);
