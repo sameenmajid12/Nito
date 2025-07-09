@@ -20,9 +20,9 @@ function RegisterScreen({ navigation }) {
   const { updateRegistrationData } = useRegistration();
   const initialSchoolState = {
     name: "Select School",
-    id: null,
+    _id: null,
     emailDomain: null,
-    img: null,
+    image: null,
   };
   const [school, setSchool] = useState(initialSchoolState);
   const [schoolDropDown, setSchoolDropDown] = useState(false);
@@ -70,13 +70,9 @@ function RegisterScreen({ navigation }) {
     };
   }, [fadeAnim]);
   const continueRegistration = () => {
-    if (school.id !== null && school.img !== null) {
+    if (school._id) {
       updateRegistrationData({
-        school: {
-          name: school.name,
-          id: school.id,
-          emailDomain: school.emailDomain,
-        },
+        school: school,
       });
       navigation.replace("Register1");
     } else {

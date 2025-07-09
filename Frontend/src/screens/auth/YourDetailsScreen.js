@@ -134,7 +134,6 @@ function YourDetailsScreen({ navigation }) {
         username: formData.username,
         email: formData.email,
         password: formData.password,
-        profilePic: image,
       });
       navigation.replace("Register2");
     }
