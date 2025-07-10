@@ -6,7 +6,10 @@ const bcrypt = require("bcrypt");
 const upload = require("../middleware/uploadImage");
 const s3 = require("../config/s3Client");
 const { PutObjectCommand } = require("@aws-sdk/client-s3");
-
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/token.js");
 authRouter.post(
   "/register",
   upload.single("profilePic"),
@@ -24,8 +27,7 @@ authRouter.post(
       if (!req.file || !req.file.buffer) {
         return res.status(400).json({ message: "Profile picture missing" });
       }
-      const existingUser =
-        (await User.find({ email: newUserInfo.email }).length) > 0;
+      const existingUser = await User.findOne({ email: newUserInfo.email });
       if (existingUser) {
         return res
           .status(409)
@@ -47,12 +49,70 @@ authRouter.post(
       newUserInfo.school = JSON.parse(newUserInfo.school);
 
       const user = await User.create(newUserInfo);
-      res.status(201).json(user);
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken(user);
+      if (!accessToken || !refreshToken) {
+        await User.deleteOne({ username: newUserInfo.username });
+        return res.status(500).json({ message: "Token generation failed" });
+      }
+      const { password, ...safeUser } = user._doc;
+      res.status(201).json({ user: safeUser, accessToken, refreshToken });
     } catch (error) {
       console.log(`Error: ${error}`);
       res.status(500).json({ message: "Internal server error" });
     }
   }
 );
+
+authRouter.post("/login", async (req, res, next) => {
+  try {
+    const userInfo = req.body;
+    const user = await User.findOne({
+      email: userInfo.email,
+      school: userInfo.school._id,
+    });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const passwordMatch = await bcrypt.compare(
+      userInfo.password,
+      user.password
+    );
+    if (!passwordMatch) {
+      return res
+        .status(403)
+        .json({ message: "Incorrect password, please try again" });
+    }
+    const { password, ...safeUser } = user._doc;
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+    res.status(200).json({ user: safeUser, accessToken, refreshToken });
+  } catch (error) {
+    console.log(`Error: ${error}`);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+authRouter.post("/refresh-token", async(req, res, next) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    return res.status(401).json({ message: "No refresh token provided" });
+  }
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const user = await User.findById(decoded._id);
+    if(!user){
+      return res.status(401).json({message:"User no longer exists"});
+    }
+    const newAccessToken = jwt.sign(
+      { _id: decoded._id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_LIFETIME }
+    );
+    res.json({ accessToken: newAccessToken });
+  } catch (error) {
+    res.status(500).json({ message: "Invalid or expired refresh token" });
+  }
+});
 
 module.exports = { authRouter };
