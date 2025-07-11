@@ -29,7 +29,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { useUser } from "./UserContext";
-import axios from 'axios'
+import { API_BASE_URL } from "@env";
+import axios from "axios";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -44,44 +45,21 @@ export const AuthProvider = ({ children }) => {
   });
   useEffect(() => {
     const loadTokensAndVerify = async () => {
+      setIsLoadingAuth(true);
       try {
         const storedAccessToken = await SecureStore.getItemAsync("accessToken");
         if (storedAccessToken) {
-          const response = await axios.get("http://192.168.1.173:3002", {
-            headers: {
-              Authorization: `Bearer ${storedAccessToken}`,
-            },
-          });
-          if (response.status === 200) {
-            setToken(storedAccessToken);
-            setIsAuthenticated(true);
-          } else {
-            throw new Error("Token not valid");
+          const verified = await verifyAccessToken(storedAccessToken);
+          if (!verified) {
+            const newAccessToken = await refreshAccessToken();
+            if (!newAccessToken) {
+              throw new Error("Failed to refresh token");
+            }
           }
+          setIsAuthenticated(true);
         }
       } catch (e) {
-        try {
-          const storedRefreshToken = await SecureStore.getItemAsync(
-            "refreshToken"
-          );
-          if (storedRefreshToken) {
-            const refreshRes = await axios.post(
-              "http://192.168.1.173:3002/auth/refresh",
-              {
-                token: storedRefreshToken,
-              }
-            );
-
-            const { accessToken } = refreshRes.data;
-            await SecureStore.setItemAsync("accessToken", accessToken);
-            setToken(accessToken);
-            setIsAuthenticated(true);
-          } else {
-            logout();
-          }
-        } catch (e) {
-          logout();
-        }
+        logout();
       } finally {
         setIsLoadingAuth(false);
       }
@@ -91,18 +69,64 @@ export const AuthProvider = ({ children }) => {
   const authenticateUser = () => {
     setIsAuthenticated(true);
   };
-  const refreshAccessToken = () => {
+  const refreshAccessToken = async () => {
     try {
-    } catch (e) {}
+      const refreshToken = await SecureStore.getItemAsync("refreshToken");
+      if (!refreshToken) {
+        logout();
+        return;
+      }
+      const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
+        refreshToken,
+      });
+      if (response.status === 200) {
+        const { accessToken } = response.data;
+        await SecureStore.setItemAsync("accessToken", accessToken);
+        setToken(accessToken);
+        return accessToken;
+      } else {
+        throw new Error("Failed to refresh token");
+      }
+    } catch (e) {
+      console.log("Token error: ", e);
+      logout();
+    }
   };
-  const verifyAccessToken = () => {
+  const verifyAccessToken = async (accessToken) => {
     try {
-    } catch (e) {}
+      await axios.get(`${API_BASE_URL}/auth/test-token`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return true;
+    } catch (e) {
+      console.error("Token error: ", e);
+      return false;
+    }
   };
-  const login = (loginData) => {
+
+  const login = async (loginData) => {
+    setIsLoadingAuth(true);
     try {
-      //API CALL TO LOGIN AND RECEIVE TOKEN
-    } catch (e) {}
+      const response = await axios.post(
+        `${API_BASE_URL}/auth/login`,
+        loginData
+      );
+      if (response.status === 200) {
+        const { accessToken, refreshToken } = response.data;
+        await SecureStore.setItemAsync("accessToken", accessToken);
+        await SecureStore.setItemAsync("refreshToken", refreshToken);
+        setIsAuthenticated(true);
+      } else {
+        throw new Error("Login failed");
+      }
+    } catch (e) {
+      console.error("Error logging in: ", e);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoadingAuth(false);
+    }
   };
   const register = async (registrationData, skipped) => {
     setAuthError(null);
@@ -123,7 +147,7 @@ export const AuthProvider = ({ children }) => {
       formData.append("profilePic", registrationData.profilePic);
 
       const response = await axios.post(
-        "http://192.168.1.173:3002/auth/register",
+        `${API_BASE_URL}/auth/register`,
         formData,
         {
           headers: {
@@ -133,7 +157,9 @@ export const AuthProvider = ({ children }) => {
       );
       if (response.status === 201) {
         setIsRegistrationCompleted(true);
-        setToken("PoopToken");
+        const { accessToken, refreshToken } = response.data;
+        await SecureStore.setItemAsync("accessToken", accessToken);
+        await SecureStore.setItemAsync("refreshToken", refreshToken);
       } else {
         setIsLoadingRegistration({ skipButton: false, finishButton: false });
       }
@@ -144,7 +170,21 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingRegistration({ skipButton: false, finishButton: false });
     }
   };
-  const logout = () => {};
+  const logout = async () => {
+    setIsLoadingAuth(true);
+    try {
+      await SecureStore.deleteItemAsync("accessToken");
+      await SecureStore.deleteItemAsync("refreshToken");
+      setToken(null);
+      setIsAuthenticated(false);
+      setAuthError(null);
+    } catch (e) {
+      console.error("Error during logout: ", e);
+      setAuthError("Failed to log out properly.");
+    } finally {
+      setIsLoadingAuth(false);
+    }
+  };
   return (
     <AuthContext.Provider
       value={{
