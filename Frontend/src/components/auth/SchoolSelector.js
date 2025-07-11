@@ -171,7 +171,7 @@ function SchoolSelector({
                 More coming soon :)
               </Text>
             )}
-            {filteredSchools.length === 0 && (
+            {filteredSchools.length === 0 && searchQuery.length > 0 && (
               <Text style={[textStyles.body, styles.endText]}>
                 {"No results found :("}
               </Text>
