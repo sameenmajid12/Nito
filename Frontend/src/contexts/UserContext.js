@@ -28,7 +28,8 @@ import {
   useState,
 } from "react";
 import { useAuth } from "./AuthContext";
-
+import axios from "axios";
+import { API_BASE_URL } from "@env";
 /*userSchema = {
     id:ObejctId,
     fullName:Sameen Majidw,
@@ -82,37 +83,39 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const { token, isAuthenticated } = useAuth();
   const [user, setUser] = useState(null);
-  const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const [isLoadingUser, setIsLoadingUser] = useState(false);
   const [userError, setUserError] = useState(false);
-  useEffect(()=>{
+  useEffect(() => {
     const getUserAfterVerifyingTokens = async () => {
       setIsLoadingUser(true);
-    try {
-      const response = await axios.get(`${API_BASE_URL}/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.status === 200) {
-        const { user } = response.data;
-        setUser(user);
-      } else {
-        throw new Error("Failed to retrieve user");
+      try {
+        if(!token){
+          return;
+        }
+        const response = await axios.get(`${API_BASE_URL}/auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.status === 200) {
+          const { user } = response.data;
+          setUser(user);
+        } else {
+          throw new Error("Failed to retrieve user");
+        }
+      } catch (e) {
+        console.error("User retrieval error: ", e);
+      } finally {
+        setIsLoadingUser(false);
       }
-    } catch (e) {
-      console.error("User retrieval error: ", e);
-    }finally{
-      setIsLoadingUser(false);
-    }
-  };
-    if(isAuthenticated){
+    };
+    if (isAuthenticated) {
       getUserAfterVerifyingTokens();
-    }
-    else{
+    } else {
       setUser(null);
     }
-  },[isAuthenticated, token]);
- 
+  }, [isAuthenticated, token]);
+
   const updateUser = (updates) => {
     setUser((prev) => ({ ...prev, ...updates }));
   };
@@ -136,10 +139,6 @@ export const UserProvider = ({ children }) => {
   );
 };
 export const useUser = () => useContext(UserContext);
-
-
-
-
 
 /*
  useEffect(() => {

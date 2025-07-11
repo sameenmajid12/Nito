@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import Logo from "../../components/common/Logo";
 import SchoolSelector from "../../components/auth/SchoolSelector";
 import ErrorMessage from "../../components/common/ErrorMessage";
+import { useAuth } from "../../contexts/AuthContext";
 
 const INITIAL_PADDING_TOP = 180;
 const KEYBOARD_ACTIVE_PADDING_TOP = 80;
@@ -24,7 +25,11 @@ const KEYBOARD_ACTIVE_PADDING_TOP = 80;
 function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const initialSchoolState = { name: "Select School", img: null };
+  const initialSchoolState = {
+    name: "Select School",
+    image: null,
+    emailDomain: null,
+  };
   const [school, setSchool] = useState(initialSchoolState);
   const [schoolDropDown, setSchoolDropDown] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -34,7 +39,7 @@ function LoginScreen({ navigation }) {
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
-
+  const { login, isLoadingLogin } = useAuth();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const animatedPageContentPaddingTop = useRef(
@@ -92,7 +97,11 @@ function LoginScreen({ navigation }) {
       }));
       errorsFound = true;
     }
-    if (school.img === null || school === initialSchoolState) {
+    if (
+      school.image === null ||
+      school.name === null ||
+      school.emailDomain === null
+    ) {
       setFormErrors((prev) => ({
         ...prev,
         school: "Please enter your school",
@@ -101,10 +110,15 @@ function LoginScreen({ navigation }) {
     }
     return errorsFound;
   };
-  const login = () => {
+  const loginUser = async () => {
     const errorsFound = validateInput();
     if (!errorsFound) {
-      setAuthError(true);
+      const loginData = {
+        email,
+        password,
+        school,
+      };
+      login(loginData);
     }
   };
   return (
@@ -151,9 +165,10 @@ function LoginScreen({ navigation }) {
             ></Input>
 
             <Button
-              onPress={login}
+              onPress={loginUser}
               title="Login"
               style={{ width: "80%", height: 45, marginTop: 10 }}
+              isLoading={isLoadingLogin}
             />
             {authError && (
               <ErrorMessage
