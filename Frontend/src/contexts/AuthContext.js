@@ -43,8 +43,12 @@ export const AuthProvider = ({ children }) => {
     skipButton: false,
     finishButton: false,
   });
+  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
   useEffect(() => {
+   
     const loadTokensAndVerify = async () => {
+       /*await SecureStore.deleteItemAsync("accessToken");
+       await SecureStore.deleteItemAsync("refreshToken");*/
       setIsLoadingAuth(true);
       try {
         const storedAccessToken = await SecureStore.getItemAsync("accessToken");
@@ -107,7 +111,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (loginData) => {
-    setIsLoadingAuth(true);
+    setIsLoadingLogin(true);
     try {
       const response = await axios.post(
         `${API_BASE_URL}/auth/login`,
@@ -117,15 +121,15 @@ export const AuthProvider = ({ children }) => {
         const { accessToken, refreshToken } = response.data;
         await SecureStore.setItemAsync("accessToken", accessToken);
         await SecureStore.setItemAsync("refreshToken", refreshToken);
+        setToken(accessToken)
         setIsAuthenticated(true);
       } else {
         throw new Error("Login failed");
       }
     } catch (e) {
       console.error("Error logging in: ", e);
-      setIsAuthenticated(false);
     } finally {
-      setIsLoadingAuth(false);
+      setIsLoadingLogin(false);
     }
   };
   const register = async (registrationData, skipped) => {
@@ -160,6 +164,7 @@ export const AuthProvider = ({ children }) => {
         const { accessToken, refreshToken } = response.data;
         await SecureStore.setItemAsync("accessToken", accessToken);
         await SecureStore.setItemAsync("refreshToken", refreshToken);
+        setToken(accessToken);
       } else {
         setIsLoadingRegistration({ skipButton: false, finishButton: false });
       }
@@ -192,6 +197,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         authenticateUser,
         authError,
+        isLoadingLogin,
         login,
         register,
         logout,
