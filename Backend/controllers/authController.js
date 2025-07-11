@@ -10,61 +10,57 @@ const {
   generateAccessToken,
   generateRefreshToken,
 } = require("../utils/token.js");
-authRouter.post(
-  "/register",
-  upload.single("profilePic"),
-  async (req, res, next) => {
-    try {
-      const newUserInfo = req.body;
-      if (
-        !newUserInfo.password ||
-        !newUserInfo.fullname ||
-        !newUserInfo.email ||
-        !newUserInfo.username
-      ) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
-      if (!req.file || !req.file.buffer) {
-        return res.status(400).json({ message: "Profile picture missing" });
-      }
-      const existingUser = await User.findOne({ email: newUserInfo.email });
-      if (existingUser) {
-        return res
-          .status(409)
-          .json({ message: "Email is already used for another account!" });
-      }
-      const fileUploadParams = {
-        Bucket: "nito-s3-image-bucket",
-        Key: req.file.originalname,
-        Body: req.file.buffer,
-        ContentType: req.file.mimetype,
-      };
-      await s3.send(new PutObjectCommand(fileUploadParams));
-
-      const fileUrl = `https://${fileUploadParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${req.file.originalname}`;
-      const encryptedPassword = await bcrypt.hash(newUserInfo.password, 10);
-      newUserInfo.password = encryptedPassword;
-      newUserInfo.profilePic = fileUrl;
-      newUserInfo.tags = JSON.parse(newUserInfo.tags);
-      newUserInfo.school = JSON.parse(newUserInfo.school);
-
-      const user = await User.create(newUserInfo);
-      const accessToken = generateAccessToken(user);
-      const refreshToken = generateRefreshToken(user);
-      if (!accessToken || !refreshToken) {
-        await User.deleteOne({ username: newUserInfo.username });
-        return res.status(500).json({ message: "Token generation failed" });
-      }
-      const { password, ...safeUser } = user._doc;
-      res.status(201).json({ user: safeUser, accessToken, refreshToken });
-    } catch (error) {
-      console.log(`Error: ${error}`);
-      res.status(500).json({ message: "Internal server error" });
+authRouter.post("/register", upload.single("profilePic"), async (req, res) => {
+  try {
+    const newUserInfo = req.body;
+    if (
+      !newUserInfo.password ||
+      !newUserInfo.fullname ||
+      !newUserInfo.email ||
+      !newUserInfo.username
+    ) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
-  }
-);
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ message: "Profile picture missing" });
+    }
+    const existingUser = await User.findOne({ email: newUserInfo.email });
+    if (existingUser) {
+      return res
+        .status(409)
+        .json({ message: "Email is already used for another account!" });
+    }
+    const fileUploadParams = {
+      Bucket: "nito-s3-image-bucket",
+      Key: req.file.originalname,
+      Body: req.file.buffer,
+      ContentType: req.file.mimetype,
+    };
+    await s3.send(new PutObjectCommand(fileUploadParams));
 
-authRouter.post("/login", async (req, res, next) => {
+    const fileUrl = `https://${fileUploadParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${req.file.originalname}`;
+    const encryptedPassword = await bcrypt.hash(newUserInfo.password, 10);
+    newUserInfo.password = encryptedPassword;
+    newUserInfo.profilePic = fileUrl;
+    newUserInfo.tags = JSON.parse(newUserInfo.tags);
+    newUserInfo.school = JSON.parse(newUserInfo.school);
+
+    const user = await User.create(newUserInfo);
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+    if (!accessToken || !refreshToken) {
+      await User.deleteOne({ username: newUserInfo.username });
+      return res.status(500).json({ message: "Token generation failed" });
+    }
+    const { password, ...safeUser } = user._doc;
+    res.status(201).json({ user: safeUser, accessToken, refreshToken });
+  } catch (error) {
+    console.log(`Error: ${error}`);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+authRouter.post("/login", async (req, res) => {
   try {
     const userInfo = req.body;
     const user = await User.findOne({
@@ -93,7 +89,7 @@ authRouter.post("/login", async (req, res, next) => {
   }
 });
 
-authRouter.post("/refresh-token", async(req, res, next) => {
+authRouter.post("/refresh-token", async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
     return res.status(401).json({ message: "No refresh token provided" });
@@ -101,18 +97,35 @@ authRouter.post("/refresh-token", async(req, res, next) => {
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const user = await User.findById(decoded._id);
-    if(!user){
-      return res.status(401).json({message:"User no longer exists"});
+    if (!user) {
+      return res.status(401).json({ message: "User no longer exists" });
     }
     const newAccessToken = jwt.sign(
       { _id: decoded._id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: process.env.ACCESS_TOKEN_LIFETIME }
     );
-    res.json({ accessToken: newAccessToken });
+    res.status(200).json({ accessToken: newAccessToken });
   } catch (error) {
     res.status(500).json({ message: "Invalid or expired refresh token" });
   }
 });
 
+authRouter.get("/test-token", verifyToken, (_, res) => {
+  res.status(200).json({ message: "Token valid" });
+});
+
+authRouter.get("/me", verifyToken, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const { password, ...safeUser } = user._doc;
+    res.status(200).json({user:safeUser});
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 module.exports = { authRouter };
