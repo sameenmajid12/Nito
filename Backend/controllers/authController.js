@@ -10,6 +10,7 @@ const {
   generateAccessToken,
   generateRefreshToken,
 } = require("../utils/token.js");
+const verifyToken = require("../middleware/verifyToken.js");
 authRouter.post("/register", upload.single("profilePic"), async (req, res) => {
   try {
     const newUserInfo = req.body;
@@ -52,8 +53,7 @@ authRouter.post("/register", upload.single("profilePic"), async (req, res) => {
       await User.deleteOne({ username: newUserInfo.username });
       return res.status(500).json({ message: "Token generation failed" });
     }
-    const { password, ...safeUser } = user._doc;
-    res.status(201).json({ user: safeUser, accessToken, refreshToken });
+    res.status(201).json({ accessToken, refreshToken });
   } catch (error) {
     console.log(`Error: ${error}`);
     res.status(500).json({ message: "Internal server error" });
@@ -62,6 +62,7 @@ authRouter.post("/register", upload.single("profilePic"), async (req, res) => {
 
 authRouter.post("/login", async (req, res) => {
   try {
+    console.log("Loggin in..")
     const userInfo = req.body;
     const user = await User.findOne({
       email: userInfo.email,
@@ -79,10 +80,9 @@ authRouter.post("/login", async (req, res) => {
         .status(403)
         .json({ message: "Incorrect password, please try again" });
     }
-    const { password, ...safeUser } = user._doc;
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
-    res.status(200).json({ user: safeUser, accessToken, refreshToken });
+    res.status(200).json({ accessToken, refreshToken });
   } catch (error) {
     console.log(`Error: ${error}`);
     res.status(500).json({ message: "Internal server error" });
@@ -90,6 +90,7 @@ authRouter.post("/login", async (req, res) => {
 });
 
 authRouter.post("/refresh-token", async (req, res) => {
+  console.log("Refreshing token...")
   const { refreshToken } = req.body;
   if (!refreshToken) {
     return res.status(401).json({ message: "No refresh token provided" });
@@ -117,6 +118,7 @@ authRouter.get("/test-token", verifyToken, (_, res) => {
 
 authRouter.get("/me", verifyToken, async (req, res) => {
   try {
+    console.log("Getting user...")
     const userId = req.user._id;
     const user = await User.findById(userId);
     if (!user) {

@@ -5,6 +5,7 @@ const School = require("../models/SchoolModel");
 
 schoolRouter.get("/", async(req,res,next)=>{
   try{
+    console.log("Getting schools..")
     const schools = await School.find({});
     if(!schools){
       return res.status(404).json({message:"Error fetching schools"})
