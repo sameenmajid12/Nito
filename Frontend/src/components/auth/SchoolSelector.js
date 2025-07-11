@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import ErrorMessage from "../common/ErrorMessage";
 import axios from "axios";
+import {API_BASE_URL} from "@env"
 function SchoolSelector({
   school,
   setSchool,
@@ -30,7 +31,7 @@ function SchoolSelector({
   useEffect(() => {
     const getSchools = async () => {
       try {
-        const response = await axios.get("http://192.168.1.173:3002/school");
+        const response = await axios.get(`${API_BASE_URL}/school`);
         if (response.status === 200) {
           setFilteredSchools(response.data.schools);
           setAllSchools(response.data.schools);
