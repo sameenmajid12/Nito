@@ -80,11 +80,69 @@ import { useAuth } from "./AuthContext";
 
 const UserContext = createContext();
 export const UserProvider = ({ children }) => {
-  const { token, isAuthenticated, isLoadingAuth, logout } = useAuth();
+  const { token, isAuthenticated } = useAuth();
   const [user, setUser] = useState(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [userError, setUserError] = useState(false);
-  useEffect(() => {
+  useEffect(()=>{
+    const getUserAfterVerifyingTokens = async () => {
+      setIsLoadingUser(true);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 200) {
+        const { user } = response.data;
+        setUser(user);
+      } else {
+        throw new Error("Failed to retrieve user");
+      }
+    } catch (e) {
+      console.error("User retrieval error: ", e);
+    }finally{
+      setIsLoadingUser(false);
+    }
+  };
+    if(isAuthenticated){
+      getUserAfterVerifyingTokens();
+    }
+    else{
+      setUser(null);
+    }
+  },[isAuthenticated, token]);
+ 
+  const updateUser = (updates) => {
+    setUser((prev) => ({ ...prev, ...updates }));
+  };
+  const removeConnection = (user) => {};
+  const reportUser = (user, data) => {};
+  const blockUser = (user) => {};
+  return (
+    <UserContext.Provider
+      value={{
+        user,
+        updateUser,
+        isLoadingUser,
+        userError,
+        removeConnection,
+        reportUser,
+        blockUser,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
+};
+export const useUser = () => useContext(UserContext);
+
+
+
+
+
+/*
+ useEffect(() => {
     const now = new Date();
     setUser({
       id: "8914872198471982",
@@ -170,88 +228,4 @@ export const UserProvider = ({ children }) => {
       updatedAt: Date.now(),
       lastActive: Date.now(),
     });
-  }, []);
-  const fetchUser = useCallback(async () => {
-    setIsLoadingUser(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-
-      setUser({
-        id: "8914872198471982",
-        fullName: "Sameen Majid",
-        email: "srm341@scarletmail.rutgers.edu",
-        school: {
-          name: "Rutgers University",
-          id: "862859241",
-          emailDomain: "scarletmail.rutgers.edu",
-        },
-        profilePicUrl: null,
-        tags: ["mma", "money", "web dev"],
-        socialMedia: {
-          instagram: "samin_raiyan",
-          linkedin: "",
-          snapchat: "samin.raiyan1",
-          discord: "",
-        },
-        bio: "Hey guys! My name is Sameen, I am the creator of Nito and I'm happy to have matched with you and I hope all of you have a great time on my app!",
-        major: "Computer Science",
-        year: 2025,
-        password: "Itsabigsecret24!",
-        revealedUsers: [],
-        savedConversations: [],
-        blockedUsers: [],
-        phoneNumber: "5166679552",
-        currentMatch: {
-          id: "12532543",
-          user1: { id: "8914872198471982" },
-          user2: { id: "12805141" },
-          lastMessage: {},
-          lastReadMessage: { user1: {}, user2: {} },
-          user1Revealed: false,
-          user2Revelead: false,
-          isActive: true,
-          messages: ["Hey", "Whats up", "Eat ma poopy", "No you eat ma poopy"],
-          startTime: Date.now(),
-          endTime: new Date(now.getTime() + 30 * 60 * 1000),
-          graceEndTime: new Date(now.getTime() + 35 * 60 * 1000),
-        },
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        lastActive: Date.now(),
-      });
-    } catch (e) {
-    } finally {
-      setIsLoadingUser(false);
-    }
-  }, []); // WHEN THE USER BECOMES AUTHENTICATED AND A TOKEN IS RECEIVED FROM THE BACKEND FETCH THE USER
-
-  useEffect(() => {
-    if (isAuthenticated && token && !isLoadingAuth) {
-      fetchUser();
-    } else {
-      setIsLoadingUser(false);
-    }
-  }, [isAuthenticated, token, isLoadingAuth]);
-  const updateUser = (updates) => {
-    setUser((prev) => ({ ...prev, ...updates }));
-  };
-  const removeConnection = (user) => {};
-  const reportUser = (user, data) => {};
-  const blockUser = (user) => {};
-  return (
-    <UserContext.Provider
-      value={{
-        user,
-        updateUser,
-        isLoadingUser,
-        userError,
-        removeConnection,
-        reportUser,
-        blockUser,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
-};
-export const useUser = () => useContext(UserContext);
+  }, []);* */
