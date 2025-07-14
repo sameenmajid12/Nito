@@ -62,7 +62,7 @@ authRouter.post("/register", upload.single("profilePic"), async (req, res) => {
 
 authRouter.post("/login", async (req, res) => {
   try {
-    console.log("Loggin in..")
+    console.log("Loggin in..");
     const userInfo = req.body;
     const user = await User.findOne({
       email: userInfo.email,
@@ -90,7 +90,7 @@ authRouter.post("/login", async (req, res) => {
 });
 
 authRouter.post("/refresh-token", async (req, res) => {
-  console.log("Refreshing token...")
+  console.log("Refreshing token...");
   const { refreshToken } = req.body;
   if (!refreshToken) {
     return res.status(401).json({ message: "No refresh token provided" });
@@ -116,18 +116,5 @@ authRouter.get("/test-token", verifyToken, (_, res) => {
   res.status(200).json({ message: "Token valid" });
 });
 
-authRouter.get("/me", verifyToken, async (req, res) => {
-  try {
-    console.log("Getting user...")
-    const userId = req.user._id;
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    const { password, ...safeUser } = user._doc;
-    res.status(200).json({user:safeUser});
-  } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
+
 module.exports = { authRouter };

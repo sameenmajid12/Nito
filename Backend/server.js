@@ -5,6 +5,7 @@ const cors = require("cors");
 const http = require("http");
 const { authRouter } = require("./controllers/authController.js");
 const { schoolRouter } = require("./controllers/schoolController.js");
+const { userRouter } = require("./controllers/userController.js"); 
 const connectDB = require("./config/db.js");
 
 const corsOptions = {
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use(cors(corsOptions));
 app.use("/auth", authRouter);
 app.use("/school", schoolRouter);
+app.use("/user", userRouter);
 const server = http.createServer(app);
 app.get("/", async (req, res, next) => {
   res.json({ message: "Hello from backend" });
