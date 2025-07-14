@@ -33,6 +33,17 @@ const userSchema = new mongoose.Schema(
       ref:"School",
       required:true
     },
+    bio:{
+      type:String
+    },
+    year:{
+      type:Number,
+      min:2026,
+      max:2036
+    },
+    major:{
+      type:String,
+    },
     tags: {
       type: [String],
       default: [],
