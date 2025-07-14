@@ -7,15 +7,14 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { colors } from "../../styles";
+import { colors, FONT_SIZE_M } from "../../styles";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { useState } from "react";
-import { useRegistration } from "../../contexts/RegistrationContext";
-function AddProfilePicture({ image, setImage }) {
-  const { updateRegistrationData } = useRegistration();
+import { useUser } from "../../contexts/UserContext";
+function ProfilePicture({ image, setImage, handleConfirm, type }) {
   const [isLoadingImage, setIsLoadingImage] = useState(false);
-
+  const { user } = useUser();
   const pickProfilePic = async () => {
     setIsLoadingImage(true);
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -51,8 +50,7 @@ function AddProfilePicture({ image, setImage }) {
         setImage(resizedUri);
         const name = `photo_${Date.now()}.jpg`;
         const extension = resizedUri.split(".").pop();
-        console.log({ uri: resizedUri, type: `image/${extension}`, name })
-        updateRegistrationData({
+        handleConfirm({
           profilePic: { uri: resizedUri, type: `image/${extension}`, name },
         });
       } catch (error) {
@@ -61,11 +59,19 @@ function AddProfilePicture({ image, setImage }) {
           "Image Error",
           "Could not process the image. Please try another one."
         );
-        setImage(null);
-        updateRegistrationData({ profilePic: null });
+        if (type === "auth") {
+          setImage(null);
+          handleConfirm({ profilePic: null });
+        } else {
+          setImage(user.profilePic);
+        }
       }
     } else {
-      setImage(null);
+      if (type === "auth") {
+        setImage(null);
+      } else {
+        setImage(user.profilePic);
+      }
     }
     setIsLoadingImage(false);
   };
@@ -89,12 +95,18 @@ function AddProfilePicture({ image, setImage }) {
       ) : image ? (
         <>
           <Image source={{ uri: image }} style={styles.profilePicture}></Image>
-          <Pressable
-            onPress={handleClearImage}
-            style={styles.closeIconContainer}
-          >
-            <Ionicons name="close" style={styles.closeIcon}></Ionicons>
-          </Pressable>
+          {type === "auth" ? (
+            <Pressable
+              onPress={handleClearImage}
+              style={styles.closeIconContainer}
+            >
+              <Ionicons name="close" style={styles.closeIcon}></Ionicons>
+            </Pressable>
+          ) : (
+            <View style={styles.editIcon}>
+              <Ionicons color={colors.white} name="create-outline" size={FONT_SIZE_M}></Ionicons>
+            </View>
+          )}
         </>
       ) : (
         <>
@@ -163,6 +175,17 @@ const styles = StyleSheet.create({
     height: "100%",
     contentFit: "cover",
   },
+  editIcon: {
+    position: "absolute",
+    bottom:5,
+    right:5,
+    width:30,
+    height:30,
+    backgroundColor:colors.accent70,
+    borderRadius:999,
+    justifyContent:"center",
+    alignItems:"center"
+  },
 });
 
-export default AddProfilePicture;
+export default ProfilePicture;

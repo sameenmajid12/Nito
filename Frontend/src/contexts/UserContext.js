@@ -20,12 +20,7 @@
  * - Import { userUser } from './UserContext';
  * - const { user, updateUser } = useUser();
  */
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import axios from "axios";
 import { API_BASE_URL } from "@env";
@@ -40,7 +35,7 @@ export const UserProvider = ({ children }) => {
     const getUserAfterVerifyingTokens = async () => {
       setIsLoadingUser(true);
       try {
-        console.log("Logging in...")
+        console.log("Logging in...");
         if (!token) {
           return;
         }
@@ -68,21 +63,52 @@ export const UserProvider = ({ children }) => {
     }
   }, [isAuthenticated, token]);
 
-    const updateUser = async(updates) => {
-      try {
-        const response = await axios.patch(`${API_BASE_URL}/user/update`, updates, {
+  const updateUser = async (updates) => {
+    try {
+      const response = await axios.patch(
+        `${API_BASE_URL}/user/update`,
+        updates,
+        {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        });
-        if (response.status === 200) {
-          setUser(response.data);
         }
-      } catch (e) {
-        console.error("Error updating user: ", e);
-        setUserError(e);
+      );
+      if (response.status === 200) {
+        setUser(response.data);
       }
-    };
+    } catch (e) {
+      console.error("Error updating user: ", e);
+      setUserError(e);
+    }
+  };
+  const updateProfilePic = async (newProfilePic) => {
+    try {
+      console.log("Updating profile picture");
+      const formData = new FormData();
+      formData.append("profilePic", newProfilePic);
+      const response = await axios.patch(
+        `${API_BASE_URL}/user/update-profilePic`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        const {profilePic} = response.data;
+        setUser((prev) => ({ ...prev, profilePic}));
+      } else {
+        throw new Error("");
+      }
+    } catch (e) {
+      console.error("Error updating profile pic: ", e);
+      setUserError(e);
+    }
+  };
   const removeConnection = (user) => {};
   const reportUser = (user, data) => {};
   const blockUser = (user) => {};
@@ -93,6 +119,7 @@ export const UserProvider = ({ children }) => {
         updateUser,
         isLoadingUser,
         userError,
+        updateProfilePic,
         removeConnection,
         reportUser,
         blockUser,

@@ -5,12 +5,11 @@ import {
   Animated,
   TouchableOpacity,
 } from "react-native";
-import { Image } from "expo-image";
 import { FONT_SIZE_S, colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUser } from "../../contexts/UserContext";
-
+import ProfilePicture from "../common/ProfilePicture";
 function ProfileTop({
   editing,
   setEditing,
@@ -18,7 +17,16 @@ function ProfileTop({
   resetChanges,
   changesMade,
 }) {
-  const {user} = useUser();
+  const { user, updateProfilePic } = useUser();
+  const [image, setImage] = useState();
+  useEffect(() => {
+    if (user.profilePic) {
+      setImage(user.profilePic);
+    }
+  }, [user.profilePic]);
+  const handleProfilePictureEdit = ({profilePic}) => {
+    updateProfilePic(profilePic);
+  };
   const scaleAnim = useRef(new Animated.Value(editing ? 1 : 0)).current;
   useEffect(() => {
     Animated.timing(scaleAnim, {
@@ -40,10 +48,12 @@ function ProfileTop({
 
   return (
     <View style={styles.profileTop}>
-      <Image
-        source={user.profilePic}
-        style={styles.profilePicture}
-      ></Image>
+      <ProfilePicture
+        image={image}
+        setImage={setImage}
+        handleConfirm={handleProfilePictureEdit}
+        type={"profile"}
+      ></ProfilePicture>
       <View style={{ alignItems: "center" }}>
         <Text style={styles.fullname}>{user.fullname}</Text>
         <Text style={styles.username}>@{user.username}</Text>

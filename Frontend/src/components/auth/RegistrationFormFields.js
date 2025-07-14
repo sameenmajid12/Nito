@@ -1,9 +1,8 @@
 import { View, StyleSheet } from "react-native";
 import Input from "../common/Input";
-import AddProfilePicture from "./AddProfilePicture";
+import ProfilePicture from "../common/ProfilePicture";
 import { useState } from "react";
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-const RUTGERS_EMAIL_REGEX = /^[a-zA-Z0-9.-]+@scarletmail\.rutgers\.edu$/;
+import { useRegistration } from "../../contexts/RegistrationContext";
 
 function RegistrationFormFields({
   formData,
@@ -16,6 +15,7 @@ function RegistrationFormFields({
 }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [retypePasswordVisible, setRetypePasswordVisible] = useState(false);
+  const { updateRegistrationData } = useRegistration();
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setFormErrors((prev) => ({ ...prev, [field]: null }));
@@ -29,7 +29,12 @@ function RegistrationFormFields({
   return (
     <View style={styles.mainContainer}>
       {!keyboardVisible && (
-        <AddProfilePicture image={image} setImage={setImage} />
+        <ProfilePicture
+          image={image}
+          setImage={setImage}
+          handleConfirm={updateRegistrationData}
+          type={"auth"}
+        />
       )}
 
       <Input
