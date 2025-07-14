@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 function verifyToken(req,res,next){
   console.log("Verifying token...")
   const authHeader = req.headers.authorization;
-  console.log(authHeader);
   if(!authHeader || !authHeader.startsWith("Bearer ")){
     return res.status(401).json({message:"Access token missing or malformed"});
   }
