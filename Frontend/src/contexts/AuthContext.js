@@ -28,7 +28,6 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
-import { useUser } from "./UserContext";
 import { API_BASE_URL } from "@env";
 import axios from "axios";
 const AuthContext = createContext();
@@ -61,6 +60,8 @@ export const AuthProvider = ({ children }) => {
             }
           }
           setIsAuthenticated(true);
+        }else{
+          throw new Error("No access token found")
         }
       } catch (e) {
         logout();
@@ -83,6 +84,8 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
         refreshToken,
       });
+            console.log("Refreshing access token on frontend...")
+
       if (response.status === 200) {
         const { accessToken } = response.data;
         await SecureStore.setItemAsync("accessToken", accessToken);
@@ -103,6 +106,7 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      console.log("Verifying access token on frontend...")
       return true;
     } catch (e) {
       console.error("Token error: ", e);

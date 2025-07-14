@@ -24,19 +24,22 @@ function ProfileAccountInformationScreen({ navigation }) {
   const { user, updateUser } = useUser();
   const [changesMade, setChangesMade] = useState(false);
   const [infoValues, setInfoValues] = useState({
-    fullName: user.fullName,
+    fullName: user.fullname,
     email: user.email,
     phoneNumber: user.phoneNumber,
-    password: user.password,
+    password: "", //for changing password, user password is not shown on the frontend
+    retypePassword: "",
   });
   const [errors, setErrors] = useState({
     fullName: "",
     email: "",
     phoneNumber: "",
     password: "",
+    retypePassword: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showRetypePassword, setShowRetypePassword] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   useEffect(() => {
     const keyboardWillShowListener = Keyboard.addListener(
@@ -65,12 +68,11 @@ function ProfileAccountInformationScreen({ navigation }) {
       keyboardWillHideListener.remove();
     };
   }, []);
- const tapGesture = Gesture.Tap()
-  .onTouchesDown(() => Keyboard.dismiss());
+  const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
   const validateInput = (field, value) => {
     let errorMessage = "";
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-    const escapedDomain = user.school.emailDomain.replace(/\./g, "\\.");
+    const escapedDomain = user.school.emailDomain?.replace(/\./g, "\\.");
     const emailRegex = new RegExp(`^[a-zA-Z0-9._%+-]+@${escapedDomain}$`);
 
     if (field === "email") {
@@ -88,6 +90,8 @@ function ProfileAccountInformationScreen({ navigation }) {
     } else if (field === "password" && !passwordRegex.test(value)) {
       errorMessage =
         "Password must be at least 8 chars, contain one uppercase, one lowercase, and one number.";
+    } else if (field === "retypePassword" && value !== infoValues.password) {
+      errorMessage = "Password do not match";
     }
     return errorMessage;
   };
@@ -104,7 +108,7 @@ function ProfileAccountInformationScreen({ navigation }) {
         newValues.fullName !== user.fullName ||
         newValues.email !== user.email ||
         newValues.phoneNumber !== user.phoneNumber ||
-        newValues.password !== user.password;
+        newValues.password !== "";
       const currentErrors = { ...errors, [field]: errorMessage };
       const hasErrors = Object.values(currentErrors).some(
         (val) => val?.length > 0
@@ -117,7 +121,8 @@ function ProfileAccountInformationScreen({ navigation }) {
   const saveChanges = () => {
     const hasErrors = Object.values(errors).some((val) => val?.length > 0);
     if (changesMade && !hasErrors) {
-      updateUser(infoValues);
+      const {retypePassword, ...safeUpdates} = infoValues
+      updateUser(safeUpdates);
       setChangesMade(false);
     }
   };
@@ -148,7 +153,7 @@ function ProfileAccountInformationScreen({ navigation }) {
           <ProfileAccountInfoInput
             iconName={"at-outline"}
             label={"Username"}
-            value={"user21454295"}
+            value={user.username}
             editable={false}
           />
           <ProfileAccountInfoInput
@@ -171,9 +176,9 @@ function ProfileAccountInformationScreen({ navigation }) {
           />
           <ProfileAccountInfoInput
             iconName={"shield-outline"}
-            label={"Password"}
+            label={"Change password"}
             value={infoValues.password}
-            placeholder={"Enter password"}
+            placeholder={"Enter new password"}
             editable={true}
             isPassword={true}
             setValue={(text) => handleChange("password", text)}
@@ -181,8 +186,20 @@ function ProfileAccountInformationScreen({ navigation }) {
             setShowPassword={setShowPassword}
             error={errors.password}
           />
+          <ProfileAccountInfoInput
+            iconName={"clipboard-outline"}
+            label={"Retype password"}
+            value={infoValues.retypePassword}
+            placeholder={"Re-enter new password"}
+            editable={true}
+            isPassword={true}
+            setValue={(text) => handleChange("retypePassword", text)}
+            showPassword={showRetypePassword}
+            setShowPassword={setShowRetypePassword}
+            error={errors.retypePassword}
+          />
           <TouchableOpacity
-            onPress={saveChanges} 
+            onPress={saveChanges}
             style={[
               styles.saveButton,
               changesMade
