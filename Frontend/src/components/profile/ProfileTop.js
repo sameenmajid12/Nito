@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  Pressable,
   StyleSheet,
   Animated,
   TouchableOpacity,
@@ -10,6 +9,7 @@ import { Image } from "expo-image";
 import { FONT_SIZE_S, colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
+import { useUser } from "../../contexts/UserContext";
 
 function ProfileTop({
   editing,
@@ -18,8 +18,8 @@ function ProfileTop({
   resetChanges,
   changesMade,
 }) {
+  const {user} = useUser();
   const scaleAnim = useRef(new Animated.Value(editing ? 1 : 0)).current;
-
   useEffect(() => {
     Animated.timing(scaleAnim, {
       toValue: editing ? 1 : 0,
@@ -41,12 +41,12 @@ function ProfileTop({
   return (
     <View style={styles.profileTop}>
       <Image
-        source={require("../../assets/images/mike.webp")}
+        source={user.profilePic}
         style={styles.profilePicture}
       ></Image>
       <View style={{ alignItems: "center" }}>
-        <Text style={styles.fullname}>Mike Ross</Text>
-        <Text style={styles.username}>@user21284912</Text>
+        <Text style={styles.fullname}>{user.fullname}</Text>
+        <Text style={styles.username}>@{user.username}</Text>
       </View>
 
       {!editing && (
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     width: 90,
     height: 30,
     columnGap: 5,
-    position: "relative", // changed from absolute here since Animated.View handles positioning
+    position: "relative",
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",

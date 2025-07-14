@@ -31,7 +31,7 @@ function ProfileScreen({ navigation }) {
   const [editing, setEditing] = useState(false);
   const [changesMade, setChangesMade] = useState(false);
   const [changes, setChanges] = useState(initialChanges);
-  const saveChanges = () => {
+  const saveChanges = async () => {
     if (changesMade) {
       const payload = {};
 
@@ -98,7 +98,7 @@ function ProfileScreen({ navigation }) {
         Object.keys(payload).length > 0 ||
         (socialMediaChanged && Object.keys(socialMediaChanges).length > 0)
       ) {
-        updateUser(payload);
+        await updateUser(payload);
       }
     }
     setEditing(false);
@@ -119,7 +119,7 @@ function ProfileScreen({ navigation }) {
   useEffect(() => {
     const keyboardShow = Keyboard.addListener("keyboardWillShow", (e) => {
       Animated.timing(paddingBottom, {
-        toValue: e.endCoordinates.height -35 ,
+        toValue: e.endCoordinates.height - 35,
         duration: e.duration || 250,
         useNativeDriver: false,
       }).start();
@@ -139,11 +139,9 @@ function ProfileScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.page}>
       <Header />
-      <Animated.View
-        style={{ flex: 1, paddingBottom:paddingBottom,}}
-      >
+      <Animated.View style={{ flex: 1, paddingBottom: paddingBottom }}>
         <ScrollView
-        keyboardDismissMode="interactive"
+          keyboardDismissMode="interactive"
           keyboardShouldPersistTaps="handled"
           style={styles.scrollContainer}
         >
@@ -179,12 +177,12 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 30,
-    backgroundColor:"transparent"
+    backgroundColor: "transparent",
   },
   mainContainer: {
     rowGap: 5,
     marginBottom: 100,
-    backgroundColor:"transparent"
+    backgroundColor: "transparent",
   },
   detailsContainer: {
     rowGap: 20,

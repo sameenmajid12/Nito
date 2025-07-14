@@ -53,7 +53,9 @@ function ProfileAboutMe({
             placeholder={"Enter class year"}
             editable={editing}
             value={
-              editing ? String(changes.year ?? user.year) : String(user.year)
+              editing
+                ? String(changes.year ?? user.year ?? "")
+                : String(user.year ?? "")
             }
             setValue={(text) => handleChange("year", text)}
           ></Input>

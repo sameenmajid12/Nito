@@ -6,7 +6,9 @@ import {
   FONT_SIZE_L,
   FONT_SIZE_M,
 } from "../../styles";
+import { useAuth } from "../../contexts/AuthContext";
 function ProfileSettings({navigate}) {
+  const {logout} = useAuth();
   return (
     <View style={styles.mainContainer}>
       <ProfileSectionHeader header={"Settings"} />
@@ -67,7 +69,7 @@ function ProfileSettings({navigate}) {
             <Switch value={true} trackColor={{true:colors.primary}}></Switch>
           </View>
         </View>
-        <TouchableOpacity activeOpacity={0.4} style={styles.button}>
+        <TouchableOpacity activeOpacity={0.4} style={styles.button} onPress={logout}>
           <Ionicons size={28} color={"red"} name="log-out-outline"></Ionicons>
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
