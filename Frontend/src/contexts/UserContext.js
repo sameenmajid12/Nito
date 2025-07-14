@@ -36,7 +36,7 @@ export const UserProvider = ({ children }) => {
       setIsLoadingUser(true);
       try {
         console.log("Logging in...");
-        if (!token) {
+        if (!token || !isAuthenticated) {
           return;
         }
         const response = await axios.get(`${API_BASE_URL}/user/me`, {
