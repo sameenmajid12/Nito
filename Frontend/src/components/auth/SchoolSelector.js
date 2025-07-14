@@ -36,6 +36,7 @@ function SchoolSelector({
           setFilteredSchools(response.data.schools);
           setAllSchools(response.data.schools);
         } else {
+          throw new Error("Error fetching schools")
         }
       } catch (error) {
         console.log(error);
