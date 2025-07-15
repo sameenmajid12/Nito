@@ -99,8 +99,8 @@ export const UserProvider = ({ children }) => {
         }
       );
       if (response.status === 200) {
-        const {profilePic} = response.data;
-        setUser((prev) => ({ ...prev, profilePic}));
+        const { profilePic } = response.data;
+        setUser((prev) => ({ ...prev, profilePic }));
       } else {
         throw new Error("");
       }
@@ -109,9 +109,66 @@ export const UserProvider = ({ children }) => {
       setUserError(e);
     }
   };
-  const removeConnection = (user) => {};
-  const reportUser = (user, data) => {};
-  const blockUser = (user) => {};
+  const removeConnection = async (userToRemoveUsername) => {
+    try {
+      const response = await axios.patch(
+        `${API_BASE_URL}/user/remove-connection`,
+        userToRemoveUsername,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        const { filteredConnections } = response.data;
+        setUser((prev) => ({ ...prev, connections: filteredConnections }));
+      } else {
+        throw new Error("");
+      }
+    } catch (e) {
+      console.error("Error removing connection: ", e);
+      setUserError(e);
+    }
+  };
+  const reportUser = async (userToReportUsername, data) => {
+    try {
+      await axios.post(
+        `${API_BASE_URL}/user/report`,
+        { reportedUserUsername: userToReportUsername, reportData: data },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (e) {
+      console.error("Error removing connection: ", e);
+      setUserError(e);
+    }
+  };
+  const blockUser = async (userToBlockUsername) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/user/block`,
+        userToBlockUsername,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        const { blockedUsers } = response.data;
+        setUser((prev) => ({ ...prev, blockedUsers }));
+      } else {
+        throw new Error("");
+      }
+    } catch (e) {
+      console.error("Error blocking user: ", e);
+      setUserError(e);
+    }
+  };
   return (
     <UserContext.Provider
       value={{

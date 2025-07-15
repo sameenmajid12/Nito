@@ -29,7 +29,7 @@ function HomeScreen({ navigation }) {
 
           <YouHaveAMatch enterChat={enterChat} />
           <View
-            style={{ flexDirection: "row", columnGap: 10, marginBottom: 20 }}
+            style={{ flexDirection: "row", columnGap: 10, marginBottom: 10   }}
           >
             <NextMatchIn />
             <DailyPoll />

@@ -95,4 +95,49 @@ userRouter.patch(
   }
 );
 
+userRouter.patch("/remove-connection", verifyToken, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { userToRemoveUsername } = req.body;
+    const user = await User.findById(userId).populate(["connections"]);
+    const userToRemove = await User.findOne({ username: userToRemoveUsername });
+    if (!user || !userToRemove) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.connections = user.connections.filter(
+      (connection) => !connection._id.equals(userToRemove._id)
+    );
+    userToRemove.connections = userToRemove.connections.filter(
+      (connection) => !connection._id.equals(user._id)
+    );
+    await user.save();
+    await userToRemove.save();
+    res.status(200).json({ connections: user.connections });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+userRouter.post("/block", verifyToken, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { userToBlockUsername } = req.body;
+    const user = await User.findById(userId);
+    const userToBlock = await User.findOne({ username: userToBlockUsername });
+    if (!user || !userToBlock) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (user.blockedUsers.some((id) => id.equals(userToBlock._id))) {
+      return res.status(400).json({ message: "User already blocked" });
+    }
+    user.blockedUsers.push(userToBlock._id);
+    await user.save();
+    res.status(200).json({ blockedUsers: user.blockedUsers });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 module.exports = { userRouter };
