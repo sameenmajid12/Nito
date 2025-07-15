@@ -13,7 +13,7 @@ function Connections({ navigate }) {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Your connections</Text>
+        <Text style={styles.header}>Recent connections</Text>
         <TouchableOpacity
         activeOpacity={0.25}
           style={styles.viewAll}
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   header: {
     color: colors.textPrimary,
     fontFamily: "Nunito-SemiBold",
-    fontSize: FONT_SIZE_L,
+    fontSize: FONT_SIZE_M,
   },
   viewAllText: {
     fontFamily: "Nunito-Bold",
