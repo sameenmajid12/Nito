@@ -8,7 +8,9 @@ import {
 import { FONT_SIZE_M, colors } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 function ConfirmationView({ confirmationType, cancelConfirmation }) {
+  const { logout } = useAuth();
   const icon =
     confirmationType.type === "block"
       ? "remove-circle"
@@ -18,6 +20,8 @@ function ConfirmationView({ confirmationType, cancelConfirmation }) {
       ? "trash-bin"
       : confirmationType.type === "remove"
       ? "close-circle"
+      : confirmationType.type === "logout"
+      ? "log-out"
       : "";
   const subheader =
     confirmationType.type === "block"
@@ -28,7 +32,28 @@ function ConfirmationView({ confirmationType, cancelConfirmation }) {
       ? "This will delete the conversation from your chat list. It won't be removed for the other person."
       : confirmationType.type === "remove"
       ? "This action will remove your connection. You cannot connect with this user again."
+      : confirmationType.type === "logout"
+      ? "You’ll need to sign in again to access your account."
       : "";
+  const handleConfirmation = () => {
+    switch (confirmationType.type) {
+      case "block":
+        console.log("Blocking user");
+        break;
+      case "report":
+        console.log("Reporting user");
+        break;
+      case "delete":
+        console.log("Deleting user");
+        break;
+      case "remove":
+        console.log("Removing connections");
+        break;
+      case "logout":
+        logout();
+        break;
+    }
+  };
   const scaleAnimNo = useRef(new Animated.Value(1)).current;
   const scaleAnimYes = useRef(new Animated.Value(1)).current;
 
@@ -37,8 +62,12 @@ function ConfirmationView({ confirmationType, cancelConfirmation }) {
       <Ionicons name={icon} size={64} color={"red"} />
       <View style={styles.confirmationText}>
         <Text style={styles.confirmationTextHeader}>
-          Are you sure you want to {confirmationType.type} this {""}
-          {confirmationType.subject}?
+          Are you sure you want to {confirmationType.type}
+          {" "}
+          {confirmationType.type === "logout"
+            ? ""
+            : `this ${confirmationType.subject}`}
+          ?
         </Text>
         <Text style={styles.confirmationTextSubheader}>{subheader}</Text>
       </View>
@@ -59,7 +88,7 @@ function ConfirmationView({ confirmationType, cancelConfirmation }) {
             }).start();
           }}
           activeOpacity={0.75}
-          onPress={()=>{}}
+          onPress={handleConfirmation}
         >
           <Text style={styles.yesButtonText}>Yes</Text>
         </TouchableOpacity>

@@ -9,7 +9,7 @@ export const ModalProvider = ({ children }) => {
   });
 
   const openModal = (data, name) => {
-    if (!name || !data) {
+    if (name !== "logoutModal" && (!name || !data)) {
       return;
     }
     setModalState({ visible: true, data: data, name: name });
@@ -18,11 +18,13 @@ export const ModalProvider = ({ children }) => {
   const closeModal = () => {
     setModalState({ visible: false, data: null, name: null });
   };
-  const updateModalData=(newData)=>{
-    setModalState((prev)=>({...prev, data:{...prev.data, ...newData }}));
-  }
+  const updateModalData = (newData) => {
+    setModalState((prev) => ({ ...prev, data: { ...prev.data, ...newData } }));
+  };
   return (
-    <ModalContext.Provider value={{ modalState, openModal, closeModal, updateModalData }}>
+    <ModalContext.Provider
+      value={{ modalState, openModal, closeModal, updateModalData }}
+    >
       {children}
     </ModalContext.Provider>
   );

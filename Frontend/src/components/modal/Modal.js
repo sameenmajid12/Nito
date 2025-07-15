@@ -21,7 +21,11 @@ function Modal({ user, conversation, type, sort, changeSort, pollData }) {
   }
   const { closeModal } = useModal();
   const slideAnim = useRef(new Animated.Value(600)).current;
-  const [confirmationType, setConfirmationType] = useState(null);
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+
+  const [confirmationType, setConfirmationType] = useState(
+    type === "logoutModal" ? { type: "logout" } : null
+  );
   const toggleConfirmation = (type, subject) => {
     if (confirmationType) {
       setConfirmationType(null);
@@ -30,38 +34,63 @@ function Modal({ user, conversation, type, sort, changeSort, pollData }) {
     }
   };
   useEffect(() => {
-    Animated.timing(slideAnim, {
-      toValue: 60,
-      duration: 175,
-      useNativeDriver: true,
-    }).start();
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: 60,
+        duration: 175,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
   }, []);
 
   const handleClose = () => {
-    if (confirmationType) return;
-    Animated.timing(slideAnim, {
-      toValue: 600,
-      duration: 150,
-      useNativeDriver: true,
-    }).start(({ finished }) => {
+    if (confirmationType && type !== "logoutModal") return;
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: 600,
+        duration: 175,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(({ finished }) => {
       if (finished) {
         closeModal();
       }
     });
   };
   const cancelConfirmation = () => {
-    setConfirmationType(false);
+    if (type === "logoutModal") {
+      handleClose();
+    }
+    setConfirmationType(null);
   };
   return (
     <Pressable onPress={handleClose} style={styles.page}>
       <Animated.View
         style={[
           styles.animatedContainer,
-          { transform: [{ translateY: slideAnim }] },
-          type==="pollModal"?{right:10, left:10}:{right:20, left:20}
+          { transform: [{ translateY: slideAnim }], opacity: opacityAnim },
+
+          type === "pollModal"
+            ? { right: 10, left: 10 }
+            : { right: 20, left: 20 },
         ]}
       >
-        <View style={[styles.mainContainer, type==="pollModal"?{borderRadius:20}:{borderRadius:15}]}>
+        <View
+          style={[
+            styles.mainContainer,
+            type === "pollModal" ? { borderRadius: 20 } : { borderRadius: 15 },
+          ]}
+        >
           {confirmationType ? (
             <ConfirmationView
               confirmationType={confirmationType}
@@ -85,7 +114,13 @@ function Modal({ user, conversation, type, sort, changeSort, pollData }) {
           ) : null}
         </View>
         {!confirmationType && type !== "sortModal" && type !== "pollModal" && (
-          <Pressable style={styles.closeButton} onPress={handleClose}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.closeButton,
+              { backgroundColor: pressed ? "#EBE1EC" : colors.background },
+            ]}
+            onPress={handleClose}
+          >
             <Text style={styles.closeButtonText}>Close</Text>
           </Pressable>
         )}
@@ -116,7 +151,6 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     width: "100%",
-    backgroundColor: colors.background,
     padding: 10,
     justifyContent: "center",
     alignItems: "center",
