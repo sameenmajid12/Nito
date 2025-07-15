@@ -121,9 +121,21 @@ function ProfileAccountInformationScreen({ navigation }) {
   const saveChanges = () => {
     const hasErrors = Object.values(errors).some((val) => val?.length > 0);
     if (changesMade && !hasErrors) {
-      const {retypePassword, ...safeUpdates} = infoValues
-      updateUser(safeUpdates);
-      setChangesMade(false);
+      const { retypePassword, ...rest } = infoValues;
+      const safeUpdates = {};
+      for (const key in rest) {
+        if (key === "password" && rest[key].trim().length === 0) {
+          continue;
+        }
+        if (rest[key] !== user[key]) {
+          safeUpdates[key] = rest[key];
+        }
+      }
+
+      if (Object.keys(safeUpdates).length > 0) {
+        updateUser(safeUpdates);
+        setChangesMade(false);
+      }
     }
   };
 
