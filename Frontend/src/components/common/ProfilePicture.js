@@ -88,6 +88,9 @@ function ProfilePicture({ image, setImage, handleConfirm, type }) {
         image && !isLoadingImage
           ? { borderColor: "transparent" }
           : { borderColor: colors.borderLight },
+        type === "auth"
+          ? { width: 140, height: 140 }
+          : { width: 120, height: 120 },
       ]}
     >
       {isLoadingImage ? (
@@ -104,7 +107,11 @@ function ProfilePicture({ image, setImage, handleConfirm, type }) {
             </Pressable>
           ) : (
             <View style={styles.editIcon}>
-              <Ionicons color={colors.white} name="create-outline" size={FONT_SIZE_M}></Ionicons>
+              <Ionicons
+                color={colors.white}
+                name="create-outline"
+                size={FONT_SIZE_M}
+              ></Ionicons>
             </View>
           )}
         </>
@@ -125,8 +132,6 @@ function ProfilePicture({ image, setImage, handleConfirm, type }) {
 
 const styles = StyleSheet.create({
   cameraContainer: {
-    width: 140,
-    height: 140,
     borderWidth: 1,
     borderColor: colors.borderLight,
     borderRadius: 999,
@@ -177,14 +182,14 @@ const styles = StyleSheet.create({
   },
   editIcon: {
     position: "absolute",
-    bottom:5,
-    right:5,
-    width:30,
-    height:30,
-    backgroundColor:colors.accent70,
-    borderRadius:999,
-    justifyContent:"center",
-    alignItems:"center"
+    bottom: 5,
+    right: 5,
+    width: 30,
+    height: 30,
+    backgroundColor: colors.accent70,
+    borderRadius: 999,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

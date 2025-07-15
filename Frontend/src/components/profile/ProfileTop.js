@@ -24,7 +24,7 @@ function ProfileTop({
       setImage(user.profilePic);
     }
   }, [user.profilePic]);
-  const handleProfilePictureEdit = ({profilePic}) => {
+  const handleProfilePictureEdit = ({ profilePic }) => {
     updateProfilePic(profilePic);
   };
   const scaleAnim = useRef(new Animated.Value(editing ? 1 : 0)).current;
@@ -120,7 +120,6 @@ function ProfileTop({
 const styles = StyleSheet.create({
   profileTop: {
     alignItems: "center",
-    rowGap: 15,
   },
   fullname: {
     fontFamily: "Nunito-Bold",
@@ -131,11 +130,6 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-SemiBold",
     fontSize: FONT_SIZE_M,
     color: colors.textLight,
-  },
-  profilePicture: {
-    width: 120,
-    height: 120,
-    borderRadius: 999,
   },
   editButton: {
     borderWidth: 1,
