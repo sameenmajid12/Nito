@@ -5,8 +5,10 @@ import YouHaveAMatch from "../../components/home/YouHaveAMatch";
 import NextMatchIn from "../../components/home/NextMatchIn";
 import DailyPoll from "../../components/home/DailyPoll";
 import HomeConnections from "../../components/home/HomeConnections";
+import { useUser } from "../../contexts/UserContext";
 
 function HomeScreen({ navigation }) {
+  const {user} = useUser();
   const navigate = (route) => {
     navigation.navigate(route);
   };
@@ -25,7 +27,7 @@ function HomeScreen({ navigation }) {
       <Header></Header>
       <ScrollView>
         <View style={styles.pageContainer}>
-          <Text style={styles.greeting}>Welcome, Sameen Majid!</Text>
+          <Text style={styles.greeting}>Welcome, {user.fullname  }!</Text>
 
           <YouHaveAMatch enterChat={enterChat} />
           <View
