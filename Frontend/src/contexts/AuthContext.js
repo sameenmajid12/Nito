@@ -44,9 +44,8 @@ export const AuthProvider = ({ children }) => {
   });
   const [isLoadingLogin, setIsLoadingLogin] = useState(false);
   useEffect(() => {
-   
     const loadTokensAndVerify = async () => {
-       /*await SecureStore.deleteItemAsync("accessToken");
+      /*await SecureStore.deleteItemAsync("accessToken");
        await SecureStore.deleteItemAsync("refreshToken");*/
       setIsLoadingAuth(true);
       try {
@@ -57,11 +56,14 @@ export const AuthProvider = ({ children }) => {
             const newAccessToken = await refreshAccessToken();
             if (!newAccessToken) {
               throw new Error("Failed to refresh token");
+            } else {
+              setIsAuthenticated(true);
             }
+          } else {
+            setIsAuthenticated(true);
           }
-          setIsAuthenticated(true);
-        }else{
-          throw new Error("No access token found")
+        } else {
+          throw new Error("No access token found");
         }
       } catch (e) {
         logout();
@@ -84,7 +86,7 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
         refreshToken,
       });
-            console.log("Refreshing access token on frontend...")
+      console.log("Refreshing access token on frontend...");
 
       if (response.status === 200) {
         const { accessToken } = response.data;
@@ -106,7 +108,7 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log("Verifying access token on frontend...")
+      console.log("Verifying access token on frontend...");
       return true;
     } catch (e) {
       console.error("Token error: ", e);
@@ -125,7 +127,7 @@ export const AuthProvider = ({ children }) => {
         const { accessToken, refreshToken } = response.data;
         await SecureStore.setItemAsync("accessToken", accessToken);
         await SecureStore.setItemAsync("refreshToken", refreshToken);
-        setToken(accessToken)
+        setToken(accessToken);
         setIsAuthenticated(true);
       } else {
         throw new Error("Login failed");
