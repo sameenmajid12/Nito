@@ -27,9 +27,9 @@ function ChatListScreen({ navigation }) {
     navigation.navigate("Chat", {
       conversation: {
         ...conversation,
-        startTime: conversation.startTime.toISOString(),
-        endTime: conversation.endTime.toISOString(),
-        graceEndTime: conversation.graceEndTime.toISOString(),
+        startTime: conversation?.startTime.toISOString(),
+        endTime: conversation?.endTime.toISOString(),
+        graceEndTime: conversation?.graceEndTime.toISOString(),
       },
     });
   };

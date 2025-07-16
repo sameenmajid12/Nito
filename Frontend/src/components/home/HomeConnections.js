@@ -10,6 +10,33 @@ import ConnectionList from "../common/ConnectionList";
 import { Ionicons } from "@expo/vector-icons";
 
 function Connections({ navigate }) {
+   const connections = [
+    {
+      fullname: "Mike Ross",
+      profilePic: require("../../assets/images/mike.webp"),
+      date: "Today",
+    },
+    {
+      fullname:"Daniel Cormier",
+      profilePic:require("../../assets/images/dc.jpg"),
+      date:"Today",
+    },
+    {
+      fullname: "SZA",
+      profilePic: require("../../assets/images/sza.webp"),
+      date: "Yesterday",
+    },
+    {
+      fullname: "Harvey Specter",
+      profilePic: require("../../assets/images/harvey.jpg"),
+      date: "Yesterday",
+    },
+    {
+      fullname: "Ilia Topuria",
+      profilePic: require("../../assets/images/ilia.jpg"),
+      date: "3d ago",
+    },
+  ];
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -27,7 +54,7 @@ function Connections({ navigate }) {
           ></Ionicons>
         </TouchableOpacity>
       </View>
-      <ConnectionList connections={["s", "s", "s", "s", "s"]} gap={15} />
+      <ConnectionList connections={connections} gap={15} />
     </View>
   );
 }

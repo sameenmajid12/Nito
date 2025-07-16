@@ -5,8 +5,10 @@ const PROFILE_PIC_SIZE = 33;
 const TEXT_LEFT_MARGIN = 33 + 5;
 const NAME_HEIGHT = 16;
 function ReceivedMessage({ text, first, last, usersRevealed, otherUser }) {
-  const image = usersRevealed ? require('../../assets/images/mike.webp'):require('../../assets/images/anonymous-user.png');
-  const name = usersRevealed?otherUser.fullName:otherUser.username
+  const image = usersRevealed
+    ? require("../../assets/images/mike.webp")
+    : require("../../assets/images/anonymous-user.png");
+  const name = usersRevealed ? otherUser.fullname : otherUser.username;
   return (
     <View style={{ flexDirection: "row", columnGap: 5 }}>
       {first && image && (
@@ -35,7 +37,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     backgroundColor: colors.primary,
     borderRadius: 20,
-    maxWidth: "60%",
+    maxWidth: "70%",
     marginBottom: 1,
   },
   text: {

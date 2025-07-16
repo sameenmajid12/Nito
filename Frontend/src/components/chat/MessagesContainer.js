@@ -62,7 +62,7 @@ function MessagesContainer({ messages, usersRevealed, otherUser }) {
     }
   };
   const isByUser = (message) => {
-    return message.sender === user.id;
+    return message.sender === user._id;
   };
   return (
     <ScrollView
@@ -73,7 +73,6 @@ function MessagesContainer({ messages, usersRevealed, otherUser }) {
     >
       <Animated.View
         style={{
-          height: containerBottomPadding,
           backgroundColor: colors.background,
         }}
       >
@@ -103,6 +102,7 @@ function MessagesContainer({ messages, usersRevealed, otherUser }) {
           <Text>No messages yet</Text>
         )}
       </Animated.View>
+      <ChatExpired/>
     </ScrollView>
   );
 }

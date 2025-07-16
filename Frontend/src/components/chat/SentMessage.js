@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     backgroundColor: colors.white70,
     borderRadius: 20,
-    maxWidth: "60%",
+    maxWidth: "70%",
     marginBottom: 1,
     shadowColor: "#000",
     shadowRadius: 4,

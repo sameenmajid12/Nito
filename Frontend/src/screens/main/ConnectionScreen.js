@@ -4,7 +4,7 @@ import {
   StyleSheet,
   TextInput,
   View,
-  Keyboard
+  Keyboard,
 } from "react-native";
 import { colors } from "../../styles";
 import TextHeader from "../../components/common/TextHeader";
@@ -13,7 +13,35 @@ import SortConnection from "../../components/connection/SortConnection";
 import SearchConnection from "../../components/connection/SearchConnection";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
 import { useState } from "react";
+
 function ConnectionScreen({ navigation }) {
+ const connections = [
+    {
+      fullname: "Mike Ross",
+      profilePic: require("../../assets/images/mike.webp"),
+      date: "Today",
+    },
+    {
+      fullname:"Daniel Cormier",
+      profilePic:require("../../assets/images/dc.jpg"),
+      date:"Today",
+    },
+    {
+      fullname: "SZA",
+      profilePic: require("../../assets/images/sza.webp"),
+      date: "Yesterday",
+    },
+    {
+      fullname: "Harvey Specter",
+      profilePic: require("../../assets/images/harvey.jpg"),
+      date: "Yesterday",
+    },
+    {
+      fullname: "Ilia Topuria",
+      profilePic: require("../../assets/images/ilia.jpg"),
+      date: "3d ago",
+    },
+  ];
   const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
   const [sortState, setSortState] = useState("newestfirst");
   return (
@@ -24,8 +52,12 @@ function ConnectionScreen({ navigation }) {
           <View style={styles.mainContainer}>
             <SearchConnection />
             <View style={styles.divider}></View>
-            <SortConnection sortState={sortState} setSortState={setSortState}/>
-            <ConnectionList connections={["s", "s", "s"]} gap={15} sortState={sortState}/>
+            <SortConnection sortState={sortState} setSortState={setSortState} />
+            <ConnectionList
+              connections={connections}
+              gap={15}
+              sortState={sortState}
+            />
           </View>
         </ScrollView>
       </GestureDetector>

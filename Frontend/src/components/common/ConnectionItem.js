@@ -9,15 +9,15 @@ function ConnectionItem({ connection }) {
     <>
       <View style={styles.connection}>
         <Image
-          source={require("../../assets/images/mike.webp")}
+          source={connection.profilePic}
           width={50}
           height={50}
           style={styles.connectionProfilPic}
         ></Image>
         <View style={styles.connectionDetails}>
           <View>
-            <Text style={styles.connectionName}>Mike Ross</Text>
-            <Text style={styles.connectionDate}>Connected - Today</Text>
+            <Text style={styles.connectionName}>{connection.fullname}</Text>
+            <Text style={styles.connectionDate}>Connected - {connection.date}</Text>
           </View>
           <TouchableOpacity onPress={()=>openModal(connection, "userModal")}>
             <Ionicons
