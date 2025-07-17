@@ -23,8 +23,8 @@ const conversationSchema = new mongoose.Schema({
   user2Revealed: { type: Boolean, default: false },
   status: {
     type: String,
-    enum: ["active", "matched", "ended"],
-    default: "active",
+    enum: ["current", "revealing", "matched", "archived"],
+    default: "current",
   },
   startTime: { type: Date, required: true, default: Date.now },
   matchTime: { type: Date, required: true },
