@@ -6,9 +6,7 @@ import MainNavigator from "./src/navigation/MainNavigator";
 import { ModalProvider } from "./src/contexts/ModalContext";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { UserProvider } from "./src/contexts/UserContext";
-import { useAuth } from "./src/contexts/AuthContext";
-import { useUser } from "./src/contexts/UserContext";
-import LoadingScreen from "./src/screens/LoadingScreen";
+import { SocketProvider } from "./src/contexts/SocketContext";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 export default function App() {
@@ -26,9 +24,11 @@ export default function App() {
       <NavigationContainer>
         <AuthProvider>
           <UserProvider>
-            <ModalProvider>
-              <AppNavigator />
-            </ModalProvider>
+            <SocketProvider>
+              <ModalProvider>
+                <AppNavigator />
+              </ModalProvider>
+            </SocketProvider>
           </UserProvider>
         </AuthProvider>
       </NavigationContainer>
