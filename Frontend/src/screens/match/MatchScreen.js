@@ -12,11 +12,7 @@ import MatchedUsersImages from "../../components/match/MatchedUserImages";
 import Logo from "../../components/common/Logo";
 import { Ionicons } from "@expo/vector-icons";
 import { useRef } from "react";
-function MatchScreen({ /*matchedUser*/ type = "match", navigation }) {
-  const matchedUser = {
-    fullname: "Ilia Topuria",
-    profilePic: require("../../assets/images/ilia.jpg"),
-  };
+function MatchScreen({ matchedUser, type, navigation }) {
   if (type === "match" && !matchedUser) {
     return;
   }
@@ -54,7 +50,11 @@ function MatchScreen({ /*matchedUser*/ type = "match", navigation }) {
       : "View your profile";
   return (
     <SafeAreaView style={styles.page}>
-      <TouchableOpacity activeOpacity={0.5} onPress={()=>navigation.goBack()} style={styles.logo}>
+      <TouchableOpacity
+        activeOpacity={0.5}
+        onPress={() => navigation.goBack()}
+        style={styles.logo}
+      >
         <Ionicons
           size={FONT_SIZE_XL}
           color={colors.primaryDark}
