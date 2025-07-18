@@ -1,7 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import { colors } from "../../styles";
 import ProfileSocialInput from "./ProfileSocialInput";
-function ProfileSocialMedia({ editing, handleChange, changes }) {
+function ProfileSocialMedia({ editing, handleChange, changes, user, isUser }) {
+  const hasInstagram = !isUser && user.socialMedia.instagram;
+  const hasSnapchat = !isUser && user.socialMedia.snapchat;
+  const hasLinkedin = !isUser && user.socialMedia.linkedin;
+  const hasDiscord = !isUser && user.socialMedia.discord;
+
   return (
     <View style={{ rowGap: 15 }}>
       <View style={styles.headerContainer}>
@@ -9,32 +14,44 @@ function ProfileSocialMedia({ editing, handleChange, changes }) {
       </View>
       <View style={{ rowGap: 5 }}>
         <View style={styles.sideBySide}>
-          <ProfileSocialInput
-            editing={editing}
-            changes={changes}
-            socialMedia={"Instagram"}
-            setValue={(text) => handleChange("instagram", text)}
-          />
-          <ProfileSocialInput
-            editing={editing}
-            changes={changes}
-            socialMedia={"Snapchat"}
-            setValue={(text) => handleChange("snapchat", text)}
-          />
+          {(isUser || (!isUser && hasInstagram)) && (
+            <ProfileSocialInput
+              editing={editing}
+              changes={changes}
+              socialMedia={"Instagram"}
+              setValue={(text) => handleChange("instagram", text)}
+              user={user}
+            />
+          )}
+          {(isUser || (!isUser && hasSnapchat)) && (
+            <ProfileSocialInput
+              editing={editing}
+              changes={changes}
+              socialMedia={"Snapchat"}
+              setValue={(text) => handleChange("snapchat", text)}
+              user={user}
+            />
+          )}
         </View>
         <View style={styles.sideBySide}>
-          <ProfileSocialInput
-            editing={editing}
-            changes={changes}
-            socialMedia={"LinkedIn"}
-            setValue={(text) => handleChange("linkedin", text)}
-          />
-          <ProfileSocialInput
-            editing={editing}
-            changes={changes}
-            socialMedia={"Discord"}
-            setValue={(text) => handleChange("discord", text)}
-          />
+          {(isUser || (!isUser && hasLinkedin)) && (
+            <ProfileSocialInput
+              editing={editing}
+              changes={changes}
+              socialMedia={"LinkedIn"}
+              setValue={(text) => handleChange("linkedin", text)}
+              user={user}
+            />
+          )}
+          {(isUser || (!isUser && hasDiscord)) && (
+            <ProfileSocialInput
+              editing={editing}
+              changes={changes}
+              socialMedia={"Discord"}
+              setValue={(text) => handleChange("discord", text)}
+              user={user}
+            />
+          )}
         </View>
       </View>
     </View>

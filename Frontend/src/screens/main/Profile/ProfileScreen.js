@@ -152,15 +152,19 @@ function ProfileScreen({ navigation }) {
               editing={editing}
               saveChanges={saveChanges}
               resetChanges={resetChanges}
+              user={user}
+              isUser={true}
             />
             <View style={styles.detailsContainer}>
-              <ProfileActivity navigate={navigate} />
+              <ProfileActivity navigate={navigate} user={user} isUser={true} />
               <ProfileAboutMe
                 editing={editing}
                 changes={changes}
                 setChanges={setChanges}
                 setChangesMade={setChangesMade}
                 changesMade={changesMade}
+                isUser={true}
+                user={user}
               />
               <ProfileSettings navigate={navigate} />
             </View>

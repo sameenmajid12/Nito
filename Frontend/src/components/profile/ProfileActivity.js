@@ -1,25 +1,48 @@
 import { Ionicons } from "@expo/vector-icons";
-import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_S, FONT_SIZE_XL, FONT_SIZE_XS } from "../../styles";
+import {
+  colors,
+  FONT_SIZE_L,
+  FONT_SIZE_M,
+  FONT_SIZE_S,
+  FONT_SIZE_XL,
+  FONT_SIZE_XS,
+} from "../../styles";
 import ProfileSectionHeader from "./ProfileSectionHeader";
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-function ProfileActivity({navigate}) {
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+function ProfileActivity({ navigate, isUser, user }) {
+  if (!user) {
+    return;
+  }
   return (
     <View style={styles.mainContainer}>
       <ProfileSectionHeader header={"Activity"}></ProfileSectionHeader>
       <View style={styles.activityContainer}>
-        <TouchableOpacity activeOpacity={0.9} onPress={()=>navigate("ConnectionScreen")} style={styles.activity}>
-          <View>
-            <Text style={styles.number}>14</Text>
-            <Text style={styles.description}>Connections made</Text>
-          </View>
-          <Ionicons style={styles.arrow} name="arrow-forward"></Ionicons>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => navigate("ConnectionScreen")}
+          style={styles.activity}
+        >
+          <Text style={styles.number}>14</Text>
+          <Text style={styles.description}>Connections made</Text>
+          {isUser && <Ionicons style={styles.arrow} name="arrow-forward"></Ionicons>}
         </TouchableOpacity>
-        <Pressable style={styles.activity}>
-          <View>
+        {isUser ? (
+          <Pressable style={styles.activity}>
             <Text style={styles.number}>27</Text>
             <Text style={styles.description}>Connections skipped</Text>
-          </View>
-        </Pressable>
+          </Pressable>
+        ) : (
+          <Pressable style={styles.activity}>
+            <Text style={styles.description}>Last Active</Text>
+            <Text style={styles.number}>12m ago</Text>
+          </Pressable>
+        )}
       </View>
     </View>
   );
@@ -35,29 +58,29 @@ const styles = StyleSheet.create({
   activity: {
     flex: 1,
     backgroundColor: colors.primary,
-    padding:15,
-    borderRadius:15,
-    shadowColor:"#000",
-    shadowRadius:4,
-    shadowOffset:{width:0, height:4},
-    shadowOpacity:0.2
+    padding: 15,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
   },
-  number:{
-    fontFamily:"Nunito-Bold",
-    fontSize:FONT_SIZE_L,
-    color:colors.white
+  number: {
+    fontFamily: "Nunito-Bold",
+    fontSize: FONT_SIZE_L,
+    color: colors.white,
   },
-  description:{
-    fontFamily:"Nunito-SemiBold",
-    fontSize:FONT_SIZE_XS,
-    color:colors.white70,
+  description: {
+    fontFamily: "Nunito-SemiBold",
+    fontSize: FONT_SIZE_XS,
+    color: colors.white70,
   },
-  arrow:{
-    color:colors.white,
-    fontSize:FONT_SIZE_L,
-    position:"absolute",
-    right:15,
-    top:15
-  }
+  arrow: {
+    color: colors.white,
+    fontSize: FONT_SIZE_L,
+    position: "absolute",
+    right: 15,
+    top: 15,
+  },
 });
 export default ProfileActivity;

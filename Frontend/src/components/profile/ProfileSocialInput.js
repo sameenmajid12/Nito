@@ -3,8 +3,7 @@ import { TextInput, View, Text, StyleSheet } from "react-native";
 import { colors, FONT_SIZE_S, FONT_SIZE_XS, FONT_SIZE_XXS } from "../../styles";
 import { useUser } from "../../contexts/UserContext";
 
-function ProfileSocialInput({ socialMedia, editing, changes, setValue }) {
-  const { user } = useUser();
+function ProfileSocialInput({ socialMedia, editing, changes, setValue, user }) {
   const placeholder =
     socialMedia === "Instagram" || socialMedia === "Snapchat"
       ? "Username"

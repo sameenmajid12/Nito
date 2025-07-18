@@ -5,19 +5,33 @@ import {
   Animated,
   TouchableOpacity,
 } from "react-native";
-import { FONT_SIZE_S, colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
+import {
+  FONT_SIZE_S,
+  colors,
+  FONT_SIZE_L,
+  FONT_SIZE_M,
+  FONT_SIZE_XS,
+  PRIMARY_ACTIVE_OPACITY,
+  TEXT_ACTIVE_OPACITY,
+} from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
 import { useUser } from "../../contexts/UserContext";
 import ProfilePicture from "../common/ProfilePicture";
+import { Image } from "expo-image";
 function ProfileTop({
   editing,
   setEditing,
   saveChanges,
   resetChanges,
   changesMade,
+  isUser,
+  user,
 }) {
-  const { user, updateProfilePic } = useUser();
+  if (!user) {
+    return;
+  }
+  const { updateProfilePic } = useUser();
   const [image, setImage] = useState();
   useEffect(() => {
     if (user.profilePic) {
@@ -48,70 +62,82 @@ function ProfileTop({
 
   return (
     <View style={styles.profileTop}>
-      <ProfilePicture
-        image={image}
-        setImage={setImage}
-        handleConfirm={handleProfilePictureEdit}
-        type={"profile"}
-      ></ProfilePicture>
+      {isUser ? (
+        <ProfilePicture
+          image={image}
+          setImage={setImage}
+          handleConfirm={handleProfilePictureEdit}
+          type={"profile"}
+        ></ProfilePicture>
+      ) : (
+        <Image source={user.profilePic} style={styles.profilePic}></Image>
+      )}
+
       <View style={{ alignItems: "center" }}>
         <Text style={styles.fullname}>{user.fullname}</Text>
         <Text style={styles.username}>@{user.username}</Text>
       </View>
-
-      {!editing && (
-        <Animated.View
-          style={{
-            position: "absolute",
-            right: 0,
-            transform: [{ scale: editScale }],
-            opacity: editScale,
-          }}
-        >
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={() => setEditing(true)}
-            style={styles.editButton}
-          >
-            <Text style={styles.editText}>Edit</Text>
-            <Ionicons
-              name="create-outline"
-              size={FONT_SIZE_S}
-              color={colors.primary}
-            ></Ionicons>
-          </TouchableOpacity>
-        </Animated.View>
-      )}
-
-      {editing && (
-        <Animated.View
-          style={[
-            styles.updateButtonsContainer,
-            {
-              transform: [{ scale: saveCancelScale }],
-              opacity: saveCancelScale,
-            },
-          ]}
-        >
-          <TouchableOpacity
-            disabled={!changesMade}
-            activeOpacity={0.75}
+      {isUser ? (
+        !editing ? (
+          <Animated.View
             style={[
-              changesMade ? styles.save : styles.noChange,
-              styles.updateButton,
+              styles.editButtonContainer,
+              { transform: [{ scale: editScale }], opacity: editScale },
             ]}
-            onPress={saveChanges}
           >
-            <Text style={styles.saveText}>Save</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            style={[styles.updateButton, styles.cancel]}
-            onPress={resetChanges}
+            <TouchableOpacity
+              activeOpacity={TEXT_ACTIVE_OPACITY}
+              onPress={() => setEditing(true)}
+              style={styles.editButton}
+            >
+              <Text style={styles.editText}>Edit</Text>
+              <Ionicons
+                name="create-outline"
+                size={FONT_SIZE_S}
+                color={colors.primary}
+              ></Ionicons>
+            </TouchableOpacity>
+          </Animated.View>
+        ) : (
+          <Animated.View
+            style={[
+              styles.primaryButtonsContainer,
+              {
+                transform: [{ scale: saveCancelScale }],
+                opacity: saveCancelScale,
+              },
+            ]}
           >
-            <Text style={styles.cancelText}>Cancel</Text>
+            <TouchableOpacity
+              disabled={!changesMade}
+              activeOpacity={PRIMARY_ACTIVE_OPACITY}
+              style={[
+                changesMade ? styles.primary : styles.noChange,
+                styles.updateButton,
+              ]}
+              onPress={saveChanges}
+            >
+              <Text style={styles.saveText}>Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={TEXT_ACTIVE_OPACITY}
+              style={[styles.updateButton, styles.cancel]}
+              onPress={resetChanges}
+            >
+              <Text style={styles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        )
+      ) : (
+        <View style={styles.primaryButtonsContainer}>
+          <TouchableOpacity activeOpacity={PRIMARY_ACTIVE_OPACITY} style={[styles.updateButton, styles.primary]}>
+            <Text style={styles.messageText}>Message</Text>
           </TouchableOpacity>
-        </Animated.View>
+          <TouchableOpacity activeOpacity={TEXT_ACTIVE_OPACITY} style={styles.optionsContainer}>
+            <Text style={styles.optionsText}>Options</Text>
+            <Ionicons name="caret-down" color={colors.primary}></Ionicons>
+          </TouchableOpacity>
+        </View>
       )}
     </View>
   );
@@ -131,6 +157,10 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_M,
     color: colors.textLight,
   },
+  editButtonContainer: {
+    position: "absolute",
+    right: 0,
+  },
   editButton: {
     borderWidth: 1,
     borderColor: colors.primary,
@@ -148,7 +178,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontFamily: "Nunito-Regular",
   },
-  updateButtonsContainer: {
+  primaryButtonsContainer: {
     position: "absolute",
     right: 0,
     rowGap: 5,
@@ -160,7 +190,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 5,
   },
-  save: {
+  primary: {
     backgroundColor: colors.primary,
     shadowColor: "#000",
     shadowOpacity: "0.1",
@@ -177,14 +207,27 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Medium",
     color: colors.primary,
   },
-  updateButtonsCover: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    backgroundColor: colors.background,
-    zIndex: 100,
+  messageText: {
+    fontFamily: "Nunito-SemiBold",
+    color: colors.white,
+    fontSize: FONT_SIZE_XS,
+  },
+  optionsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    columnGap: 2,
+    justifyContent: "center",
+  },
+  optionsText: {
+    color: colors.primary,
+    fontFamily: "Nunito-SemiBold",
+    fontSize: FONT_SIZE_XS,
+  },
+  profilePic: {
+    width: 120,
+    height: 120,
+    borderRadius: 999,
+    marginBottom:10
   },
 });
 
