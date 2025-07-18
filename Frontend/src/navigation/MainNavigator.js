@@ -14,6 +14,7 @@ import ProfileTagsScreen from "../screens/main/Profile/ProfileTagsScreen";
 import ConnectionsScreen from "../screens/main/ConnectionScreen";
 import { useModal } from "../contexts/ModalContext";
 import Modal from "../components/modal/Modal";
+import UserScreen from "../screens/main/UserScreen";
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -26,7 +27,6 @@ function HomeStackScreen() {
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       {/* Revert this back to your actual HomeScreen for normal operation */}
       <HomeStack.Screen name="Home" component={HomeScreen} />
-      <HomeStack.Screen name="ConnectionScreen" component={ConnectionsScreen} />
       <HomeStack.Screen name="Chat" component={ChatScreen}></HomeStack.Screen>
     </HomeStack.Navigator>
   );
@@ -50,10 +50,6 @@ function ProfileStackScreen() {
         component={ProfileAccountInformationScreen}
       />
       <ProfileStack.Screen name="TagsSelect" component={ProfileTagsScreen} />
-      <ProfileStack.Screen
-        name="ConnectionScreen"
-        component={ConnectionsScreen}
-      />
     </ProfileStack.Navigator>
   );
 }
@@ -133,6 +129,11 @@ function MainNavigator() {
             headerShown: false,
             animationDuration: 250,
           }}
+        />
+        <RootStack.Screen name="UserScreen" component={UserScreen} />
+        <ProfileStack.Screen
+          name="ConnectionScreen"
+          component={ConnectionsScreen}
         />
       </RootStack.Navigator>
       {modalState.visible && (
