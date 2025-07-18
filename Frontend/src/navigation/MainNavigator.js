@@ -1,10 +1,11 @@
 import React, { useRef, useEffect } from "react";
-import { Animated } from "react-native";
+import { Animated, Easing } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CustomTabBar from "../components/common/CustomTabBar";
 import { useNavigationState } from "@react-navigation/native";
 import HomeScreen from "../screens/main/HomeScreen";
+import MatchScreen from "../screens/match/MatchScreen";
 import ProfileScreen from "../screens/main/Profile/ProfileScreen";
 import ChatListScreen from "../screens/main/Chat/ChatListScreen";
 import ChatScreen from "../screens/main/Chat/ChatScreen";
@@ -13,14 +14,17 @@ import ProfileTagsScreen from "../screens/main/Profile/ProfileTagsScreen";
 import ConnectionsScreen from "../screens/main/ConnectionScreen";
 import { useModal } from "../contexts/ModalContext";
 import Modal from "../components/modal/Modal";
+
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
+const RootStack = createNativeStackNavigator();
 
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      {/* Revert this back to your actual HomeScreen for normal operation */}
       <HomeStack.Screen name="Home" component={HomeScreen} />
       <HomeStack.Screen name="ConnectionScreen" component={ConnectionsScreen} />
       <HomeStack.Screen name="Chat" component={ChatScreen}></HomeStack.Screen>
@@ -53,9 +57,9 @@ function ProfileStackScreen() {
     </ProfileStack.Navigator>
   );
 }
-function MainNavigator() {
-  const routeState = useNavigationState((state) => state);
 
+function TabNavigator() {
+  const routeState = useNavigationState((state) => state);
   const tabBarOpacity = useRef(new Animated.Value(1)).current;
 
   const getActiveRouteName = (state) => {
@@ -73,21 +77,20 @@ function MainNavigator() {
   };
 
   const currentRouteName = getActiveRouteName(routeState);
-  const shouldHideTabBar = currentRouteName === "Chat";
+  const shouldHideTabBar =
+    currentRouteName === "Chat" ||
+    currentRouteName === "ConnectionScreen" ||
+    currentRouteName === "AccountInformation" ||
+    currentRouteName === "TagsSelect";
 
   useEffect(() => {
-    if (shouldHideTabBar) {
-      tabBarOpacity.setValue(0);
-    } else {
-      Animated.timing(tabBarOpacity, {
-        toValue: shouldHideTabBar ? 0 : 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [shouldHideTabBar]);
+    Animated.timing(tabBarOpacity, {
+      toValue: shouldHideTabBar ? 0 : 1,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  }, [shouldHideTabBar, tabBarOpacity]);
 
-  const { modalState } = useModal();
   return (
     <>
       <Tab.Navigator
@@ -112,6 +115,26 @@ function MainNavigator() {
           options={{ tabBarLabel: "Profile" }}
         />
       </Tab.Navigator>
+    </>
+  );
+}
+
+function MainNavigator() {
+  const { modalState } = useModal();
+  return (
+    <>
+      <RootStack.Navigator screenOptions={{ headerShown: false }}>
+        <RootStack.Screen name="MainTabs" component={TabNavigator} />
+        <RootStack.Screen
+          name="MatchScreen"
+          component={MatchScreen}
+          options={{
+            animation: "fade",
+            headerShown: false,
+            animationDuration: 250,
+          }}
+        />
+      </RootStack.Navigator>
       {modalState.visible && (
         <Modal
           type={modalState.name}
