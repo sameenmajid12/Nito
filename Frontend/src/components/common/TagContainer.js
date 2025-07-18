@@ -2,6 +2,7 @@ import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../styles";
 import { FONT_SIZE_S } from "../../styles";
+import TagItem from "./TagItem";
 function TagContainer({ tags, setTags }) {
   const removeTag = (index) => {
     const updatedTags = tags.filter((_, i) => i !== index);
@@ -10,12 +11,12 @@ function TagContainer({ tags, setTags }) {
   return tags.length > 0 ? (
     <View style={styles.tagsContentWrapper}>
       {tags.map((tag, index) => (
-        <View key={index} style={styles.tagItem}>
-          <Text style={styles.tagsText}>{tag}</Text>
-          <Pressable onPress={() => removeTag(index)}>
-            <Ionicons size={20} color={colors.white} name="close"></Ionicons>
-          </Pressable>
-        </View>
+        <TagItem
+          tag={tag}
+          index={index}
+          removeTag={removeTag}
+          myTag={true}
+        ></TagItem>
       ))}
     </View>
   ) : (
