@@ -57,6 +57,7 @@ function ConnectionScreen({ navigation }) {
               connections={connections}
               gap={15}
               sortState={sortState}
+              navigation={navigation}
             />
           </View>
         </ScrollView>
