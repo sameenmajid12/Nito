@@ -12,7 +12,8 @@ import MatchedUsersImages from "../../components/match/MatchedUserImages";
 import Logo from "../../components/common/Logo";
 import { Ionicons } from "@expo/vector-icons";
 import { useRef } from "react";
-function MatchScreen({ matchedUser, type, navigation }) {
+function MatchScreen({ navigation, route }) {
+  const {type, matchedUser} = route.params
   if (type === "match" && !matchedUser) {
     return;
   }
