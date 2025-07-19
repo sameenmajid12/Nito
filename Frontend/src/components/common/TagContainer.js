@@ -16,6 +16,7 @@ function TagContainer({ tags, setTags }) {
           index={index}
           removeTag={removeTag}
           myTag={true}
+          key={tag}
         ></TagItem>
       ))}
     </View>
