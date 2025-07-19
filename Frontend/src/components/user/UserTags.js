@@ -5,39 +5,45 @@ import ProfileSectionHeader from "../profile/ProfileSectionHeader";
 import { View, Text, StyleSheet } from "react-native";
 function UserTags({ otherUser }) {
   const { user, updateUser } = useUser();
-  const commonsTags = otherUser.tags.filter((tag) => user.tags.includes(tag));
+  const commonTags = otherUser.tags.filter((tag) => user.tags.includes(tag));
   const otherTags = otherUser.tags.filter((tag) => !user.tags.includes(tag));
-  const addTag = (tag) => {
-    const tags = user.tags.push(tag);
-    updateUser(tags)
+  const noCommons = commonTags.length === 0;
+  const noOthers = otherTags.length === 0;
+  const addTag = (tagToAdd) => {
+    const updatedTags = [...user.tags, tagToAdd];
+    updateUser({ tags: updatedTags });
   };
   return (
     <View style={styles.mainContainer}>
       <ProfileSectionHeader header={"Tags"}></ProfileSectionHeader>
       <View style={styles.tagsOuterContainer}>
-        <View>
-          <Text style={styles.subheader}>Common</Text>
-          <View style={styles.tagsInnerContainer}>
-            {commonsTags.map((commonTag, index) => {
-              return <TagItem myTag={true} tag={commonTag} index={index} />;
-            })}
+        {!noCommons && (
+          <View>
+            {!noOthers && <Text style={styles.subheader}>Common</Text>}
+            <View style={styles.tagsInnerContainer}>
+              {commonTags.map((commonTag) => {
+                return <TagItem key={commonTag} myTag={true} tag={commonTag} />;
+              })}
+            </View>
           </View>
-        </View>
-        <View>
-          <Text style={styles.subheader}>Other</Text>
-          <View style={styles.tagsInnerContainer}>
-            {otherTags.map((otherTag, index) => {
-              return (
-                <TagItem
-                  myTag={false}
-                  tag={otherTag}
-                  addTag={addTag}
-                  index={index + commonsTags.length}
-                ></TagItem>
-              );
-            })}
+        )}
+        {!noOthers && (
+          <View>
+            {!noCommons && <Text style={styles.subheader}>Other</Text>}
+            <View style={styles.tagsInnerContainer}>
+              {otherTags.map((otherTag) => {
+                return (
+                  <TagItem
+                    key={otherTag}
+                    myTag={false}
+                    tag={otherTag}
+                    addTag={addTag}
+                  ></TagItem>
+                );
+              })}
+            </View>
           </View>
-        </View>
+        )}
       </View>
     </View>
   );
@@ -52,7 +58,7 @@ const styles = StyleSheet.create({
     color: colors.textLight,
   },
   tagsOuterContainer: {
-    rowGap:10
+    rowGap: 10,
   },
   tagsInnerContainer: {
     flexDirection: "row",
