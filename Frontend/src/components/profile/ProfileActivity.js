@@ -24,13 +24,15 @@ function ProfileActivity({ navigate, isUser, user }) {
       <ProfileSectionHeader header={"Activity"}></ProfileSectionHeader>
       <View style={styles.activityContainer}>
         <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={() => navigate("ConnectionScreen")}
+          activeOpacity={isUser ? 0.9 : 1}
+          onPress={() => (isUser ? navigate("ConnectionScreen") : {})}
           style={styles.activity}
         >
           <Text style={styles.number}>14</Text>
           <Text style={styles.description}>Connections made</Text>
-          {isUser && <Ionicons style={styles.arrow} name="arrow-forward"></Ionicons>}
+          {isUser && (
+            <Ionicons style={styles.arrow} name="arrow-forward"></Ionicons>
+          )}
         </TouchableOpacity>
         {isUser ? (
           <Pressable style={styles.activity}>
