@@ -24,7 +24,7 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
   try {
     console.log("Updating user...");
     const userId = req.user._id;
-    if (req.body.password) {
+    if (req.body.password && req.body.password.length > 8) {
       req.body.password = await bcrypt.hash(req.body.password, 10);
     }
     const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
