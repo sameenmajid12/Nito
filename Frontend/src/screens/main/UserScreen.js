@@ -14,9 +14,9 @@ function UserScreen({ route, navigation }) {
     <SafeAreaView style={styles.page}>
       <TextHeader text={user.fullname} navigation={navigation}/>
       <ScrollView style={styles.scrollContainer}>
-        <View style={styles.mainContainer}>
+        <View style={styles.contentWrapper}>
           <ProfileTop isUser={false} user={user}></ProfileTop>
-          <View style={styles.detailsContainer}>
+          <View style={styles.sectionsContainer}>
             <ProfileActivity isUser={false} user={user} />
             <ProfileAboutMe isUser={false} user={user} />
             <UserTags otherUser={user} />
@@ -36,18 +36,13 @@ const styles = StyleSheet.create({
     padding: 30,
     backgroundColor: "transparent",
   },
-  mainContainer: {
+  contentWrapper: {
     rowGap: 5,
     marginBottom: 20,
     backgroundColor: "transparent",
   },
-  detailsContainer: {
+  sectionsContainer: {
     rowGap: 20,
-  },
-  profilePic: {
-    width: 120,
-    height: 120,
-    marginBottom: 10,
   },
 });
 export default UserScreen;

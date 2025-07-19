@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     fontFamily: "Nunito-SemiBold",
     textAlign: "center",
-    marginTop: 10,
+    marginTop: 5,
   },
 });
 export default UserPollComparison;

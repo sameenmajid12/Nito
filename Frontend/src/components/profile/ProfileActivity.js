@@ -2,9 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import {
   colors,
   FONT_SIZE_L,
-  FONT_SIZE_M,
-  FONT_SIZE_S,
-  FONT_SIZE_XL,
   FONT_SIZE_XS,
 } from "../../styles";
 import ProfileSectionHeader from "./ProfileSectionHeader";
@@ -20,7 +17,7 @@ function ProfileActivity({ navigate, isUser, user }) {
     return;
   }
   return (
-    <View style={styles.mainContainer}>
+    <View style={styles.sectionWrapper}>
       <ProfileSectionHeader header={"Activity"}></ProfileSectionHeader>
       <View style={styles.activityContainer}>
         <TouchableOpacity
@@ -28,7 +25,7 @@ function ProfileActivity({ navigate, isUser, user }) {
           onPress={() => (isUser ? navigate("ConnectionScreen") : {})}
           style={styles.activity}
         >
-          <Text style={styles.number}>14</Text>
+          <Text style={styles.metric}>14</Text>
           <Text style={styles.description}>Connections made</Text>
           {isUser && (
             <Ionicons style={styles.arrow} name="arrow-forward"></Ionicons>
@@ -36,13 +33,13 @@ function ProfileActivity({ navigate, isUser, user }) {
         </TouchableOpacity>
         {isUser ? (
           <Pressable style={styles.activity}>
-            <Text style={styles.number}>27</Text>
+            <Text style={styles.metric}>27</Text>
             <Text style={styles.description}>Connections skipped</Text>
           </Pressable>
         ) : (
           <Pressable style={styles.activity}>
             <Text style={styles.description}>Last Active</Text>
-            <Text style={styles.number}>12m ago</Text>
+            <Text style={styles.metric}>12m ago</Text>
           </Pressable>
         )}
       </View>
@@ -50,7 +47,7 @@ function ProfileActivity({ navigate, isUser, user }) {
   );
 }
 const styles = StyleSheet.create({
-  mainContainer: {
+  sectionWrapper: {
     rowGap: 15,
   },
   activityContainer: {
@@ -67,7 +64,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
   },
-  number: {
+  metric: {
     fontFamily: "Nunito-Bold",
     fontSize: FONT_SIZE_L,
     color: colors.white,

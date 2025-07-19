@@ -145,7 +145,7 @@ function ProfileScreen({ navigation }) {
           keyboardShouldPersistTaps="handled"
           style={styles.scrollContainer}
         >
-          <View style={styles.mainContainer}>
+          <View style={styles.contentWrapper}>
             <ProfileTop
               changesMade={changesMade}
               setEditing={setEditing}
@@ -155,7 +155,7 @@ function ProfileScreen({ navigation }) {
               user={user}
               isUser={true}
             />
-            <View style={styles.detailsContainer}>
+            <View style={styles.sectionsContainer}>
               <ProfileActivity navigate={navigate} user={user} isUser={true} />
               <ProfileAboutMe
                 editing={editing}
@@ -183,12 +183,12 @@ const styles = StyleSheet.create({
     padding: 30,
     backgroundColor: "transparent",
   },
-  mainContainer: {
+  contentWrapper: {
     rowGap: 5,
     marginBottom: 100,
     backgroundColor: "transparent",
   },
-  detailsContainer: {
+  sectionsContainer: {
     rowGap: 20,
   },
 });

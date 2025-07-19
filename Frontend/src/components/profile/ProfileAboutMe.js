@@ -25,9 +25,9 @@ function ProfileAboutMe({
   const hasYear = !isUser && user.year;
   const hasMajor = !isUser && user.major?.length > 0;
   return (
-    <View style={styles.mainContainer}>
+    <View style={styles.sectionWrapper}>
       <ProfileSectionHeader header={"About me"} />
-      <View style={styles.bodyContainer}>
+      <View style={styles.contentContainer}>
         {(isUser || (!isUser && hasBio)) && (
           <Input
             label={"Bio"}
@@ -95,11 +95,8 @@ function ProfileAboutMe({
   );
 }
 const styles = StyleSheet.create({
-  mainContainer: {
+  sectionWrapper: {
     rowGap: 20,
-  },
-  bodyContainer: {
-    rowGap: 0,
   },
   input: {
     textAlignVertical: "top",

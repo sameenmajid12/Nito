@@ -8,11 +8,11 @@ function ProfileSocialMedia({ editing, handleChange, changes, user, isUser }) {
   const hasDiscord = !isUser && user.socialMedia.discord;
 
   return (
-    <View style={{ rowGap: 15 }}>
+    <View style={styles.sectionWrapper}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Social media</Text>
       </View>
-      <View style={{ rowGap: 5 }}>
+      <View style={styles.contentContainer}>
         <View style={styles.sideBySide}>
           {(isUser || (!isUser && hasInstagram)) && (
             <ProfileSocialInput
@@ -59,6 +59,12 @@ function ProfileSocialMedia({ editing, handleChange, changes, user, isUser }) {
 }
 
 const styles = StyleSheet.create({
+  sectionWrapper:{
+    rowGap:15
+  },
+  contentContainer:{
+    rowGap:5
+  },
   headerContainer: {
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,

@@ -7,30 +7,30 @@ function UserTags({ otherUser }) {
   const { user, updateUser } = useUser();
   const commonTags = otherUser.tags.filter((tag) => user.tags.includes(tag));
   const otherTags = otherUser.tags.filter((tag) => !user.tags.includes(tag));
-  const noCommons = commonTags.length === 0;
-  const noOthers = otherTags.length === 0;
+  const hasCommonTags = commonTags.length > 0;
+  const hasOtherTags = otherTags.length > 0;
   const addTag = (tagToAdd) => {
     const updatedTags = [...user.tags, tagToAdd];
     updateUser({ tags: updatedTags });
   };
   return (
-    <View style={styles.mainContainer}>
+    <View style={styles.sectionWrapper}>
       <ProfileSectionHeader header={"Tags"}></ProfileSectionHeader>
-      <View style={styles.tagsOuterContainer}>
-        {!noCommons && (
+      <View style={styles.tagsContentContainer}>
+        {hasCommonTags && (
           <View>
-            {!noOthers && <Text style={styles.subheader}>Common</Text>}
-            <View style={styles.tagsInnerContainer}>
+            {hasOtherTags && <Text style={styles.subheader}>Common</Text>/* If there are no other tags only the common tags are seen so we dont need the header */}
+            <View style={styles.tagsCategoryContainer}>
               {commonTags.map((commonTag) => {
                 return <TagItem key={commonTag} myTag={true} tag={commonTag} />;
               })}
             </View>
           </View>
         )}
-        {!noOthers && (
+        {hasOtherTags && (
           <View>
-            {!noCommons && <Text style={styles.subheader}>Other</Text>}
-            <View style={styles.tagsInnerContainer}>
+            {hasCommonTags && <Text style={styles.subheader}>Other</Text>/*Same reason as above*/}
+            <View style={styles.tagsCategoryContainer}>
               {otherTags.map((otherTag) => {
                 return (
                   <TagItem
@@ -49,7 +49,7 @@ function UserTags({ otherUser }) {
   );
 }
 const styles = StyleSheet.create({
-  mainContainer: {
+  sectionWrapper: {
     rowGap: 15,
   },
   subheader: {
@@ -57,10 +57,10 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_S,
     color: colors.textLight,
   },
-  tagsOuterContainer: {
+  tagsContentContainer: {
     rowGap: 10,
   },
-  tagsInnerContainer: {
+  tagsCategoryContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     columnGap: 5,

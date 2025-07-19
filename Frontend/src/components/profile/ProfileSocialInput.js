@@ -1,7 +1,6 @@
 import { Image } from "expo-image";
 import { TextInput, View, Text, StyleSheet } from "react-native";
-import { colors, FONT_SIZE_S, FONT_SIZE_XS, FONT_SIZE_XXS } from "../../styles";
-import { useUser } from "../../contexts/UserContext";
+import { colors, FONT_SIZE_S } from "../../styles";
 
 function ProfileSocialInput({ socialMedia, editing, changes, setValue, user }) {
   const placeholder =
@@ -25,7 +24,14 @@ function ProfileSocialInput({ socialMedia, editing, changes, setValue, user }) {
 
   return (
     <View style={styles.mainContainer}>
-      <Text style={[styles.label, editing ? {color:colors.primary}:{color:colors.textPrimary70}]}>{socialMedia}</Text>
+      <Text
+        style={[
+          styles.label,
+          editing ? { color: colors.primary } : { color: colors.textPrimary70 },
+        ]}
+      >
+        {socialMedia}
+      </Text>
       <View
         style={[
           styles.inputContainer,
@@ -62,7 +68,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderWidth: 1,
     borderRadius: 12,
-    paddingRight:10
+    paddingRight: 10,
   },
   input: {
     fontSize: FONT_SIZE_S,
