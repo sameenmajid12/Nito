@@ -73,8 +73,9 @@ export const AuthProvider = ({ children }) => {
     };
     loadTokensAndVerify();
   }, []);
-  const authenticateUser = () => {
+  const getStartedAfterRegistration = () => {
     setIsAuthenticated(true);
+    setIsRegistrationCompleted(false);
   };
   const refreshAccessToken = async () => {
     try {
@@ -201,7 +202,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         token,
         isAuthenticated,
-        authenticateUser,
+        getStartedAfterRegistration,
         authError,
         isLoadingLogin,
         login,

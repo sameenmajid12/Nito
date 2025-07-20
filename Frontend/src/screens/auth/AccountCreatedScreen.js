@@ -14,7 +14,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useRegistration } from "../../contexts/RegistrationContext";
 
 function AccountCreatedScreen() {
-  const {authenticateUser} = useAuth();
+  const {getStartedAfterRegistration} = useAuth();
   const {resetRegistration} = useRegistration();
   const scaleAnim = useRef(new Animated.Value(1)).current; 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -52,7 +52,7 @@ function AccountCreatedScreen() {
 
   const handleGetStarted=()=>{
     resetRegistration();
-    authenticateUser();
+    getStartedAfterRegistration ();
   }
   return (
     <SafeAreaView style={styles.page}>
