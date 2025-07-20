@@ -42,7 +42,7 @@ function Modal({ user, conversation, type, sort, changeSort, pollData }) {
       }),
       Animated.timing(opacityAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 250,
         useNativeDriver: true,
       }),
     ]).start();
@@ -58,7 +58,7 @@ function Modal({ user, conversation, type, sort, changeSort, pollData }) {
       }),
       Animated.timing(opacityAnim, {
         toValue: 0,
-        duration: 300,
+        duration: 175,
         useNativeDriver: true,
       }),
     ]).start(({ finished }) => {
