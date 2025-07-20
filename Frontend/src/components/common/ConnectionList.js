@@ -1,10 +1,10 @@
 import ConnectionItem from "./ConnectionItem";
 import { View } from "react-native";
-function ConnectionList({gap, connections, navigation}){
+function ConnectionList({screen, connections, navigation}){
   return(
-    <View style={{rowGap:gap}}>
+    <View>
       {connections.map((connection, index)=>(
-        <ConnectionItem key={index} connection={connection} navigation={navigation}/>
+        <ConnectionItem key={index} connection={connection} navigation={navigation} screen={screen}/>
       ))}
     </View>
   )

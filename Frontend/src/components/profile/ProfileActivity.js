@@ -25,7 +25,7 @@ function ProfileActivity({ navigate, isUser, user }) {
           onPress={() => (isUser ? navigate("ConnectionScreen") : {})}
           style={styles.activity}
         >
-          <Text style={styles.metric}>14</Text>
+          <Text style={styles.metric}>{user.revealedUsers.length}</Text>
           <Text style={styles.description}>Connections made</Text>
           {isUser && (
             <Ionicons style={styles.arrow} name="arrow-forward"></Ionicons>

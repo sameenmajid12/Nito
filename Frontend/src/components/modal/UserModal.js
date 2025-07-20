@@ -9,9 +9,9 @@ function UserModal({ user, toggleConfirmation}) {
         <View style={styles.userDetails}>
           <Image
             style={styles.userProfilePic}
-            source={require("../../assets/images/mike.webp")}
+            source={user.profilePic}
           ></Image>
-          <Text style={styles.modalItemText}>Mike Ross</Text>
+          <Text style={styles.modalItemText}>{user.fullname}</Text>
         </View>
       </View>
       <Pressable

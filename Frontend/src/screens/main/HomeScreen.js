@@ -8,10 +8,7 @@ import HomeConnections from "../../components/home/HomeConnections";
 import { useUser } from "../../contexts/UserContext";
 
 function HomeScreen({ navigation }) {
-  const {user} = useUser();
-  const navigate = (route) => {
-    navigation.navigate(route);
-  };
+  const { user } = useUser();
   const enterChat = (conversation) => {
     navigation.navigate("Chat", {
       conversation: {
@@ -26,18 +23,18 @@ function HomeScreen({ navigation }) {
     <SafeAreaView style={styles.page}>
       <Header></Header>
       <ScrollView>
-        <View style={styles.pageContainer}>
-          <Text style={styles.greeting}>Welcome, {user.fullname  }!</Text>
+        <View style={styles.pageTopWrapper}>
+          <Text style={styles.greeting}>Hello, {user.fullname}! 👋</Text>
 
           <YouHaveAMatch enterChat={enterChat} />
           <View
-            style={{ flexDirection: "row", columnGap: 10, marginBottom: 10   }}
+            style={{ flexDirection: "row", columnGap: 10, marginBottom: 10 }}
           >
             <NextMatchIn />
             <DailyPoll />
           </View>
-          <HomeConnections navigate={navigate} />
         </View>
+        <HomeConnections navigation={navigation} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -47,10 +44,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  pageContainer: {
-    padding: 20,
+  pageTopWrapper: {
     rowGap: 10,
-    marginBottom: 70,
+    padding:20,
+    paddingBottom:10
   },
   greeting: {
     fontFamily: "Nunito-Bold",

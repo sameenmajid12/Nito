@@ -13,18 +13,18 @@ import SortConnection from "../../components/connection/SortConnection";
 import SearchConnection from "../../components/connection/SearchConnection";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
 import { useState } from "react";
-
+import { useUser } from "../../contexts/UserContext";
 function ConnectionScreen({ navigation }) {
- const connections = [
+  const connections = [
     {
       fullname: "Mike Ross",
       profilePic: require("../../assets/images/mike.webp"),
       date: "Today",
     },
     {
-      fullname:"Daniel Cormier",
-      profilePic:require("../../assets/images/dc.jpg"),
-      date:"Today",
+      fullname: "Daniel Cormier",
+      profilePic: require("../../assets/images/dc.jpg"),
+      date: "Today",
     },
     {
       fullname: "SZA",
@@ -42,6 +42,7 @@ function ConnectionScreen({ navigation }) {
       date: "3d ago",
     },
   ];
+  const { user } = useUser();
   const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
   const [sortState, setSortState] = useState("newestfirst");
   return (
@@ -50,11 +51,16 @@ function ConnectionScreen({ navigation }) {
       <GestureDetector gesture={tapGesture}>
         <ScrollView>
           <View style={styles.mainContainer}>
-            <SearchConnection />
-            <View style={styles.divider}></View>
-            <SortConnection sortState={sortState} setSortState={setSortState} />
+            <View style={styles.headerWrapper}>
+              <SearchConnection />
+              <View style={styles.divider}></View>
+              <SortConnection
+                sortState={sortState}
+                setSortState={setSortState}
+              />
+            </View>
             <ConnectionList
-              connections={connections}
+              connections={user?.revealedUsers}
               gap={15}
               sortState={sortState}
               navigation={navigation}
@@ -71,7 +77,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   mainContainer: {
-    padding: 30,
     rowGap: 20,
     marginBottom: 60,
   },
@@ -82,9 +87,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.borderLight,
   },
-
-  connectionsContainer: {
-    rowGap: 15,
-  },
+  headerWrapper:{
+    paddingHorizontal:30,
+    paddingTop:30,
+    rowGap:20
+  }
 });
 export default ConnectionScreen;

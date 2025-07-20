@@ -10,7 +10,7 @@ userRouter.get("/me", verifyToken, async (req, res) => {
   try {
     console.log("Getting user...");
     const userId = req.user._id;
-    const user = await User.findById(userId).populate(["school"]);
+    const user = await User.findById(userId).populate(["school", "revealedUsers", "savedConversations", "currentConversation"]);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

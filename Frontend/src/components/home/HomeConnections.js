@@ -8,35 +8,10 @@ import {
 import { colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
 import ConnectionList from "../common/ConnectionList";
 import { Ionicons } from "@expo/vector-icons";
+import { useUser } from "../../contexts/UserContext";
 
-function Connections({ navigate }) {
-   const connections = [
-    {
-      fullname: "Mike Ross",
-      profilePic: require("../../assets/images/mike.webp"),
-      date: "Today",
-    },
-    {
-      fullname:"Daniel Cormier",
-      profilePic:require("../../assets/images/dc.jpg"),
-      date:"Today",
-    },
-    {
-      fullname: "SZA",
-      profilePic: require("../../assets/images/sza.webp"),
-      date: "Yesterday",
-    },
-    {
-      fullname: "Harvey Specter",
-      profilePic: require("../../assets/images/harvey.jpg"),
-      date: "Yesterday",
-    },
-    {
-      fullname: "Ilia Topuria",
-      profilePic: require("../../assets/images/ilia.jpg"),
-      date: "3d ago",
-    },
-  ];
+function Connections({ navigation }) {
+  const {user} = useUser();
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -44,7 +19,7 @@ function Connections({ navigate }) {
         <TouchableOpacity
         activeOpacity={0.25}
           style={styles.viewAll}
-          onPress={() => navigate("ConnectionScreen")}
+          onPress={() => navigation.navigate("ConnectionScreen")}
         >
           <Text style={styles.viewAllText}>View all</Text>
           <Ionicons
@@ -54,14 +29,14 @@ function Connections({ navigate }) {
           ></Ionicons>
         </TouchableOpacity>
       </View>
-      <ConnectionList connections={connections} gap={15} />
+      <ConnectionList connections={user?.revealedUsers} screen={"home"} navigation={navigation}/>
     </View>
   );
 }
 const styles = StyleSheet.create({
   mainContainer: {
     width: "100%",
-    rowGap: 15,
+    rowGap: 10,
   },
   headerContainer: {
     flexDirection: "row",
@@ -70,6 +45,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
     paddingVertical: 10,
+    marginHorizontal:20
   },
   header: {
     color: colors.textPrimary,
