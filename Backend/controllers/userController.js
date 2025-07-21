@@ -6,17 +6,68 @@ const bcrypt = require("bcrypt");
 const upload = require("../middleware/uploadImage");
 const s3 = require("../config/s3Client");
 const { PutObjectCommand } = require("@aws-sdk/client-s3");
+const mongoose = require("mongoose");
 userRouter.get("/me", verifyToken, async (req, res) => {
   try {
     console.log("Getting user...");
     const userId = req.user._id;
-    const user = await User.findById(userId).populate(["school", "revealedUsers", "savedConversations", "currentConversation"]);
+    const user = await User.findById(userId).populate([
+      "school",
+      { path: "revealedUsers", select: "fullname profilePic username" },
+      {
+        path: "savedConversations",
+        populate: [
+          { path: "user1", select: "fullname profilePic username" },
+          { path: "user2", select: "fullname profilePic username" },
+        ],
+      },
+      {
+        path: "currentConversation",
+        populate: [
+          { path: "user1", select: "username" },
+          { path: "user2", select: "username" },
+        ],
+      },
+      ,
+    ]);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
     const { password, ...safeUser } = user._doc;
     res.status(200).json({ user: safeUser });
   } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+userRouter.get("/:userId", verifyToken, async (req, res, next) => {
+  try {
+    const { userId: userToRetreieveId } = req.params;
+    const userId = req.user._id;
+    const user = await User.findById(userId).select("revealedUsers").lean();
+    if (!user || !user.revealedUsers) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const targetObjectId = new mongoose.Types.ObjectId(userToRetreieveId);
+
+    const isRevealed = user.revealedUsers.some(
+      (revealedUserId) =>
+        revealedUserId && revealedUserId.equals(targetObjectId)
+    );
+
+    if (!isRevealed) {
+      return res
+        .status(403)
+        .json({ message: "User is not a connection or not revealed" });
+    }
+    const userToRetrieve = await User.findById(userToRetreieveId).select(
+      "fullname user profilePic socialMedia revealedUsers bio year major tags username"
+    );
+    if (!userToRetrieve) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ userToRetrieve });
+  } catch (e) {
+    console.log(e);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -30,7 +81,25 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
     const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
       runValidators: true,
       new: true,
-    }).populate(["school"]);
+    }).populate([
+      "school",
+      { path: "revealedUsers", select: "fullname profilePic username" },
+      {
+        path: "savedConversations",
+        populate: [
+          { path: "user1", select: "fullname profilePic username" },
+          { path: "user2", select: "fullname profilePic username" },
+        ],
+      },
+      {
+        path: "currentConversation",
+        populate: [
+          { path: "user1", select: "username" },
+          { path: "user2", select: "username" },
+        ],
+      },
+      ,
+    ]);
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
