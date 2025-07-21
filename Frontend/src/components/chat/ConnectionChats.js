@@ -4,17 +4,25 @@ import { useUser } from "../../contexts/UserContext";
 import { colors, FONT_SIZE_S, FONT_SIZE_M, FONT_SIZE_XS } from "../../styles";
 function ConnectionChats({ enterChat }) {
   const { user } = useUser();
-  function truncateMessage(message, maxLength) {
+  function truncateMessage(message, maxLength, name) {
     if (!message) {
-      return "Send a message";
+      return `Send a message to ${name}!`;
     }
-    if (message.length <= maxLength) return message;
-    return message.slice(0, maxLength - 3) + "...";
+    if (message.text.length <= maxLength) return message.text;
+    return message?.text.slice(0, maxLength - 3) + "...";
   }
   return (
     <View style={styles.chatListContainer}>
       <Text style={styles.containerHeader}>Your connections</Text>
       {user?.savedConversations.map((chat, index) => {
+        const formatter = new Intl.DateTimeFormat("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        });
+        const formattedLastMessageTime = chat.lastMessage
+          ? formatter.format(new Date(chat.lastMessage.createdAt))
+          : null;
         const otherUser = chat.user1._id === user._id ? chat.user2 : chat.user1;
         return (
           <Pressable
@@ -42,10 +50,12 @@ function ConnectionChats({ enterChat }) {
             <View style={styles.chatDetails}>
               <Text style={styles.chatName}>{otherUser.fullname}</Text>
               <Text style={styles.chatLastMessage}>
-                {truncateMessage(chat.lastMessage, 60)}
+                {truncateMessage(chat.lastMessage, 60, otherUser.fullname)}
               </Text>
             </View>
-            <Text style={styles.chatLastMessageTime}>7:30AM</Text>
+            <Text style={styles.chatLastMessageTime}>
+              {formattedLastMessageTime}
+            </Text>
           </Pressable>
         );
       })}
