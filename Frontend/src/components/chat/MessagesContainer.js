@@ -12,7 +12,7 @@ import { useEffect, useRef } from "react";
 import { colors } from "../../styles";
 import ChatExpired from "./ChatExpired";
 import { useUser } from "../../contexts/UserContext";
-const INITIAL_BOTTOM_PADDING = 60;
+const INITIAL_BOTTOM_PADDING = 50;
 function MessagesContainer({ messages, usersRevealed, otherUser }) {
   const scrollViewRef = useRef(null);
   const { user } = useUser();
@@ -74,6 +74,7 @@ function MessagesContainer({ messages, usersRevealed, otherUser }) {
       <Animated.View
         style={{
           backgroundColor: colors.background,
+          paddingBottom:containerBottomPadding
         }}
       >
         {messages?.length > 0 ? (
