@@ -6,7 +6,7 @@ const SocketContext = createContext();
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const socketRef = useRef();
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   useEffect(() => {
     if (!user || !user._id) {
       if (socketRef.current) {
@@ -31,8 +31,31 @@ export const SocketProvider = ({ children }) => {
     const registerUser = () => {
       newSocket.emit("register", user._id);
     };
+    const handleReceiveMessage = (message) => {
+      console.log("Received message")
+      const updatedConversations = [...user.savedConversations];
+      let conversationFoundAndUpdated = false;
+      const conversationIndex = updatedConversations.findIndex(
+        (conv) => conv._id === message.conversation
+      );
+      if (conversationIndex !== -1) {
+        const conversationToUpdate = {
+          ...updatedConversations[conversationIndex],
+        };
+        conversationToUpdate.lastMessage = message;
+        updatedConversations.splice(conversationIndex, 1);
+        updatedConversations.unshift(conversationToUpdate);
+        conversationFoundAndUpdated = true;
+      }
+      if (conversationFoundAndUpdated) {
+        setUser((prev) => ({
+          ...prev,
+          savedConversations: updatedConversations,
+        }));
+      }
+    };
     newSocket.on("connect", registerUser);
-    newSocket.on("receivedMessage");
+    newSocket.on("receiveMessage", handleReceiveMessage);
     newSocket.on("start-reveal");
     newSocket.on("match-revealed");
     newSocket.on("match-skipped");

@@ -180,6 +180,7 @@ export const UserProvider = ({ children }) => {
         removeConnection,
         reportUser,
         blockUser,
+        setUser
       }}
     >
       {children}

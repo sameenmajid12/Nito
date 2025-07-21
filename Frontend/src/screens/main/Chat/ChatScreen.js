@@ -15,17 +15,22 @@ import { useUser } from "../../../contexts/UserContext";
 import { API_BASE_URL } from "@env";
 import { useAuth } from "../../../contexts/AuthContext";
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
+import { useSocket } from "../../../contexts/SocketContext";
 function ChatScreen({ navigation, route }) {
   const [newMessage, setNewMessage] = useState("");
   const { user } = useUser();
   const { token } = useAuth();
   const { conversation } = route.params;
+  const { socket } = useSocket();
   const [messages, setMessages] = useState(conversation?.messages); // WILL SET IT TO JUST [] WHEN BACKEND IS CREATED
   const [loadingMessages, setLoadingMessages] = useState(false);
   const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
   const usersRevealed = true;
   const otherUser =
-    conversation.user1.id === user.id ? conversation.user2 : conversation.user1;
+    conversation.user1._id === user._id
+      ? conversation.user2
+      : conversation.user1;
   useEffect(() => {
     const getMessages = async () => {
       setLoadingMessages(true);
@@ -40,7 +45,6 @@ function ChatScreen({ navigation, route }) {
         );
         if (response.status === 200) {
           const { conversationMessages } = response.data;
-          console.log(conversationMessages);
           setMessages(conversationMessages);
         }
       } catch (e) {
@@ -53,6 +57,57 @@ function ChatScreen({ navigation, route }) {
       getMessages();
     }
   }, [conversation]);
+  useEffect(() => {
+    if (!socket) return;
+    const handleReceiveMessage = (message) => {
+      if (message.conversation !== conversation._id) {
+        return;
+      }
+      console.log("Received new message for current chat");
+
+      setMessages((prevMessages) => {
+        if (prevMessages.some((m) => m._id === message._id)) {
+          return prevMessages;
+        }
+        const indexToReplace = prevMessages.findIndex(
+          (m) => m._id === message.clientId
+        );
+        if (indexToReplace !== -1) {
+          const newMessages = [...prevMessages];
+          newMessages[indexToReplace] = message;
+          return newMessages;
+        } else {
+          return [...prevMessages, message];
+        }
+      });
+    };
+    socket.on("receiveMessage", handleReceiveMessage);
+    return () => {
+      socket.off("receiveMessage", handleReceiveMessage);
+    };
+  }, [socket, conversation]);
+  const sendMessage = () => {
+    if (!newMessage.trim() || !socket || !user?._id) {
+      return;
+    }
+    const clientId = uuidv4();
+    const messageToSend = {
+      receiverId: otherUser._id,
+      conversationId: conversation._id,
+      text: newMessage.trim(),
+      clientId,
+    };
+    const tempMessage = {
+      _id: clientId,
+      sender: user._id,
+      receiver: otherUser._id,
+      conversation: conversation._id,
+      text: newMessage.trim(),
+    };
+    socket.emit("sendMessage", messageToSend);
+    setMessages((prevMessages) => [...prevMessages, tempMessage]);
+    setNewMessage("");
+  };
   return (
     <SafeAreaView style={styles.page}>
       <ChatHeader
@@ -84,6 +139,7 @@ function ChatScreen({ navigation, route }) {
       <MessageInput
         message={newMessage}
         setMessage={setNewMessage}
+        sendMessage={sendMessage}
       ></MessageInput>
     </SafeAreaView>
   );

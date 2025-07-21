@@ -6,6 +6,7 @@ import {
   Animated,
   Keyboard,
   Easing,
+  Pressable,
 } from "react-native";
 import { colors } from "../../styles";
 import { FONT_SIZE_XL } from "../../styles";
@@ -14,7 +15,7 @@ const ICON_SIZE = 36;
 const MIN_INPUT_HEIGHT = 45;
 const INITIAL_BOTTOM_VALUE = 0;
 
-function MessageInput({ message, setMessage }) {
+function MessageInput({ message, setMessage, sendMessage }) {
   const messageInputTranslateY = useRef(
     new Animated.Value(INITIAL_BOTTOM_VALUE)
   ).current;
@@ -53,12 +54,13 @@ function MessageInput({ message, setMessage }) {
   }, []);
 
   return (
-    <Animated.View style={[styles.mainContainer, {transform:[{translateY:messageInputTranslateY}]}]}>
-      <Animated.View
-        style={[
-          styles.inputContainer,
-        ]}
-      >
+    <Animated.View
+      style={[
+        styles.mainContainer,
+        { transform: [{ translateY: messageInputTranslateY }] },
+      ]}
+    >
+      <Animated.View style={[styles.inputContainer]}>
         <Ionicons style={styles.attachmentIcon} name="add-circle"></Ionicons>
         <View style={styles.inputContainerRight}>
           <TextInput
@@ -72,7 +74,12 @@ function MessageInput({ message, setMessage }) {
           {message === "" ? (
             <Ionicons style={styles.voiceIcon} name="mic"></Ionicons>
           ) : (
-            <Ionicons style={styles.sendIcon} name="arrow-up-circle"></Ionicons>
+            <Pressable onPress={sendMessage}>
+              <Ionicons
+                style={styles.sendIcon}
+                name="arrow-up-circle"
+              ></Ionicons>
+            </Pressable>
           )}
         </View>
       </Animated.View>
@@ -88,14 +95,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     left: 0,
-    justifyContent:"flex-start"
+    justifyContent: "flex-start",
   },
   inputContainer: {
     backgroundColor: colors.background,
-    maxHeight:60,
+    maxHeight: 60,
     marginHorizontal: 25,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
     minHeight: MIN_INPUT_HEIGHT,
     borderRadius: MIN_INPUT_HEIGHT / 2,
     flexDirection: "row",
