@@ -6,7 +6,7 @@ const TEXT_LEFT_MARGIN = 33 + 5;
 const NAME_HEIGHT = 16;
 function ReceivedMessage({ text, first, last, usersRevealed, otherUser }) {
   const image = usersRevealed
-    ? require("../../assets/images/mike.webp")
+    ? otherUser.profilePic
     : require("../../assets/images/anonymous-user.png");
   const name = usersRevealed ? otherUser.fullname : otherUser.username;
   return (

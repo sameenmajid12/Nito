@@ -4,63 +4,38 @@ import { useUser } from "../../contexts/UserContext";
 import { colors, FONT_SIZE_S, FONT_SIZE_M, FONT_SIZE_XS } from "../../styles";
 function ConnectionChats({ enterChat }) {
   const { user } = useUser();
-  const chats = [
-    {
-      fullname: "SZA",
-      profilePic: require("../../assets/images/sza.webp"),
-      lastMessage:
-        "If you could teleport anywhere right now, where would you go?",
-      time: "4:15PM",
-    },
-    {
-      fullname: "Ilia Topuria",
-      profilePic: require("../../assets/images/ilia.jpg"),
-      lastMessage:
-        "I j got a 42 on the DSA exam I should prob stick to fighting",
-      time: "11:22AM",
-    },
-    {
-      fullname: "Mike Ross",
-      profilePic: require("../../assets/images/mike.webp"),
-      lastMessage:
-        "You ever notice how our prof talks about negligence like it’s a personality trait?",
-      time: "11:08PM",
-    },
-    {
-      fullname: "Daniel Cormier",
-      profilePic: require("../../assets/images/dc.jpg"),
-      lastMessage: "Yeah, it was great meeting you!",
-      time: "9:35AM",
-    },{
-      fullname: "Harvey Specter",
-      profilePic: require("../../assets/images/harvey.jpg"),
-      lastMessage: "I was more focused on getting out of that lecture than what case we were reviewing",
-      time: "9:35AM",
-    },
-  ];
   function truncateMessage(message, maxLength) {
+    if(!message){
+      return "Send a message"
+    }
     if (message.length <= maxLength) return message;
     return message.slice(0, maxLength - 3) + "...";
   }
   return (
     <View style={styles.chatListContainer}>
       <Text style={styles.containerHeader}>Your connections</Text>
-      {chats.map((chat, index) => (
-        <Pressable
-          onPress={() => enterChat(chat)}
-          key={index}
-          style={[styles.chat, index === 0 ? styles.currentChat : ""]}
-        >
-          <Image style={styles.chatProfilePic} source={chat.profilePic}></Image>
-          <View style={styles.chatDetails}>
-            <Text style={styles.chatName}>{chat.fullname}</Text>
-            <Text style={styles.chatLastMessage}>
-              {truncateMessage(chat.lastMessage, 60)}
-            </Text>
-          </View>
-          <Text style={styles.chatLastMessageTime}>{chat.time}</Text>
-        </Pressable>
-      ))}
+      {user?.savedConversations.map((chat, index) => {
+        const otherUser = chat.user1._id === user._id ? chat.user2 : chat.user1;
+        return (
+          <Pressable
+            onPress={() => enterChat(chat)}
+            key={index}
+            style={[styles.chat, index === 0 ? styles.currentChat : ""]}
+          >
+            <Image
+              style={styles.chatProfilePic}
+              source={otherUser.profilePic}
+            ></Image>
+            <View style={styles.chatDetails}>
+              <Text style={styles.chatName}>{otherUser.fullname}</Text>
+              <Text style={styles.chatLastMessage}>
+                {truncateMessage(chat.lastMessage, 60)}
+              </Text>
+            </View>
+            <Text style={styles.chatLastMessageTime}>7:30AM</Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }

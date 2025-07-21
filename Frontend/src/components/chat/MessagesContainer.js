@@ -82,14 +82,14 @@ function MessagesContainer({ messages, usersRevealed, otherUser }) {
             const last = messages[i + 1]?.sender !== message.sender;
             return isByUser(message) ? (
               <SentMessage
-                key={message.id}
+                key={message._id}
                 text={message.text}
                 first={first}
                 last={last}
               />
             ) : (
               <ReceivedMessage
-                key={message.id}
+                key={message._id}
                 text={message.text}
                 first={first}
                 last={last}
@@ -102,7 +102,6 @@ function MessagesContainer({ messages, usersRevealed, otherUser }) {
           <Text>No messages yet</Text>
         )}
       </Animated.View>
-      <ChatExpired/>
     </ScrollView>
   );
 }

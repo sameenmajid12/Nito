@@ -5,9 +5,9 @@ import { Image } from "expo-image";
 import { useModal } from "../../contexts/ModalContext";
 
 function ChatHeader({ navigation, usersRevealed, otherUser, conversation }) {
-  const name = usersRevealed ? otherUser.fullName : otherUser.username;
+  const name = usersRevealed ? otherUser.fullname : otherUser.username;
   const image = usersRevealed
-    ? require("../../assets/images/mike.webp")
+    ? otherUser.profilePic
     : require("../../assets/images/anonymous-user.png");
   const { openModal } = useModal();
   return (

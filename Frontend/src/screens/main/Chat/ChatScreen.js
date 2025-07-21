@@ -12,22 +12,47 @@ import ChatHeader from "../../../components/chat/ChatHeader";
 import MessagesContainer from "../../../components/chat/MessagesContainer";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useUser } from "../../../contexts/UserContext";
+import { API_BASE_URL } from "@env";
+import { useAuth } from "../../../contexts/AuthContext";
+import axios from "axios";
 function ChatScreen({ navigation, route }) {
   const [newMessage, setNewMessage] = useState("");
   const { user } = useUser();
+  const { token } = useAuth();
   const { conversation } = route.params;
   const [messages, setMessages] = useState(conversation?.messages); // WILL SET IT TO JUST [] WHEN BACKEND IS CREATED
   const [loadingMessages, setLoadingMessages] = useState(false);
   const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
-  const usersRevealed =
-    conversation.user1Revealed && conversation.user2Revealed;
+  const usersRevealed = true;
   const otherUser =
     conversation.user1.id === user.id ? conversation.user2 : conversation.user1;
   useEffect(() => {
+    const getMessages = async () => {
+      setLoadingMessages(true);
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}/conversation/${conversation._id}/messages`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          const { conversationMessages } = response.data;
+          console.log(conversationMessages);
+          setMessages(conversationMessages);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoadingMessages(false);
+      }
+    };
     if (conversation) {
-      //API CALL TO GET MESSAGES BUT FOR NOW IM GOING TO PLACE MESSAGES IN THE DUMMY CONVERSATIONS FOR TESTING
+      getMessages();
     }
-  }, []);
+  }, [conversation]);
   return (
     <SafeAreaView style={styles.page}>
       <ChatHeader

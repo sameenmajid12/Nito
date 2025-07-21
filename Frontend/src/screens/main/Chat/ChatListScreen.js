@@ -24,12 +24,21 @@ function ChatListScreen({ navigation }) {
   const { user } = useUser();
   const [selectedSection, setSelectedSection] = useState("current");
   const enterChat = (conversation) => {
+    const toSafeISOString = (dateField) => {
+      if (!dateField) {
+        return null;
+      }
+      if (dateField instanceof Date) {
+        return dateField.toISOString();
+      }
+      return dateField;
+    };
     navigation.navigate("Chat", {
       conversation: {
         ...conversation,
-        startTime: conversation?.startTime.toISOString(),
-        endTime: conversation?.endTime.toISOString(),
-        graceEndTime: conversation?.graceEndTime.toISOString(),
+        startTime: toSafeISOString(conversation.startTime),
+        endTime: toSafeISOString(conversation.endTime),
+        graceEndTime: toSafeISOString(conversation.graceEndTime),
       },
     });
   };
