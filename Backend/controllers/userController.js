@@ -19,6 +19,7 @@ userRouter.get("/me", verifyToken, async (req, res) => {
         populate: [
           { path: "user1", select: "fullname profilePic username" },
           { path: "user2", select: "fullname profilePic username" },
+          { path: "lastMessage" },
         ],
       },
       {
@@ -26,6 +27,7 @@ userRouter.get("/me", verifyToken, async (req, res) => {
         populate: [
           { path: "user1", select: "username" },
           { path: "user2", select: "username" },
+          { path: "lastMessage" },
         ],
       },
       ,
@@ -89,6 +91,7 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
         populate: [
           { path: "user1", select: "fullname profilePic username" },
           { path: "user2", select: "fullname profilePic username" },
+          { path: "lastMessage" },
         ],
       },
       {
@@ -96,6 +99,7 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
         populate: [
           { path: "user1", select: "username" },
           { path: "user2", select: "username" },
+          { path: "lastMessage" },
         ],
       },
       ,
