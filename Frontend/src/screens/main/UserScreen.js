@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, View, } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import ProfileTop from "../../components/profile/ProfileTop";
 import Header from "../../components/common/Header";
 import { Image } from "expo-image";
@@ -8,20 +8,59 @@ import UserTags from "../../components/user/UserTags";
 import UserPollComparison from "../../components/user/UserPollComparison";
 import { colors } from "../../styles";
 import TextHeader from "../../components/common/TextHeader";
+import { useEffect, useState } from "react";
+import { API_BASE_URL } from "@env";
+import { useUser } from "../../contexts/UserContext";
+import axios from "axios";
+import { useAuth } from "../../contexts/AuthContext";
 function UserScreen({ route, navigation }) {
   const { user } = route.params;
+  const [userToDisplay, setUserToDisplay] = useState(user);
+  const { token } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}/user/${userToDisplay._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          const { userToRetrieve } = response.data;
+          console.log(userToRetrieve);
+          setUserToDisplay(userToRetrieve);
+        }else{
+          throw new Error(`Error fetching user with status ${response.status}`)
+        }
+      } catch (e) {
+        console.error(e);
+        navigation.goBack();
+      }finally{
+        setIsLoading(false);
+      }
+    };
+    getUser();
+  }, []);
   return (
     <SafeAreaView style={styles.page}>
-      <TextHeader text={user.fullname} navigation={navigation}/>
+      <TextHeader text={userToDisplay.fullname} navigation={navigation} />
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.contentWrapper}>
-          <ProfileTop isUser={false} user={user}></ProfileTop>
-          <View style={styles.sectionsContainer}>
-            <ProfileActivity isUser={false} user={user} />
-            <ProfileAboutMe isUser={false} user={user} />
-            <UserTags otherUser={user} />
-            <UserPollComparison otherUser={user} />
-          </View>
+          <ProfileTop isUser={false} user={userToDisplay}></ProfileTop>
+          {isLoading ? (
+            <View></View>
+          ) : (
+            <View style={styles.sectionsContainer}>
+              <ProfileActivity isUser={false} user={userToDisplay} />
+              <ProfileAboutMe isUser={false} user={userToDisplay} />
+              <UserTags otherUser={userToDisplay} />
+              <UserPollComparison otherUser={userToDisplay} />
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
