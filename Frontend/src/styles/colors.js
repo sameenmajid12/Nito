@@ -28,5 +28,6 @@ const colors = {
   black25: "rgba(0,0,0,0.25)",
   black10: "rgba(0,0,0,0.1)",
   black5: "rgba(0,0,0,0.05)",
+  borderHover:"#D7CCD9"
 };
 export default colors;

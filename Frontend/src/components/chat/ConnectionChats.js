@@ -5,8 +5,8 @@ import { colors, FONT_SIZE_S, FONT_SIZE_M, FONT_SIZE_XS } from "../../styles";
 function ConnectionChats({ enterChat }) {
   const { user } = useUser();
   function truncateMessage(message, maxLength) {
-    if(!message){
-      return "Send a message"
+    if (!message) {
+      return "Send a message";
     }
     if (message.length <= maxLength) return message;
     return message.slice(0, maxLength - 3) + "...";
@@ -20,7 +20,20 @@ function ConnectionChats({ enterChat }) {
           <Pressable
             onPress={() => enterChat(chat)}
             key={index}
-            style={[styles.chat, index === 0 ? styles.currentChat : ""]}
+            style={({ pressed }) => [
+              styles.chat,
+              index === 0 && styles.topChat,
+              pressed
+                ? {
+                    backgroundColor: colors.black5,
+                    borderBottomColor: colors.borderHover,
+                    borderTopColor: index === 0 ? colors.borderHover : null,
+                  }
+                : {
+                    backgroundColor: colors.background,
+                    borderBottomColor: colors.borderLight,
+                  },
+            ]}
           >
             <Image
               style={styles.chatProfilePic}
@@ -42,7 +55,7 @@ function ConnectionChats({ enterChat }) {
 const styles = StyleSheet.create({
   chatListContainer: {
     marginTop: 25,
-    rowGap: 5,
+    rowGap: 0,
     width: "100%",
   },
   containerHeader: {
@@ -54,16 +67,15 @@ const styles = StyleSheet.create({
   chat: {
     width: "100%",
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
     paddingHorizontal: 20,
     paddingVertical: 12,
     flexDirection: "row",
     columnGap: 10,
     alignItems: "center",
   },
-  currentChat: {
+  topChat: {
     borderTopWidth: 1,
-    borderTopColor: colors.border,
+    borderTopColor: colors.borderLight,
   },
   chatProfilePic: {
     width: 50,
