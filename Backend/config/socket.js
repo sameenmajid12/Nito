@@ -16,8 +16,9 @@ const initializeSocketIo = (server) => {
       socketUsers[userId] = socket.id;
       socket.userId = userId;
     });
-    socket.on("sendMessage", async ({ receiverId, conversationId, text }) => {
+    socket.on("sendMessage", async ({ receiverId, conversationId, text, clientId }) => {
       try {
+        console.log(`Sending message...`);
         const conversation = await Conversation.findById(conversationId);
         if (!conversation) {
           return socket.emit("errorMessage", {
@@ -29,6 +30,7 @@ const initializeSocketIo = (server) => {
           receiver: receiverId,
           text,
           conversation: conversationId,
+          clientId
         });
         conversation.lastMessage = message._id;
         await conversation.save();

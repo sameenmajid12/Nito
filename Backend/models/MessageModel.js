@@ -13,12 +13,21 @@ const messageSchema = new mongoose.Schema(
       required: true,
     },
     type: { type: String, enum: ["image", "text"], default: "text" },
-    text: { type: String,  trim: true },
+    text: { type: String, trim: true },
     image: {
       filename: String,
       fileUrl: String,
     },
-    conversation: { type: mongoose.Schema.Types.ObjectId, ref: "Conversation" },
+    clientId: {
+      type: String,
+      required: false,
+      unique: false,
+    },
+    conversation: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Conversation",
+      index: true,
+    },
   },
   { timestamps: true }
 );
