@@ -1,4 +1,10 @@
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { colors, FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_XXL } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
@@ -16,12 +22,17 @@ function ChatHeader({ navigation, usersRevealed, otherUser, conversation }) {
         <Pressable onPress={() => navigation.goBack()}>
           <Ionicons style={styles.icons} name="chevron-back"></Ionicons>
         </Pressable>
-        <Image style={styles.receiverProfilePic} source={image}></Image>
-        <Text style={styles.receiverName}>{name}</Text>
+        <Pressable
+          onPress={() => navigation.navigate("UserScreen", { user: otherUser })}
+          style={styles.userProfile}
+        >
+          <Image style={styles.receiverProfilePic} source={image}></Image>
+          <Text style={styles.receiverName}>{name}</Text>
+        </Pressable>
       </View>
       <View style={styles.headerRight}>
         <Ionicons style={styles.timeIcon} name="time-outline"></Ionicons>
-        <TouchableOpacity onPress={()=>openModal(conversation, "chatModal")}>
+        <TouchableOpacity onPress={() => openModal(conversation, "chatModal")}>
           <Ionicons style={styles.icons} name="ellipsis-horizontal"></Ionicons>
         </TouchableOpacity>
       </View>
@@ -38,6 +49,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    columnGap: 7,
+  },
+  userProfile: {
     flexDirection: "row",
     alignItems: "center",
     columnGap: 7,
