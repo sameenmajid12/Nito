@@ -2,10 +2,10 @@ import { StyleSheet, Text, View } from "react-native";
 import { colors } from "../../styles";
 import ProfileSocialInput from "./ProfileSocialInput";
 function ProfileSocialMedia({ editing, handleChange, changes, user, isUser }) {
-  const hasInstagram = !isUser && user.socialMedia.instagram;
-  const hasSnapchat = !isUser && user.socialMedia.snapchat;
-  const hasLinkedin = !isUser && user.socialMedia.linkedin;
-  const hasDiscord = !isUser && user.socialMedia.discord;
+  const hasInstagram = !isUser && user.socialMedia?.instagram;
+  const hasSnapchat = !isUser && user.socialMedia?.snapchat;
+  const hasLinkedin = !isUser && user.socialMedia?.linkedin;
+  const hasDiscord = !isUser && user.socialMedia?.discord;
 
   return (
     <View style={styles.sectionWrapper}>

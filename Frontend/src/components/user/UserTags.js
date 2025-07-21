@@ -5,10 +5,10 @@ import ProfileSectionHeader from "../profile/ProfileSectionHeader";
 import { View, Text, StyleSheet } from "react-native";
 function UserTags({ otherUser }) {
   const { user, updateUser } = useUser();
-  const commonTags = otherUser.tags.filter((tag) => user.tags.includes(tag));
-  const otherTags = otherUser.tags.filter((tag) => !user.tags.includes(tag));
-  const hasCommonTags = commonTags.length > 0;
-  const hasOtherTags = otherTags.length > 0;
+  const commonTags = otherUser.tags?.filter((tag) => user.tags.includes(tag));
+  const otherTags = otherUser.tags?.filter((tag) => !user.tags.includes(tag));
+  const hasCommonTags = commonTags?.length > 0;
+  const hasOtherTags = otherTags?.length > 0;
   const addTag = (tagToAdd) => {
     const updatedTags = [...user.tags, tagToAdd];
     updateUser({ tags: updatedTags });
