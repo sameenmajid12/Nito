@@ -24,7 +24,7 @@ conversationRouter.get(
       }
       const messages = await Message.find({
         conversation: conversationId,
-      }).sort({ createdAt: -1 });
+      }).sort({ createdAt: 1 });
       res.status(200).json({ conversationMessages: messages || [] });
     } catch (e) {
       res.status(500).json({ message: "Internal server error" });
