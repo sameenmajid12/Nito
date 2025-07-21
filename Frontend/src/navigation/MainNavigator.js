@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CustomTabBar from "../components/common/CustomTabBar";
 import { useNavigationState } from "@react-navigation/native";
 import HomeScreen from "../screens/main/HomeScreen";
-import MatchScreen from "../screens/match/MatchScreen";
+import MatchScreen from "../screens/MatchScreen";
 import ProfileScreen from "../screens/main/Profile/ProfileScreen";
 import ChatListScreen from "../screens/main/Chat/ChatListScreen";
 import ChatScreen from "../screens/main/Chat/ChatScreen";

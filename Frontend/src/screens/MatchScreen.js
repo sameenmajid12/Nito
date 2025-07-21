@@ -7,9 +7,9 @@ import {
   Pressable,
   Animated,
 } from "react-native";
-import { colors, FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_XXL } from "../../styles";
-import MatchedUsersImages from "../../components/match/MatchedUserImages";
-import Logo from "../../components/common/Logo";
+import { colors, FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_XXL } from "../styles";
+import MatchedUsersImages from "../components/match/MatchedUserImages";
+import Logo from "../components/common/Logo";
 import { Ionicons } from "@expo/vector-icons";
 import { useRef } from "react";
 function MatchScreen({ navigation, route }) {
