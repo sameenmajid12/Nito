@@ -20,6 +20,13 @@ userRouter.get("/me", verifyToken, async (req, res) => {
           { path: "user1", select: "fullname profilePic username" },
           { path: "user2", select: "fullname profilePic username" },
           { path: "lastMessage" },
+          {
+            path: "lastReadMessages",
+            populate: [
+              { path: "user1", model: "Message" },
+              { path: "user2", model: "Message" },
+            ],
+          },
         ],
       },
       {
@@ -28,6 +35,8 @@ userRouter.get("/me", verifyToken, async (req, res) => {
           { path: "user1", select: "username" },
           { path: "user2", select: "username" },
           { path: "lastMessage" },
+          { path: "lastReadMessages.user1", model: "Message" },
+          { path: "lastReadMessages.user2", model: "Message" },
         ],
       },
       ,
@@ -38,6 +47,7 @@ userRouter.get("/me", verifyToken, async (req, res) => {
     const { password, ...safeUser } = user._doc;
     res.status(200).json({ user: safeUser });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -92,6 +102,8 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
           { path: "user1", select: "fullname profilePic username" },
           { path: "user2", select: "fullname profilePic username" },
           { path: "lastMessage" },
+          { path: "lastReadMessages.user1", model: "Message" },
+          { path: "lastReadMessages.user2", model: "Message" },
         ],
       },
       {
@@ -100,6 +112,8 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
           { path: "user1", select: "username" },
           { path: "user2", select: "username" },
           { path: "lastMessage" },
+          { path: "lastReadMessages.user1", model: "Message" },
+          { path: "lastReadMessages.user2", model: "Message" },
         ],
       },
       ,

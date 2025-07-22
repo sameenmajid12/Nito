@@ -16,8 +16,16 @@ const conversationSchema = new mongoose.Schema({
     ref: "Message",
   },
   lastReadMessages: {
-    user1: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
-    user2: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
+    user1: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Message",
+      default: null,
+    },
+    user2: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Message",
+      default: null,
+    },
   },
   user1Revealed: { type: Boolean, default: false },
   user2Revealed: { type: Boolean, default: false },

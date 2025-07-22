@@ -15,6 +15,10 @@ function ConnectionChats({ enterChat }) {
     <View style={styles.chatListContainer}>
       <Text style={styles.containerHeader}>Your connections</Text>
       {user?.savedConversations.map((chat, index) => {
+        const userNum = chat.user1._id === user._id ? "user1" : "user2";
+        const isRead =
+          chat.lastReadMessages[userNum]?._id === chat.lastMessage?._id ||
+          chat.lastMessage?.sender === user._id;
         const formatter = new Intl.DateTimeFormat("en-US", {
           hour: "numeric",
           minute: "numeric",
@@ -49,13 +53,31 @@ function ConnectionChats({ enterChat }) {
             ></Image>
             <View style={styles.chatDetails}>
               <Text style={styles.chatName}>{otherUser.fullname}</Text>
-              <Text style={styles.chatLastMessage}>
+              <Text
+                style={[
+                  styles.chatLastMessage,
+                  isRead
+                    ? { color: colors.textLight, fontFamily: "Nunito-Medium" }
+                    : {
+                        color: colors.textPrimary,
+                        fontFamily: "Nunito-SemiBold",
+                      },
+                ]}
+              >
                 {truncateMessage(chat.lastMessage, 60, otherUser.fullname)}
               </Text>
             </View>
-            <Text style={styles.chatLastMessageTime}>
+            <Text
+              style={[
+                styles.chatLastMessageTime,
+                isRead
+                  ? { color: colors.textLight }
+                  : { color: colors.textPrimary },
+              ]}
+            >
               {formattedLastMessageTime}
             </Text>
+            {!isRead && <View style={styles.unreadIndicator}></View>}
           </Pressable>
         );
       })}
@@ -101,7 +123,6 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_M,
   },
   chatLastMessage: {
-    fontFamily: "Nunito-Medium",
     color: colors.textLight,
     fontSize: FONT_SIZE_XS,
   },
@@ -109,9 +130,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 10,
     top: 10,
-    color: colors.textLight,
     fontFamily: "Nunito-Medium",
     fontSize: FONT_SIZE_S,
+  },
+  unreadIndicator: {
+    width: 7,
+    height: 7,
+    borderRadius: 999,
+    backgroundColor: colors.primary,
+    position: "absolute",
+    right: 10,
+    top: 37,
   },
 });
 export default ConnectionChats;

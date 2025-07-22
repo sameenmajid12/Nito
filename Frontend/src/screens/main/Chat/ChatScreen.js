@@ -19,12 +19,13 @@ import { v4 as uuidv4 } from "uuid";
 import { useSocket } from "../../../contexts/SocketContext";
 function ChatScreen({ navigation, route }) {
   const [newMessage, setNewMessage] = useState("");
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const { token } = useAuth();
-  const { conversation } = route.params;
+  const [conversation, setConversation] = useState(route.params.conversation);
   const { socket } = useSocket();
-  const [messages, setMessages] = useState(conversation?.messages); // WILL SET IT TO JUST [] WHEN BACKEND IS CREATED
+  const [messages, setMessages] = useState([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
+  const [hasLoadedMessages, setHasLoadedMessages] = useState(false);
   const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
   const usersRevealed = true;
   const otherUser =
@@ -51,12 +52,51 @@ function ChatScreen({ navigation, route }) {
         console.error(e);
       } finally {
         setLoadingMessages(false);
+        setHasLoadedMessages(true);
       }
     };
-    if (conversation) {
+    if (conversation && !hasLoadedMessages) {
       getMessages();
     }
   }, [conversation]);
+  useEffect(() => {
+    if (messages.length > 0) {
+      setConversation((prev) => ({
+        ...prev,
+        lastMessage: messages[messages.length - 1],
+      }));
+    }
+  }, [messages]);
+  useEffect(() => {
+    const userNum = user._id === conversation.user1._id ? "user1" : "user2";
+    const data = {
+      conversationId: conversation._id,
+      receiverId: otherUser._id,
+    };
+    if (
+      conversation.lastMessage?._id !==
+        conversation.lastReadMessages[userNum]?._id &&
+      conversation.lastMessage?.sender !== user._id
+    ) {
+      socket.emit("markConversationAsRead", data);
+      setUser((prev) => {
+        const conversationIndex = prev.savedConversations.findIndex(
+          (convo) => convo._id === conversation._id
+        );
+        if (conversationIndex === -1) return prev;
+        const updatedConversation = {
+          ...prev.savedConversations[conversationIndex],
+          lastReadMessages: {
+            ...prev.savedConversations[conversationIndex].lastReadMessages,
+            [userNum]: conversation.lastMessage,
+          },
+        };
+        const newConversations = [...prev.savedConversations];
+        newConversations[conversationIndex] = updatedConversation;
+        return { ...prev, savedConversations: newConversations };
+      });
+    }
+  }, [messages, conversation]);
   useEffect(() => {
     if (!socket) return;
     const handleReceiveMessage = (message) => {
