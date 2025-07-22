@@ -4,6 +4,7 @@ import {
   Keyboard,
   ActivityIndicator,
   View,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { colors } from "../../../styles";
 import MessageInput from "../../../components/chat/MessageInput";
@@ -26,7 +27,19 @@ function ChatScreen({ navigation, route }) {
   const [messages, setMessages] = useState([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [hasLoadedMessages, setHasLoadedMessages] = useState(false);
-  const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
+  const [showTime, setShowTime] = useState(false);
+  const toggleTime = () => {
+    setShowTime((prev) => !prev);
+  };
+  const hideTime = () => {
+    if (showTime) {
+      setShowTime(false);
+    }
+  };
+  const tapGesture = Gesture.Tap().onTouchesDown(() => {
+    Keyboard.dismiss();
+    hideTime();
+  });
   const usersRevealed = true;
   const otherUser =
     conversation.user1._id === user._id
@@ -155,6 +168,8 @@ function ChatScreen({ navigation, route }) {
         conversation={conversation}
         usersRevealed={usersRevealed}
         otherUser={otherUser}
+        showTime={showTime}
+        toggleTime={toggleTime}
       />
 
       <GestureDetector gesture={tapGesture}>

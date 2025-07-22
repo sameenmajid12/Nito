@@ -12,6 +12,7 @@ import { useEffect, useRef } from "react";
 import { colors } from "../../styles";
 import ChatExpired from "./ChatExpired";
 import { useUser } from "../../contexts/UserContext";
+import ChatBeginnning from "./ChatBeginning";
 const INITIAL_BOTTOM_PADDING = 50;
 function MessagesContainer({ messages, usersRevealed, otherUser }) {
   const scrollViewRef = useRef(null);
@@ -77,6 +78,7 @@ function MessagesContainer({ messages, usersRevealed, otherUser }) {
           paddingBottom:containerBottomPadding
         }}
       >
+        <ChatBeginnning user={otherUser} usersRevealed={usersRevealed}/>
         {messages?.length > 0 ? (
           messages.map((message, i) => {
             const first = messages[i - 1]?.sender !== message.sender;

@@ -9,8 +9,9 @@ import { colors, FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_XXL } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useModal } from "../../contexts/ModalContext";
+import TimeLeft from "./TimeLeft";
 
-function ChatHeader({ navigation, usersRevealed, otherUser, conversation }) {
+function ChatHeader({ navigation, usersRevealed, otherUser, conversation, showTime, toggleTime }) {
   const name = usersRevealed ? otherUser.fullname : otherUser.username;
   const image = usersRevealed
     ? otherUser.profilePic
@@ -31,7 +32,7 @@ function ChatHeader({ navigation, usersRevealed, otherUser, conversation }) {
         </Pressable>
       </View>
       <View style={styles.headerRight}>
-        <Ionicons style={styles.timeIcon} name="time-outline"></Ionicons>
+        <TimeLeft time={"17m 12s left"} showTime={showTime} toggleTime={toggleTime}></TimeLeft>
         <TouchableOpacity onPress={() => openModal(conversation, "chatModal")}>
           <Ionicons style={styles.icons} name="ellipsis-horizontal"></Ionicons>
         </TouchableOpacity>
