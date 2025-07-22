@@ -8,8 +8,8 @@ function SentMessage({ text, first, last }) {
       <View
         style={[
           styles.sentMessage,
-          first ? styles.first : null,
-          last ? styles.last : null,
+          first && styles.first,
+          last && styles.last,
         ]}
       >
         <Text style={styles.text}>{text}</Text>
@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
     maxWidth: "70%",
     marginBottom: 1,
     shadowColor: "#000",
-    shadowRadius: 4,
-    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 0 },
   },
   text: {
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   last: {
     marginBottom: 20,
     shadowRadius: 4,
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 4 },
   },
   name: {
