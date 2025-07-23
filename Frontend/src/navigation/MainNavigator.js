@@ -15,7 +15,8 @@ import ConnectionsScreen from "../screens/main/ConnectionScreen";
 import { useModal } from "../contexts/ModalContext";
 import Modal from "../components/modal/Modal";
 import UserScreen from "../screens/main/UserScreen";
-
+import Alert from "../components/alert/Alert";
+import { useAlert } from "../contexts/AlertContext";
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
 const ChatStack = createNativeStackNavigator();
@@ -117,6 +118,9 @@ function TabNavigator() {
 
 function MainNavigator() {
   const { modalState } = useModal();
+  const { alerts, closeAlert } = useAlert();
+  const currentAlert = alerts.length > 0 ? alerts[0] : null;
+
   return (
     <>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
@@ -149,6 +153,14 @@ function MainNavigator() {
           }
           pollData={modalState.name === "pollModal" ? modalState.data : null}
         />
+      )}
+      {alerts.length > 0 && (
+        <Alert
+          state={currentAlert.state}
+          message={currentAlert.message}
+          _id={currentAlert._id}
+          closeAlert={closeAlert}
+        ></Alert>
       )}
     </>
   );

@@ -1,4 +1,4 @@
-import 'react-native-get-random-values';
+import "react-native-get-random-values";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -11,6 +11,7 @@ import { UserProvider } from "./src/contexts/UserContext";
 import { SocketProvider } from "./src/contexts/SocketContext";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { AlertProvider } from "./src/contexts/AlertContext";
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Nunito-Regular": require("./src/assets/fonts/Nunito-Regular.ttf"),
@@ -28,7 +29,9 @@ export default function App() {
           <UserProvider>
             <SocketProvider>
               <ModalProvider>
-                <AppNavigator />
+                <AlertProvider>
+                  <AppNavigator />
+                </AlertProvider>
               </ModalProvider>
             </SocketProvider>
           </UserProvider>
