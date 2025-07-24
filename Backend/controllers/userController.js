@@ -7,6 +7,7 @@ const upload = require("../middleware/uploadImage");
 const s3 = require("../config/s3Client");
 const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const mongoose = require("mongoose");
+const Conversation = require("../models/ConversationModel");
 userRouter.get("/me", verifyToken, async (req, res) => {
   try {
     console.log("Getting user...");
@@ -143,9 +144,29 @@ userRouter.patch("/remove-connection", verifyToken, async (req, res, next) => {
     connection.connections = connection.connections.filter(
       (c) => !c.equals(userId)
     );
+    const conversation = await Conversation.findOne({
+      $or: [
+        { user1: user._id, user2: connection._id },
+        { user1: connection._id, user2: user._id },
+      ],
+    });
+    if (conversation) {
+      user.savedConversations = user.savedConversations.filter(
+        (c) => !c.equals(conversation._id)
+      );
+      user.archivedConversations.push(conversation._id);
+      connection.savedConversations = connection.savedConversations.filter(
+        (c) => !c.equals(conversation._id)
+      );
+      connection.archivedConversations.push(conversation._id);
+    }
     await user.save();
     await connection.save();
-    res.sendStatus(204);
+    res.status(200).json({
+      savedConversations: user.savedConversations,
+      connections: user.connections,
+      archivedConversations: user.archivedConversations,
+    });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -182,30 +203,6 @@ userRouter.patch(
   }
 );
 
-userRouter.patch("/remove-connection", verifyToken, async (req, res) => {
-  try {
-    const userId = req.user._id;
-    const { userToRemoveUsername } = req.body;
-    const user = await User.findById(userId).populate(["connections"]);
-    const userToRemove = await User.findOne({ username: userToRemoveUsername });
-    if (!user || !userToRemove) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    user.connections = user.connections.filter(
-      (connection) => !connection._id.equals(userToRemove._id)
-    );
-    userToRemove.connections = userToRemove.connections.filter(
-      (connection) => !connection._id.equals(user._id)
-    );
-    await user.save();
-    await userToRemove.save();
-    res.status(200).json({ connections: user.connections });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-
 userRouter.post("/block", verifyToken, async (req, res) => {
   try {
     const userId = req.user._id;
@@ -227,6 +224,30 @@ userRouter.post("/block", verifyToken, async (req, res) => {
   }
 });
 
+userRouter.delete("/unblock", verifyToken, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { userToUnblockUsername } = req.body;
+    const user = await User.findById(userId);
+    const userToUnblock = await User.findOne({
+      username: userToUnblockUsername,
+    });
+    if (!user || !userToUnblock) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (!user.blockedUsers.some((id) => id.equals(userToUnblock._id))) {
+      return res.status(400).json({ message: "User is not blocked" });
+    }
+    user.blockedUsers = user.blockedUsers.filter(
+      (b) => !b.equals(userToUnblock._id)
+    );
+    await user.save();
+    res.status(200).json({ blockedUsers: user.blockedUsers });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 userRouter.post("/verify-password", verifyToken, async (req, res, next) => {
   try {
     console.log("Verifying password..");
