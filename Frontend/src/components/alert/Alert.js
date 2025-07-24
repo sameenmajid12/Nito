@@ -8,7 +8,7 @@ import {
   Easing,
   Pressable,
 } from "react-native";
-import { colors, FONT_SIZE_L, FONT_SIZE_S } from "../../styles";
+import { colors, FONT_SIZE_L, FONT_SIZE_XS } from "../../styles";
 const ALERT_WIDTH = 200;
 function Alert({ state, message, _id, closeAlert }) {
   const translateY = useRef(new Animated.Value(0)).current;
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     left: "50%",
     zIndex: 100,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.15,
   },
   containerLeft: {
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   messageText: {
     color: colors.white,
     fontFamily: "Nunito-SemiBold",
-    fontSize: FONT_SIZE_S,
+    fontSize: FONT_SIZE_XS,
   },
 });
 export default Alert;
