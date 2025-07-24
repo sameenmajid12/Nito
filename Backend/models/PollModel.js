@@ -9,6 +9,10 @@ const OptionSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
+  optionNum: {
+    type: Number,
+    required: true,
+  },
 });
 const PollSchema = new mongoose.Schema({
   question: {
@@ -21,7 +25,7 @@ const PollSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
-  date: { type: Date, required: true, unique: true },
+  date: { type: Date, required: true, unique: true, default: () => new Date() },
 });
 
 module.exports = mongoose.model("Poll", PollSchema);

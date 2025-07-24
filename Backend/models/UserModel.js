@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const userSchema = new mongoose.Schema(
   {
     fullname: {
@@ -30,19 +29,19 @@ const userSchema = new mongoose.Schema(
     },
     school: {
       type: mongoose.Schema.Types.ObjectId,
-      ref:"School",
-      required:true
+      ref: "School",
+      required: true,
     },
-    bio:{
-      type:String
+    bio: {
+      type: String,
     },
-    year:{
-      type:Number,
-      min:2026,
-      max:2036
+    year: {
+      type: Number,
+      min: 2026,
+      max: 2036,
     },
-    major:{
-      type:String,
+    major: {
+      type: String,
     },
     tags: {
       type: [String],
@@ -81,6 +80,19 @@ const userSchema = new mongoose.Schema(
       ref: "Conversation",
       default: [],
     },
+    votedPolls: [
+      {
+        _id: false,
+        poll: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Poll",
+        },
+        selectedOptionNum: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

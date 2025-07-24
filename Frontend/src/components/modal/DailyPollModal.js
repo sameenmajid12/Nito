@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import {
   StyleSheet,
   View,
@@ -7,8 +6,14 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Animated,
+  Easing,
 } from "react-native";
-import { useState, useCallback, useRef, useEffect } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { useState, useEffect, useRef, useCallback } from "react";
+import axios from "axios";
+import { useAuth } from "../../contexts/AuthContext";
+import { useUser } from "../../contexts/UserContext";
+import { API_BASE_URL } from "@env";
 import {
   colors,
   FONT_SIZE_L,
@@ -17,184 +22,228 @@ import {
   FONT_SIZE_XS,
   FONT_SIZE_XXL,
 } from "../../styles";
-function DailyPollModal({ data, handleClose }) {
+
+function DailyPollModal({ handleClose }) {
+  const { token } = useAuth();
+  const { user, setUser } = useUser();
+
+  const [poll, setPoll] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [hasVoted, setHasVoted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [contentContainerWidth, setContentContainerWidth] = useState(0);
+  const [isVoting, setIsVoting] = useState(false);
+  const [loadingPoll, setLoadingPoll] = useState(true);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  const animatedLineWidths = useRef([]);
+  const maxBarWidth = useRef(0);
+
+  // Fetch daily poll
   useEffect(() => {
-    if (hasVoted && contentContainerWidth > 0) {
-      animateResults(data.options, contentContainerWidth);
-    }
-  }, [hasVoted, data.options, contentContainerWidth, animateResults]);
-  const onContentContainerLayout = useCallback((event) => {
-    const { width } = event.nativeEvent.layout;
-    setContentContainerWidth(width);
-  }, []);
-  const animatedLineWidths = useRef(
-    data.options.map(() => new Animated.Value(0))
-  ).current;
-  let maxWidthForBars;
-  const animateResults = useCallback(
-    (optionsWithVotes, measuredWidth) => {
-      if (measuredWidth === 0) return;
+    const fetchPoll = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/dailypoll`);
+        const { poll: pollData } = response.data;
 
-      const totalVotes = optionsWithVotes.reduce(
-        (sum, option) => sum + option.votes,
-        0
-      );
-      maxWidthForBars = measuredWidth - (60 + FONT_SIZE_XXL);
+        const hasUserVoted = user.votedPolls.some(
+          (v) => v.poll === pollData._id
+        );
 
-      optionsWithVotes.forEach((option, index) => {
-        const percentage =
-          totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
-        const targetWidth = (percentage / 100) * maxWidthForBars;
-
-        Animated.timing(animatedLineWidths[index], {
-          toValue: targetWidth,
-          duration: 700,
-          useNativeDriver: false,
-          easing: require("react-native").Easing.out(
-            require("react-native").Easing.ease
-          ),
-        }).start();
-      });
-    },
-    [animatedLineWidths]
-  );
-  const selectOption = (index) => {
-    if (!hasVoted) {
-      setSelectedIndex(index);
-    }
-  };
-  const checkSelected = (index) => {
-    return index === selectedIndex;
-  };
-  const handleVote = async () => {
-    setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    const updatedOptions = data.options.map((option, idx) => {
-      if (idx === selectedIndex) {
-        return { ...option, votes: option.votes + 1 };
+        if (hasUserVoted) {
+          const vote = user.votedPolls.find((v) => v.poll === pollData._id);
+          setSelectedIndex(vote.selectedOptionNum);
+        }
+        if (pollData?.options) {
+          animatedLineWidths.current = pollData.options.map(
+            () => new Animated.Value(0)
+          );
+        }
+        setPoll(pollData);
+        setHasVoted(hasUserVoted);
+      } catch (err) {
+        console.error("Failed to fetch poll:", err);
+      } finally {
+        setLoadingPoll(false);
       }
-      return option;
+    };
+    fetchPoll();
+  }, []);
+
+  // Animate results after vote
+  const animateResults = useCallback(() => {
+    if (
+      !poll?.options ||
+      containerWidth === 0 ||
+      !animatedLineWidths.current.length
+    )
+      return;
+    maxBarWidth.current = containerWidth - (60 + FONT_SIZE_XXL);
+    poll.options.forEach((option, index) => {
+      const percentage =
+        poll.totalVotes > 0 ? option.votes / poll.totalVotes : 0;
+
+      animatedLineWidths.current[index].setValue(0);
+
+      Animated.timing(animatedLineWidths.current[index], {
+        toValue: percentage * maxBarWidth.current,
+        duration: 700,
+        useNativeDriver: false,
+        easing: Easing.out(Easing.ease),
+      }).start();
     });
-    setLoading(false);
-    setHasVoted(true);
-    animateResults(updatedOptions, contentContainerWidth);
+  }, [poll, containerWidth]);
+
+  useEffect(() => {
+    if (
+      hasVoted &&
+      containerWidth > 0 &&
+      poll?.options &&
+      animatedLineWidths.current.length > 0
+    ) {
+      setTimeout(() => animateResults(), 50);
+    }
+  }, [hasVoted, containerWidth, poll, animateResults]);
+
+  // Voting
+  const handleVote = async () => {
+    if (selectedIndex === null) return;
+
+    setIsVoting(true);
+    try {
+      const res = await axios.post(
+        `${API_BASE_URL}/dailypoll/vote/${poll._id}`,
+        { selectedOptionNum: selectedIndex },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const { updatedPoll, updatedUserVotes } = res.data;
+      setPoll(updatedPoll);
+      setUser((prev) => ({ ...prev, votedPolls: updatedUserVotes }));
+      setHasVoted(true);
+      animateResults();
+    } catch (err) {
+      console.error("Vote failed:", err);
+    } finally {
+      setIsVoting(false);
+    }
   };
-  const totalVotes = data.options.reduce(
-    (sum, option) => sum + option.votes,
-    0
-  );
+  const renderOption = (option, index) => {
+    const selected = index === selectedIndex;
+    const percentage =
+      poll.totalVotes > 0
+        ? Math.round((option.votes / poll.totalVotes) * 100)
+        : 0;
+
+    return (
+      <Pressable
+        key={index}
+        style={styles.option}
+        onPress={() => !hasVoted && setSelectedIndex(index)}
+      >
+        <Text style={styles.optionText}>{option.text}</Text>
+        <Ionicons
+          name={selected ? "radio-button-on" : "radio-button-off"}
+          style={selected ? styles.radioOn : styles.radioOff}
+        />
+
+        {hasVoted && (
+          <View style={styles.resultLineContainer}>
+            <Animated.View
+              style={[
+                styles.resultLine,
+                {
+                  width: animatedLineWidths.current[index],
+                  backgroundColor: selected
+                    ? colors.primary
+                    : colors.borderLight,
+                },
+              ]}
+            />
+            <Text
+              style={[
+                styles.resultPercentage,
+                { color: selected ? colors.primaryDark : colors.textLight },
+              ]}
+            >
+              {percentage}%
+            </Text>
+          </View>
+        )}
+      </Pressable>
+    );
+  };
+
   return (
     <Pressable style={styles.container}>
       <View style={styles.header}>
-        <View></View>
         <Text style={styles.headerText}>Daily Poll</Text>
-        <Pressable style={styles.closeButton} onPress={handleClose}>
-          <Ionicons name="close-circle" style={styles.closeIcon}></Ionicons>
+        <Pressable onPress={handleClose} style={styles.closeButton}>
+          <Ionicons name="close-circle" style={styles.closeIcon} />
         </Pressable>
       </View>
-      <View style={styles.contentContainer} onLayout={onContentContainerLayout}>
-        <Text style={styles.question}>{data.question}</Text>
 
-        <View style={styles.optionsContainer}>
-          {data.options.map((option, index) => {
-            const percentage =
-              totalVotes > 0
-                ? Math.round((option.votes / totalVotes) * 100)
-                : 0;
-            return (
-              <Pressable
-                style={styles.option}
-                onPress={() => selectOption(index)}
-                key={index}
-              >
-                <Text style={styles.optionText}>{option.text}</Text>
-                <Ionicons
-                  name={
-                    checkSelected(index)
-                      ? "radio-button-on"
-                      : "radio-button-off"
-                  }
-                  style={
-                    checkSelected(index) ? styles.radioOn : styles.radioOff
-                  }
-                ></Ionicons>
-                {hasVoted && contentContainerWidth > 0 && (
-                  <View style={styles.resultLineContainer}>
-                    <Animated.View
-                      style={[
-                        styles.resultLine,
-                        {
-                          width: animatedLineWidths[index],
-                          maxWidth: maxWidthForBars
-                        },
-                        index === selectedIndex
-                          ? { backgroundColor: colors.primary }
-                          : { backgroundColor: colors.borderLight },
-                      ]}
-                    />
-                    <Text
-                      style={[
-                        styles.resultPercentage,
-                        index === selectedIndex
-                          ? { color: colors.primaryDark }
-                          : { color: colors.textLight },
-                      ]}
-                    >
-                      {percentage}%
-                    </Text>
-                  </View>
-                )}
-              </Pressable>
-            );
-          })}
-        </View>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          style={[
-            styles.voteButton,
-            selectedIndex !== null
-              ? styles.buttonEnabled
-              : styles.buttonDisabled,
-          ]}
-          disabled={selectedIndex === null || hasVoted}
-          onPress={handleVote}
-        >
-          {loading ? (
-            <ActivityIndicator
-              size={FONT_SIZE_M}
-              color={colors.white}
-            ></ActivityIndicator>
-          ) : (
-            <Text style={styles.voteButtonText}>
-              {hasVoted
-                ? `Thank you for voting! Next poll in 11 hours`
-                : "Vote"}
-            </Text>
-          )}
-        </TouchableOpacity>
+      <View
+        style={styles.contentContainer}
+        onLayout={(e) => {
+          const width = e.nativeEvent.layout.width;
+          setContainerWidth(width);
+        }}
+      >
+        {loadingPoll ? (
+          <ActivityIndicator />
+        ) : (
+          <>
+            <Text style={styles.question}>{poll?.question}</Text>
+            <View style={styles.optionsContainer}>
+              {poll?.options.map(renderOption)}
+            </View>
+
+            <TouchableOpacity
+              disabled={hasVoted || selectedIndex === null}
+              onPress={handleVote}
+              activeOpacity={0.9}
+              style={[
+                styles.voteButton,
+                hasVoted || selectedIndex === null
+                  ? styles.buttonDisabled
+                  : styles.buttonEnabled,
+              ]}
+            >
+              {isVoting ? (
+                <ActivityIndicator size={FONT_SIZE_M} color={colors.white} />
+              ) : (
+                <Text style={styles.voteButtonText}>
+                  {hasVoted
+                    ? "Thank you for voting! Next poll in 11 hours"
+                    : "Vote"}
+                </Text>
+              )}
+            </TouchableOpacity>
+          </>
+        )}
       </View>
     </Pressable>
   );
 }
+
 const styles = StyleSheet.create({
+  container: {},
   header: {
     paddingVertical: 7,
     paddingHorizontal: 10,
-    rowGap: 5,
     flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
-    justifyContent: "space-between",
-    borderBottomColor: colors.borderLight,
     borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
   },
   headerText: {
-    color: colors.textPrimary,
     fontFamily: "Nunito-SemiBold",
     fontSize: FONT_SIZE_M,
+    color: colors.textPrimary,
+  },
+  closeButton: {
+    position: "absolute",
+    right: 10,
   },
   closeIcon: {
     fontSize: FONT_SIZE_XL,
@@ -203,15 +252,14 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    rowGap: 5,
   },
   question: {
-    color: colors.primaryDark,
     fontFamily: "Nunito-SemiBold",
     fontSize: FONT_SIZE_L,
+    color: colors.primaryDark,
   },
   optionsContainer: {
-    paddingBottom:15
+    paddingVertical: 15,
   },
   option: {
     height: 40,
@@ -220,9 +268,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   optionText: {
-    color: colors.textPrimary,
-    fontSize: FONT_SIZE_M,
     fontFamily: "Nunito-Medium",
+    fontSize: FONT_SIZE_M,
+    color: colors.textPrimary,
   },
   radioOn: {
     fontSize: FONT_SIZE_XL,
@@ -233,7 +281,6 @@ const styles = StyleSheet.create({
     color: colors.borderLight,
   },
   voteButton: {
-    width: "100%",
     height: 35,
     borderRadius: 10,
     justifyContent: "center",
@@ -250,8 +297,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary50,
   },
   voteButtonText: {
-    color: colors.white,
     fontFamily: "Nunito-SemiBold",
+    color: colors.white,
   },
   resultLineContainer: {
     position: "absolute",
@@ -259,7 +306,7 @@ const styles = StyleSheet.create({
     bottom: -7,
     flexDirection: "row",
     alignItems: "center",
-    columnGap: 5,
+    gap: 5,
   },
   resultLine: {
     height: 4,
@@ -270,4 +317,5 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-SemiBold",
   },
 });
+
 export default DailyPollModal;
