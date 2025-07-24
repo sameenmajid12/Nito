@@ -31,7 +31,6 @@ function UserScreen({ route, navigation }) {
         );
         if (response.status === 200) {
           const { userToRetrieve } = response.data;
-          console.log(userToRetrieve);
           setUserToDisplay(userToRetrieve);
         }else{
           throw new Error(`Error fetching user with status ${response.status}`)

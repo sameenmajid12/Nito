@@ -72,7 +72,7 @@ userRouter.get("/:userId", verifyToken, async (req, res, next) => {
         .json({ message: "User is not a connection or not revealed" });
     }
     const userToRetrieve = await User.findById(userToRetreieveId).select(
-      "fullname user profilePic socialMedia revealedUsers bio year major tags username"
+      "fullname user profilePic socialMedia revealedUsers bio year major tags username votedPolls"
     );
     if (!userToRetrieve) {
       return res.status(404).json({ message: "User not found" });
