@@ -2,15 +2,12 @@ import { View, Pressable, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
-function UserModal({ user, toggleConfirmation}) {
+function UserModal({ user, toggleConfirmation, messageUser, viewProfile }) {
   return (
     <>
       <View style={styles.modalItem}>
         <View style={styles.userDetails}>
-          <Image
-            style={styles.userProfilePic}
-            source={user.profilePic}
-          ></Image>
+          <Image style={styles.userProfilePic} source={user.profilePic}></Image>
           <Text style={styles.modalItemText}>{user.fullname}</Text>
         </View>
       </View>
@@ -19,6 +16,7 @@ function UserModal({ user, toggleConfirmation}) {
           styles.modalItem,
           pressed && { backgroundColor: "rgba(0,0,0,0.05)" },
         ]}
+        onPress={() => messageUser(user)}
       >
         <Text style={styles.modalItemText}>Send message</Text>
         <Ionicons style={styles.icon} name="chevron-forward-outline"></Ionicons>
@@ -28,6 +26,7 @@ function UserModal({ user, toggleConfirmation}) {
           styles.modalItem,
           pressed && { backgroundColor: "rgba(0,0,0,0.05)" },
         ]}
+        onPress={() => viewProfile(user)}
       >
         <Text style={styles.modalItemText}>View profile</Text>
         <Ionicons style={styles.icon} name="chevron-forward-outline"></Ionicons>

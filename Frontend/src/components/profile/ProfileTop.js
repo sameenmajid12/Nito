@@ -27,6 +27,7 @@ function ProfileTop({
   changesMade,
   isUser,
   user,
+  messageUser,
 }) {
   if (!user) {
     return;
@@ -130,10 +131,17 @@ function ProfileTop({
         )
       ) : (
         <View style={styles.primaryButtonsContainer}>
-          <TouchableOpacity activeOpacity={PRIMARY_ACTIVE_OPACITY} style={[styles.updateButton, styles.primary]}>
+          <TouchableOpacity
+            onPress={() => messageUser(user)}
+            activeOpacity={PRIMARY_ACTIVE_OPACITY}
+            style={[styles.updateButton, styles.primary]}
+          >
             <Text style={styles.messageText}>Message</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={TEXT_ACTIVE_OPACITY} style={styles.optionsContainer}>
+          <TouchableOpacity
+            activeOpacity={TEXT_ACTIVE_OPACITY}
+            style={styles.optionsContainer}
+          >
             <Text style={styles.optionsText}>Options</Text>
             <Ionicons name="caret-down" color={colors.primary}></Ionicons>
           </TouchableOpacity>
@@ -227,7 +235,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 999,
-    marginBottom:10
+    marginBottom: 10,
   },
 });
 

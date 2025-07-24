@@ -17,6 +17,7 @@ function UserScreen({ route, navigation }) {
   const { user } = route.params;
   const [userToDisplay, setUserToDisplay] = useState(user);
   const { token } = useAuth();
+  const { getConversation } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const getUser = async () => {
@@ -32,24 +33,34 @@ function UserScreen({ route, navigation }) {
         if (response.status === 200) {
           const { userToRetrieve } = response.data;
           setUserToDisplay(userToRetrieve);
-        }else{
-          throw new Error(`Error fetching user with status ${response.status}`)
+        } else {
+          throw new Error(`Error fetching user with status ${response.status}`);
         }
       } catch (e) {
         console.error(e);
         navigation.goBack();
-      }finally{
+      } finally {
         setIsLoading(false);
       }
     };
     getUser();
   }, []);
+  const messageUser = async (userToMessage) => {
+    const conversation = await getConversation(userToMessage);
+    if (conversation) {
+      navigation.navigate("Chat", { conversation });
+    }
+  };
   return (
     <SafeAreaView style={styles.page}>
       <TextHeader text={userToDisplay.fullname} navigation={navigation} />
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.contentWrapper}>
-          <ProfileTop isUser={false} user={userToDisplay}></ProfileTop>
+          <ProfileTop
+            isUser={false}
+            user={userToDisplay}
+            messageUser={messageUser}
+          ></ProfileTop>
           {isLoading ? (
             <View></View>
           ) : (

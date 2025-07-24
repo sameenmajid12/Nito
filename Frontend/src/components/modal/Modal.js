@@ -9,8 +9,17 @@ import SortConnectionsModal from "./SortConnectionModal";
 import DailyPollModal from "./DailyPollModal";
 import UserModal from "./UserModal";
 import ChatModal from "./ChatModal";
+import { useUser } from "../../contexts/UserContext";
 
-function Modal({ user, conversation, type, sort, changeSort, pollData }) {
+function Modal({
+  user,
+  conversation,
+  type,
+  sort,
+  changeSort,
+  pollData,
+  navigation,
+}) {
   if (
     (type === "chatModal" && !conversation) ||
     (type === "userModal" && !user) ||
@@ -22,7 +31,7 @@ function Modal({ user, conversation, type, sort, changeSort, pollData }) {
   const { closeModal } = useModal();
   const slideAnim = useRef(new Animated.Value(600)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
-
+  const { getConversation } = useUser();
   const [confirmationType, setConfirmationType] = useState(
     type === "logoutModal" ? { type: "logout" } : null
   );
@@ -73,6 +82,17 @@ function Modal({ user, conversation, type, sort, changeSort, pollData }) {
     }
     setConfirmationType(null);
   };
+  const viewProfile = (userToView) => {
+    navigation.navigate("UserScreen", { user: userToView });
+    handleClose();
+  };
+  const messageUser = async (userToMessage) => {
+    const conversation = await getConversation(userToMessage);
+    if (conversation) {
+      navigation.navigate("Chat", { conversation });
+    }
+    handleClose();
+  };
   return (
     <Pressable onPress={handleClose} style={styles.page}>
       <Animated.View
@@ -97,7 +117,12 @@ function Modal({ user, conversation, type, sort, changeSort, pollData }) {
               cancelConfirmation={cancelConfirmation}
             />
           ) : type === "userModal" ? (
-            <UserModal user={user} toggleConfirmation={toggleConfirmation} />
+            <UserModal
+              user={user}
+              toggleConfirmation={toggleConfirmation}
+              messageUser={messageUser}
+              viewProfile={viewProfile}
+            />
           ) : type === "chatModal" ? (
             <ChatModal
               conversation={conversation}
