@@ -26,19 +26,19 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
-        <AuthProvider>
-          <UserProvider>
-            <SocketProvider>
-              <ModalProvider>
-                <PollProvider>
-                  <AlertProvider>
+        <AlertProvider>
+          <AuthProvider>
+            <UserProvider>
+              <SocketProvider>
+                <ModalProvider>
+                  <PollProvider>
                     <AppNavigator />
-                  </AlertProvider>
-                </PollProvider>
-              </ModalProvider>
-            </SocketProvider>
-          </UserProvider>
-        </AuthProvider>
+                  </PollProvider>
+                </ModalProvider>
+              </SocketProvider>
+            </UserProvider>
+          </AuthProvider>
+        </AlertProvider>
       </NavigationContainer>
     </GestureHandlerRootView>
   );

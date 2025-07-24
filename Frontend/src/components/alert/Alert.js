@@ -12,6 +12,7 @@ import { colors, FONT_SIZE_L, FONT_SIZE_S } from "../../styles";
 const ALERT_WIDTH = 200;
 function Alert({ state, message, _id, closeAlert }) {
   const translateY = useRef(new Animated.Value(0)).current;
+  const opacityAnim = useRef(new Animated.Value(1)).current;
   useEffect(() => {
     Animated.timing(translateY, {
       toValue: 70,
@@ -20,8 +21,8 @@ function Alert({ state, message, _id, closeAlert }) {
       useNativeDriver: true,
     }).start();
     const timeout = setTimeout(() => {
-      Animated.timing(translateY, {
-        toValue: -70,
+      Animated.timing(opacityAnim, {
+        toValue: 0,
         duration: 300,
         easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
         useNativeDriver: true,
@@ -62,8 +63,9 @@ function Alert({ state, message, _id, closeAlert }) {
             { translateY: translateY },
             { translateX: -ALERT_WIDTH / 2 },
           ],
+          backgroundColor: backgroundColor,
+          opacity: opacityAnim,
         },
-        { backgroundColor: backgroundColor },
       ]}
     >
       <View style={styles.containerLeft}>
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
     zIndex: 100,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.15,
   },
   containerLeft: {
     flexDirection: "row",

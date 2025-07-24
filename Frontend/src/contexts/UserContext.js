@@ -24,12 +24,13 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import axios from "axios";
 import { API_BASE_URL } from "@env";
-
+import {useAlert} from './AlertContext'
 const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const { token, isAuthenticated } = useAuth();
   const [user, setUser] = useState(null);
   const [isLoadingUser, setIsLoadingUser] = useState(false);
+  const {addAlert} = useAlert();
   const [userError, setUserError] = useState(false);
   useEffect(() => {
     const getUserAfterVerifyingTokens = async () => {
@@ -76,6 +77,7 @@ export const UserProvider = ({ children }) => {
       );
       if (response.status === 200) {
         setUser(response.data);
+        addAlert("success","Information updated")
       }
     } catch (e) {
       console.error("Error updating user: ", e);
