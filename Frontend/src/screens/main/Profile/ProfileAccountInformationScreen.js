@@ -19,27 +19,28 @@ import { useState, useEffect } from "react";
 import TextHeader from "../../../components/common/TextHeader";
 import { useUser } from "../../../contexts/UserContext";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
-
+import axios from "axios";
+import { useAuth } from "../../../contexts/AuthContext";
+import { API_BASE_URL } from "@env";
 function ProfileAccountInformationScreen({ navigation }) {
   const { user, updateUser } = useUser();
+  const { token } = useAuth();
   const [changesMade, setChangesMade] = useState(false);
   const [infoValues, setInfoValues] = useState({
-    fullName: user.fullname,
+    fullname: user.fullname,
     email: user.email,
-    phoneNumber: user.phoneNumber,
-    password: "", //for changing password, user password is not shown on the frontend
-    retypePassword: "",
+    oldPassword: "",
+    newPassword: "",
   });
   const [errors, setErrors] = useState({
-    fullName: "",
+    fullname: "",
     email: "",
-    phoneNumber: "",
-    password: "",
-    retypePassword: "",
+    oldPassword: "",
+    newPassword: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showRetypePassword, setShowRetypePassword] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   useEffect(() => {
     const keyboardWillShowListener = Keyboard.addListener(
@@ -69,29 +70,40 @@ function ProfileAccountInformationScreen({ navigation }) {
     };
   }, []);
   const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
+  const verifyOldPassword = async (oldPassword) => {
+    try {
+      await axios.post(
+        `${API_BASE_URL}/user/verify-password`,
+        { password: oldPassword },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
   const validateInput = (field, value) => {
     let errorMessage = "";
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     const escapedDomain = user.school.emailDomain?.replace(/\./g, "\\.");
     const emailRegex = new RegExp(`^[a-zA-Z0-9._%+-]+@${escapedDomain}$`);
-
     if (field === "email") {
       if (value.trim().length === 0) {
         errorMessage = "Email is required.";
       } else if (!emailRegex.test(value)) {
         errorMessage = `Email must end with @${user.school.emailDomain}`;
       }
-    } else if (field === "fullName") {
+    } else if (field === "fullname") {
       if (value.trim().length === 0) {
         errorMessage = "Full name cannot be empty.";
       }
-    } else if (field === "phoneNumber" && value && !/^\d+$/.test(value)) {
-      errorMessage = "Phone number must be numeric.";
-    } else if (field === "password" && !passwordRegex.test(value)) {
+    } else if (field === "newPassword" && !passwordRegex.test(value)) {
       errorMessage =
         "Password must be at least 8 chars, contain one uppercase, one lowercase, and one number.";
-    } else if (field === "retypePassword" && value !== infoValues.password) {
-      errorMessage = "Password do not match";
     }
     return errorMessage;
   };
@@ -102,13 +114,14 @@ function ProfileAccountInformationScreen({ navigation }) {
       ...prevErrors,
       [field]: errorMessage,
     }));
+
     setInfoValues((prev) => {
       const newValues = { ...prev, [field]: value };
       const hasChanges =
-        newValues.fullName !== user.fullName ||
+        newValues.fullname !== user.fullname ||
         newValues.email !== user.email ||
-        newValues.phoneNumber !== user.phoneNumber ||
-        newValues.password !== "";
+        newValues.oldPassword !== "" ||
+        newValues.newPassword !== "";
       const currentErrors = { ...errors, [field]: errorMessage };
       const hasErrors = Object.values(currentErrors).some(
         (val) => val?.length > 0
@@ -118,16 +131,41 @@ function ProfileAccountInformationScreen({ navigation }) {
     });
   };
 
-  const saveChanges = () => {
-    const hasErrors = Object.values(errors).some((val) => val?.length > 0);
+  const saveChanges = async () => {
+    let hasErrors = Object.values(errors).some((val) => val?.length > 0);
+
+    if (infoValues.newPassword !== "") {
+      if (infoValues.oldPassword.trim() === "") {
+        setErrors((prev) => ({
+          ...prev,
+          oldPassword: "Enter old password for verification",
+        }));
+        hasErrors = true;
+      } else {
+        const isPasswordCorrect = await verifyOldPassword(
+          infoValues.oldPassword
+        );
+        if (!isPasswordCorrect) {
+          setErrors((prev) => ({
+            ...prev,
+            oldPassword: "Incorrect password",
+          }));
+          hasErrors = true;
+        }
+      }
+    }
+
     if (changesMade && !hasErrors) {
-      const { retypePassword, ...rest } = infoValues;
+      const { oldPassword, ...rest } = infoValues;
       const safeUpdates = {};
       for (const key in rest) {
-        if (key === "password" && rest[key].trim().length === 0) {
-          continue;
-        }
-        if (rest[key] !== user[key]) {
+        if (key === "newPassword") {
+          if (rest[key].trim().length === 0) {
+            continue;
+          } else {
+            safeUpdates.password = rest[key];
+          }
+        } else if (rest[key] !== user[key]) {
           safeUpdates[key] = rest[key];
         }
       }
@@ -135,10 +173,14 @@ function ProfileAccountInformationScreen({ navigation }) {
       if (Object.keys(safeUpdates).length > 0) {
         updateUser(safeUpdates);
         setChangesMade(false);
+        setInfoValues((prev) => ({
+          ...prev,
+          newPassword: "",
+          oldPassword: "",
+        }));
       }
     }
   };
-
   return (
     <GestureDetector gesture={tapGesture}>
       <SafeAreaView style={styles.page}>
@@ -156,11 +198,11 @@ function ProfileAccountInformationScreen({ navigation }) {
           <ProfileAccountInfoInput
             iconName={"person-circle-outline"}
             label={"Fullname"}
-            value={infoValues.fullName}
+            value={infoValues.fullname}
             placeholder={"Enter fullname"}
             editable={true}
-            setValue={(text) => handleChange("fullName", text)}
-            error={errors.fullName}
+            setValue={(text) => handleChange("fullname", text)}
+            error={errors.fullname}
           />
           <ProfileAccountInfoInput
             iconName={"at-outline"}
@@ -178,37 +220,28 @@ function ProfileAccountInformationScreen({ navigation }) {
             error={errors.email}
           />
           <ProfileAccountInfoInput
-            iconName={"call-outline"}
-            label={"Phone number"}
-            value={infoValues.phoneNumber}
-            placeholder={"Enter phone number"}
+            iconName={"lock-closed-outline"}
+            label={"Change password"}
+            value={infoValues.oldPassword}
+            placeholder={"Enter old password"}
             editable={true}
-            setValue={(text) => handleChange("phoneNumber", text)}
-            error={errors.phoneNumber}
+            isPassword={true}
+            setValue={(text) => handleChange("oldPassword", text)}
+            showPassword={showOldPassword}
+            setShowPassword={setShowOldPassword}
+            error={errors.oldPassword}
           />
           <ProfileAccountInfoInput
             iconName={"shield-outline"}
-            label={"Change password"}
-            value={infoValues.password}
+            label={"New password"}
+            value={infoValues.newPassword}
             placeholder={"Enter new password"}
             editable={true}
             isPassword={true}
-            setValue={(text) => handleChange("password", text)}
-            showPassword={showPassword}
-            setShowPassword={setShowPassword}
-            error={errors.password}
-          />
-          <ProfileAccountInfoInput
-            iconName={"clipboard-outline"}
-            label={"Retype password"}
-            value={infoValues.retypePassword}
-            placeholder={"Re-enter new password"}
-            editable={true}
-            isPassword={true}
-            setValue={(text) => handleChange("retypePassword", text)}
-            showPassword={showRetypePassword}
-            setShowPassword={setShowRetypePassword}
-            error={errors.retypePassword}
+            setValue={(text) => handleChange("newPassword", text)}
+            showPassword={showNewPassword}
+            setShowPassword={setShowNewPassword}
+            error={errors.newPassword}
           />
           <TouchableOpacity
             onPress={saveChanges}

@@ -227,4 +227,27 @@ userRouter.post("/block", verifyToken, async (req, res) => {
   }
 });
 
+userRouter.post("/verify-password", verifyToken, async (req, res, next) => {
+  try {
+    console.log("Verifying password..");
+    const { password } = req.body;
+    if (!password) {
+      return res.status(400).json({ message: "Password required" });
+    }
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Incorrect password" });
+    }
+    res.status(200).json({ message: "Password verified successfully" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 module.exports = { userRouter };
