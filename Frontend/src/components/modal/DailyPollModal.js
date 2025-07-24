@@ -232,8 +232,7 @@ const styles = StyleSheet.create({
     color: colors.borderLight,
   },
   contentContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    padding: 20,
   },
   question: {
     fontFamily: "Nunito-SemiBold",
@@ -241,7 +240,8 @@ const styles = StyleSheet.create({
     color: colors.primaryDark,
   },
   optionsContainer: {
-    paddingVertical: 15,
+    paddingBottom: 20,
+    paddingTop:5
   },
   option: {
     height: 40,
