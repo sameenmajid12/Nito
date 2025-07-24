@@ -22,51 +22,34 @@ import {
   FONT_SIZE_XS,
   FONT_SIZE_XXL,
 } from "../../styles";
+import { usePoll } from "../../contexts/PollContext";
 
 function DailyPollModal({ handleClose }) {
   const { token } = useAuth();
   const { user, setUser } = useUser();
-
-  const [poll, setPoll] = useState(null);
+  const { poll, isLoadingPoll, setPoll, checkIfVoted, getVoteAnswer } =
+    usePoll();
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
-  const [loadingPoll, setLoadingPoll] = useState(true);
   const [containerWidth, setContainerWidth] = useState(0);
 
   const animatedLineWidths = useRef([]);
   const maxBarWidth = useRef(0);
 
-  // Fetch daily poll
   useEffect(() => {
-    const fetchPoll = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/dailypoll`);
-        const { poll: pollData } = response.data;
-
-        const hasUserVoted = user.votedPolls.some(
-          (v) => v.poll === pollData._id
-        );
-
-        if (hasUserVoted) {
-          const vote = user.votedPolls.find((v) => v.poll === pollData._id);
-          setSelectedIndex(vote.selectedOptionNum);
-        }
-        if (pollData?.options) {
-          animatedLineWidths.current = pollData.options.map(
-            () => new Animated.Value(0)
-          );
-        }
-        setPoll(pollData);
-        setHasVoted(hasUserVoted);
-      } catch (err) {
-        console.error("Failed to fetch poll:", err);
-      } finally {
-        setLoadingPoll(false);
-      }
-    };
-    fetchPoll();
-  }, []);
+    if (poll?.options) {
+      animatedLineWidths.current = poll.options.map(
+        () => new Animated.Value(0)
+      );
+    }
+    const hasUserVoted = checkIfVoted(user);
+    if (hasUserVoted) {
+      setHasVoted(true);
+      const vote = getVoteAnswer(user);
+      setSelectedIndex(vote.answerOptionNum);
+    }
+  }, [poll]);
 
   // Animate results after vote
   const animateResults = useCallback(() => {
@@ -103,7 +86,6 @@ function DailyPollModal({ handleClose }) {
     }
   }, [hasVoted, containerWidth, poll, animateResults]);
 
-  // Voting
   const handleVote = async () => {
     if (selectedIndex === null) return;
 
@@ -188,7 +170,7 @@ function DailyPollModal({ handleClose }) {
           setContainerWidth(width);
         }}
       >
-        {loadingPoll ? (
+        {isLoadingPoll ? (
           <ActivityIndicator />
         ) : (
           <>
