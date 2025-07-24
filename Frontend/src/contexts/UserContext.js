@@ -24,13 +24,13 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import axios from "axios";
 import { API_BASE_URL } from "@env";
-import {useAlert} from './AlertContext'
+import { useAlert } from "./AlertContext";
 const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const { token, isAuthenticated } = useAuth();
   const [user, setUser] = useState(null);
   const [isLoadingUser, setIsLoadingUser] = useState(false);
-  const {addAlert} = useAlert();
+  const { addAlert } = useAlert();
   const [userError, setUserError] = useState(false);
   useEffect(() => {
     const getUserAfterVerifyingTokens = async () => {
@@ -77,7 +77,11 @@ export const UserProvider = ({ children }) => {
       );
       if (response.status === 200) {
         setUser(response.data);
-        addAlert("success","Information updated")
+        if (updates.tags) {
+          addAlert("success", "Tags updated");
+        } else {
+          addAlert("success", "Information updated");
+        }
       }
     } catch (e) {
       console.error("Error updating user: ", e);
@@ -171,6 +175,18 @@ export const UserProvider = ({ children }) => {
       setUserError(e);
     }
   };
+  const getConversation = async(otherUser) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/conversation/with/${otherUser._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data.conversation;
+    } catch (e) {
+      addAlert("error","Convo not found")
+    }
+  };
   return (
     <UserContext.Provider
       value={{
@@ -182,7 +198,8 @@ export const UserProvider = ({ children }) => {
         removeConnection,
         reportUser,
         blockUser,
-        setUser
+        setUser,
+        getConversation
       }}
     >
       {children}
