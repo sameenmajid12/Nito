@@ -3,7 +3,7 @@ import { Animated, Easing } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CustomTabBar from "../components/common/CustomTabBar";
-import { useNavigationState } from "@react-navigation/native";
+import { useNavigation, useNavigationState } from "@react-navigation/native";
 import HomeScreen from "../screens/main/HomeScreen";
 import MatchScreen from "../screens/MatchScreen";
 import ProfileScreen from "../screens/main/Profile/ProfileScreen";
@@ -26,9 +26,7 @@ const RootStack = createNativeStackNavigator();
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      {/* Revert this back to your actual HomeScreen for normal operation */}
       <HomeStack.Screen name="Home" component={HomeScreen} />
-      <HomeStack.Screen name="Chat" component={ChatScreen}></HomeStack.Screen>
     </HomeStack.Navigator>
   );
 }
@@ -37,7 +35,6 @@ function ChatStackScreen() {
   return (
     <ChatStack.Navigator screenOptions={{ headerShown: false }}>
       <ChatStack.Screen name="ChatList" component={ChatListScreen} />
-      <ChatStack.Screen name="Chat" component={ChatScreen}></ChatStack.Screen>
     </ChatStack.Navigator>
   );
 }
@@ -120,7 +117,7 @@ function MainNavigator() {
   const { modalState } = useModal();
   const { alerts, closeAlert } = useAlert();
   const currentAlert = alerts.length > 0 ? alerts[0] : null;
-
+  const navigation = useNavigation();
   return (
     <>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
@@ -134,8 +131,10 @@ function MainNavigator() {
             animationDuration: 250,
           }}
         />
+        <RootStack.Screen name="Chat" component={ChatScreen}></RootStack.Screen>
+
         <RootStack.Screen name="UserScreen" component={UserScreen} />
-        <ProfileStack.Screen
+        <RootStack.Screen
           name="ConnectionScreen"
           component={ConnectionsScreen}
         />
@@ -152,6 +151,7 @@ function MainNavigator() {
             modalState.name === "sortModal" ? modalState.data.changeSort : null
           }
           pollData={modalState.name === "pollModal" ? modalState.data : null}
+          navigation={navigation}
         />
       )}
       {alerts.length > 0 && (
