@@ -12,6 +12,7 @@ import { SocketProvider } from "./src/contexts/SocketContext";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AlertProvider } from "./src/contexts/AlertContext";
+import { PollProvider } from "./src/contexts/PollContext";
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Nunito-Regular": require("./src/assets/fonts/Nunito-Regular.ttf"),
@@ -29,9 +30,11 @@ export default function App() {
           <UserProvider>
             <SocketProvider>
               <ModalProvider>
-                <AlertProvider>
-                  <AppNavigator />
-                </AlertProvider>
+                <PollProvider>
+                  <AlertProvider>
+                    <AppNavigator />
+                  </AlertProvider>
+                </PollProvider>
               </ModalProvider>
             </SocketProvider>
           </UserProvider>
