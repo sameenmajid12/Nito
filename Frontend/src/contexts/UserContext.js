@@ -76,7 +76,8 @@ export const UserProvider = ({ children }) => {
         }
       );
       if (response.status === 200) {
-        setUser(response.data);
+        const { updatedUser } = response.data;
+        setUser(updatedUser);
         if (updates.tags) {
           addAlert("success", "Tags updated");
         } else {
@@ -175,16 +176,19 @@ export const UserProvider = ({ children }) => {
       setUserError(e);
     }
   };
-  const getConversation = async(otherUser) => {
+  const getConversation = async (otherUser) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/conversation/with/${otherUser._id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        `${API_BASE_URL}/conversation/with/${otherUser._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       return response.data.conversation;
     } catch (e) {
-      addAlert("error","Convo not found")
+      addAlert("error", "Convo not found");
     }
   };
   return (
@@ -199,7 +203,7 @@ export const UserProvider = ({ children }) => {
         reportUser,
         blockUser,
         setUser,
-        getConversation
+        getConversation,
       }}
     >
       {children}
@@ -208,91 +212,3 @@ export const UserProvider = ({ children }) => {
 };
 export const useUser = () => useContext(UserContext);
 
-/*
- useEffect(() => {
-    const now = new Date();
-    setUser({
-      id: "8914872198471982",
-      fullName: "Sameen Majid",
-      email: "srm341@scarletmail.rutgers.edu",
-      school: {
-        name: "Rutgers University",
-        id: "85928751",
-        emailDomain: "scarletmail.rutgers.edu",
-      },
-      profilePicUrl: null,
-      tags: ["mma", "money", "web dev"],
-      socialMedia: {
-        instagram: "samin_raiyan",
-        linkedin: "",
-        snapchat: "samin.raiyan1",
-        discord: "",
-      },
-      bio: "Hey guys! My name is Sameen, I am the creator of Nito and I'm happy to have matched with you and I hope all of you have a great time on my app!",
-      major: "Computer Science",
-      year: 2025,
-      password: "Itsabigsecret24!",
-      revealedUsers: [],
-      savedConversations: [],
-      blockedUsers: [],
-      phoneNumber: "5166679552",
-      currentMatch: {
-        id: "12532543",
-        user1: { id: "8914872198471982"  },
-        user2: { id: "12805141", username:"user12447219", fullName:"Mike Ross" },
-        lastMessage: {
-          text: "No you eat ma poopy",
-          sender: "8914872198471982",
-          receiver: "12805141",
-          timestamp: Date.now(),
-          conversation: "12532543",
-        },
-        lastReadMessage: { user1: {}, user2: {} },
-        user1Revealed: false,
-        user2Revelead: false,
-        isActive: true,
-        similarTags:["Valorant", "Playboi Carti", "Kendrick Lamar", "Rihnanna", "Kai Cenat"],
-        messages: [
-          {
-            text: "Hey",
-            sender: "8914872198471982",
-            receiver: "12805141",
-            timestamp: Date.now(),
-            conversation: "12532543",
-            id:"1298741"
-          },
-          {
-            text: "Hey poopy",
-            sender: "12805141",
-            receiver: "8914872198471982 ",
-            timestamp: Date.now(),
-            conversation: "12532543",
-            id:"907109842"
-          },
-
-          {
-            text: "Eat ma poopy",
-            sender: "12805141",
-            receiver: "8914872198471982 ",
-            timestamp: Date.now(),
-            conversation: "12532543",
-            id:"9102764871"
-          },
-          {
-            text: "No you eat ma poopy",
-            sender: "8914872198471982",
-            receiver: "12805141",
-            timestamp: Date.now(),
-            conversation: "12532543",
-            id:"7361653"
-          },
-        ],
-        startTime: now,
-        endTime: new Date(now.getTime() + 30 * 60 * 1000),
-        graceEndTime: new Date(now.getTime() + 35 * 60 * 1000),
-      },
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      lastActive: Date.now(),
-    });
-  }, []);* */
