@@ -14,7 +14,10 @@ userRouter.get("/me", verifyToken, async (req, res) => {
     const userId = req.user._id;
     const user = await User.findById(userId).populate([
       "school",
-      { path: "revealedUsers", select: "fullname profilePic username" },
+      {
+        path: "revealedUsers",
+        populate: { path: "user", select: "fullname profilePic username" },
+      },
       {
         path: "savedConversations",
         populate: [
@@ -46,6 +49,19 @@ userRouter.get("/me", verifyToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     const { password, ...safeUser } = user._doc;
+    safeUser.revealedUsers.sort(
+      (a, b) => new Date(b.matchTime) - new Date(a.matchTime)
+    );
+
+    safeUser.savedConversations.sort((a, b) => {
+      const aTime = a.lastMessage?.createdAt
+        ? new Date(a.lastMessage.createdAt)
+        : 0;
+      const bTime = b.lastMessage?.createdAt
+        ? new Date(b.lastMessage.createdAt)
+        : 0;
+      return bTime - aTime;
+    });
     res.status(200).json({ user: safeUser });
   } catch (error) {
     console.error(error);
@@ -63,10 +79,8 @@ userRouter.get("/:userId", verifyToken, async (req, res, next) => {
     const targetObjectId = new mongoose.Types.ObjectId(userToRetreieveId);
 
     const isRevealed = user.revealedUsers.some(
-      (revealedUserId) =>
-        revealedUserId && revealedUserId.equals(targetObjectId)
+      (revealed) => revealed.user && revealed.user.equals(targetObjectId)
     );
-
     if (!isRevealed) {
       return res
         .status(403)
@@ -96,7 +110,10 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
       new: true,
     }).populate([
       "school",
-      { path: "revealedUsers", select: "fullname profilePic username" },
+      {
+        path: "revealedUsers",
+        populate: { path: "user", select: "fullname profilePic username" },
+      },
       {
         path: "savedConversations",
         populate: [
@@ -122,7 +139,22 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json(updatedUser);
+    const {password, ...safeUser} = updatedUser._doc;
+    safeUser.revealedUsers.sort(
+      (a, b) => new Date(b.matchTime) - new Date(a.matchTime)
+    );
+
+    safeUser.savedConversations.sort((a, b) => {
+      const aTime = a.lastMessage?.createdAt
+        ? new Date(a.lastMessage.createdAt)
+        : 0;
+      const bTime = b.lastMessage?.createdAt
+        ? new Date(b.lastMessage.createdAt)
+        : 0;
+      return bTime - aTime;
+    });
+
+    res.status(200).json({updatedUser: safeUser});
   } catch (error) {
     console.error("Error updating the user: ", error);
     if (error.name === "ValidationError" || error.name === "CastError") {
