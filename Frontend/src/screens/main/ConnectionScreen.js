@@ -15,33 +15,6 @@ import { GestureDetector, Gesture } from "react-native-gesture-handler";
 import { useState } from "react";
 import { useUser } from "../../contexts/UserContext";
 function ConnectionScreen({ navigation }) {
-  const connections = [
-    {
-      fullname: "Mike Ross",
-      profilePic: require("../../assets/images/mike.webp"),
-      date: "Today",
-    },
-    {
-      fullname: "Daniel Cormier",
-      profilePic: require("../../assets/images/dc.jpg"),
-      date: "Today",
-    },
-    {
-      fullname: "SZA",
-      profilePic: require("../../assets/images/sza.webp"),
-      date: "Yesterday",
-    },
-    {
-      fullname: "Harvey Specter",
-      profilePic: require("../../assets/images/harvey.jpg"),
-      date: "Yesterday",
-    },
-    {
-      fullname: "Ilia Topuria",
-      profilePic: require("../../assets/images/ilia.jpg"),
-      date: "3d ago",
-    },
-  ];
   const { user } = useUser();
   const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
   const [sortState, setSortState] = useState("newestfirst");
