@@ -20,9 +20,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phoneNumber: {
-      type: String,
-    },
     profilePic: {
       type: String,
       required: true,
@@ -53,11 +50,12 @@ const userSchema = new mongoose.Schema(
       discord: { type: String, default: "" },
       linkedin: { type: String, default: "" },
     },
-    revealedUsers: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
-      default: [],
-    },
+    revealedUsers: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        matchTime: Date,
+      },
+    ],
 
     blockedUsers: {
       type: [mongoose.Schema.Types.ObjectId],
