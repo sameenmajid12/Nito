@@ -19,6 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import { useUser } from "../../contexts/UserContext";
 import ProfilePicture from "../common/ProfilePicture";
 import { Image } from "expo-image";
+import { useModal } from "../../contexts/ModalContext";
 function ProfileTop({
   editing,
   setEditing,
@@ -28,12 +29,15 @@ function ProfileTop({
   isUser,
   user,
   messageUser,
+  connection
 }) {
   if (!user) {
     return;
   }
   const { updateProfilePic } = useUser();
+  const { openModal } = useModal();
   const [image, setImage] = useState();
+
   useEffect(() => {
     if (user.profilePic) {
       setImage(user.profilePic);
@@ -141,6 +145,7 @@ function ProfileTop({
           <TouchableOpacity
             activeOpacity={TEXT_ACTIVE_OPACITY}
             style={styles.optionsContainer}
+            onPress={() => openModal({ connection, isOnUserScreen: true },"userModal")}
           >
             <Text style={styles.optionsText}>Options</Text>
             <Ionicons name="caret-down" color={colors.primary}></Ionicons>

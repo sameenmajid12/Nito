@@ -33,7 +33,7 @@ function ChatHeader({ navigation, usersRevealed, otherUser, conversation, showTi
       </View>
       <View style={styles.headerRight}>
         <TimeLeft time={"17m 12s left"} showTime={showTime} toggleTime={toggleTime}></TimeLeft>
-        <TouchableOpacity onPress={() => openModal(conversation, "chatModal")}>
+        <TouchableOpacity onPress={() => openModal({conversation}, "chatModal")}>
           <Ionicons style={styles.icons} name="ellipsis-horizontal"></Ionicons>
         </TouchableOpacity>
       </View>

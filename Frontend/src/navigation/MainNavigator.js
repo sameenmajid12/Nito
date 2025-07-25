@@ -22,7 +22,19 @@ const HomeStack = createNativeStackNavigator();
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
 const RootStack = createNativeStackNavigator();
+const getActiveRouteName = (state) => {
+  if (!state || !state.routes || state.routes.length === 0) {
+    return null;
+  }
 
+  const route = state.routes[state.index];
+
+  if (route.state) {
+    return getActiveRouteName(route.state);
+  }
+
+  return route.name;
+};
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
@@ -55,21 +67,6 @@ function ProfileStackScreen() {
 function TabNavigator() {
   const routeState = useNavigationState((state) => state);
   const tabBarOpacity = useRef(new Animated.Value(1)).current;
-
-  const getActiveRouteName = (state) => {
-    if (!state || !state.routes || state.routes.length === 0) {
-      return null;
-    }
-
-    const route = state.routes[state.index];
-
-    if (route.state) {
-      return getActiveRouteName(route.state);
-    }
-
-    return route.name;
-  };
-
   const currentRouteName = getActiveRouteName(routeState);
   const shouldHideTabBar =
     currentRouteName === "Chat" ||
@@ -142,9 +139,9 @@ function MainNavigator() {
       {modalState.visible && (
         <Modal
           type={modalState.name}
-          user={modalState.name === "userModal" ? modalState.data : null}
+          connection={modalState.name === "userModal" ? modalState.data.connection : null}
           conversation={
-            modalState.name === "chatModal" ? modalState.data : null
+            modalState.name === "chatModal" ? modalState.data.conversation : null
           }
           sort={modalState.name === "sortModal" ? modalState.data.sort : null}
           changeSort={
@@ -152,6 +149,11 @@ function MainNavigator() {
           }
           pollData={modalState.name === "pollModal" ? modalState.data : null}
           navigation={navigation}
+          isOnUserScreen={
+            modalState.name === "userModal" && modalState.data.isOnUserScreen
+              ? modalState.data.isOnUserScreen
+              : null
+          }
         />
       )}
       {alerts.length > 0 && (

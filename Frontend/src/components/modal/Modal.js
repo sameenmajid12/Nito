@@ -12,21 +12,22 @@ import ChatModal from "./ChatModal";
 import { useUser } from "../../contexts/UserContext";
 
 function Modal({
-  user,
+  connection,
   conversation,
   type,
   sort,
   changeSort,
   pollData,
   navigation,
+  isOnUserScreen,
 }) {
   if (
     (type === "chatModal" && !conversation) ||
-    (type === "userModal" && !user) ||
+    (type === "userModal" && (!connection || !connection.user)) ||
     (type === "sortModal" && (!sort || !changeSort)) ||
     (type === "pollModal" && !pollData)
   ) {
-    return;
+    return null;
   }
   const { closeModal } = useModal();
   const slideAnim = useRef(new Animated.Value(600)).current;
@@ -82,8 +83,8 @@ function Modal({
     }
     setConfirmationType(null);
   };
-  const viewProfile = (userToView) => {
-    navigation.navigate("UserScreen", { user: userToView });
+  const viewProfile = (userConnection) => {
+    navigation.navigate("UserScreen", { connection: userConnection });
     handleClose();
   };
   const messageUser = async (userToMessage) => {
@@ -118,10 +119,11 @@ function Modal({
             />
           ) : type === "userModal" ? (
             <UserModal
-              user={user}
+              connection={connection}
               toggleConfirmation={toggleConfirmation}
               messageUser={messageUser}
               viewProfile={viewProfile}
+              isOnUserScreen={isOnUserScreen}
             />
           ) : type === "chatModal" ? (
             <ChatModal

@@ -11,7 +11,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_M, FONT_SIZE_S } from "../../styles";
 import { useModal } from "../../contexts/ModalContext";
 import { useRef } from "react";
-
+import { getTimeSince } from "../../utils/Format";
 function ConnectionItem({ connection, navigation, screen }) {
   const animatedValue = useRef(new Animated.Value(0)).current;
   const animatedBackgroundColor = animatedValue.interpolate({
@@ -37,7 +37,7 @@ function ConnectionItem({ connection, navigation, screen }) {
     <Pressable
       onPress={() =>
         navigation.navigate("UserScreen", {
-          user: connection,
+          connection,
         })
       }
       onPressIn={handlePressIn}
@@ -53,19 +53,23 @@ function ConnectionItem({ connection, navigation, screen }) {
         ]}
       >
         <Image
-          source={connection.profilePic}
+          source={connection.user.profilePic}
           width={50}
           height={50}
           style={styles.connectionProfilPic}
         ></Image>
         <View style={styles.connectionDetails}>
           <View>
-            <Text style={styles.connectionName}>{connection.fullname}</Text>
+            <Text style={styles.connectionName}>
+              {connection.user.fullname}
+            </Text>
             <Text style={styles.connectionDate}>
-              Connected - {connection.date}
+              Connected - {getTimeSince(new Date(connection.matchTime))}
             </Text>
           </View>
-          <TouchableOpacity onPress={() => openModal(connection, "userModal")}>
+          <TouchableOpacity
+            onPress={() => openModal({ connection }, "userModal")}
+          >
             <Ionicons
               size={20}
               color={colors.textPrimary}

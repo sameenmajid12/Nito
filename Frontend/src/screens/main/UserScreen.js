@@ -14,8 +14,8 @@ import { useUser } from "../../contexts/UserContext";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 function UserScreen({ route, navigation }) {
-  const { user } = route.params;
-  const [userToDisplay, setUserToDisplay] = useState(user);
+  const { connection } = route.params;
+  const [userToDisplay, setUserToDisplay] = useState(connection.user);
   const { token } = useAuth();
   const { getConversation } = useUser();
   const [isLoading, setIsLoading] = useState(true);
@@ -59,6 +59,7 @@ function UserScreen({ route, navigation }) {
           <ProfileTop
             isUser={false}
             user={userToDisplay}
+            connection={connection}
             messageUser={messageUser}
           ></ProfileTop>
           {isLoading ? (
