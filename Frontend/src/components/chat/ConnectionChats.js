@@ -2,6 +2,7 @@ import { StyleSheet, View, Pressable, Text } from "react-native";
 import { Image } from "expo-image";
 import { useUser } from "../../contexts/UserContext";
 import { colors, FONT_SIZE_S, FONT_SIZE_M, FONT_SIZE_XS } from "../../styles";
+import { formatLastMessageTime } from "../../utils/Format";
 function ConnectionChats({ enterChat }) {
   const { user } = useUser();
   function truncateMessage(message, maxLength, name) {
@@ -19,14 +20,6 @@ function ConnectionChats({ enterChat }) {
         const isRead =
           chat.lastReadMessages[userNum]?._id === chat.lastMessage?._id ||
           chat.lastMessage?.sender === user._id;
-        const formatter = new Intl.DateTimeFormat("en-US", {
-          hour: "numeric",
-          minute: "numeric",
-          hour12: true,
-        });
-        const formattedLastMessageTime = chat.lastMessage
-          ? formatter.format(new Date(chat.lastMessage.createdAt))
-          : null;
         const otherUser = chat.user1._id === user._id ? chat.user2 : chat.user1;
         return (
           <Pressable
@@ -75,7 +68,8 @@ function ConnectionChats({ enterChat }) {
                   : { color: colors.textPrimary },
               ]}
             >
-              {formattedLastMessageTime}
+              {chat.lastMessage &&
+                formatLastMessageTime(new Date(chat.lastMessage.createdAt))}
             </Text>
             {!isRead && <View style={styles.unreadIndicator}></View>}
           </Pressable>
