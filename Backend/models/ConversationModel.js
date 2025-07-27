@@ -37,6 +37,7 @@ const conversationSchema = new mongoose.Schema({
   startTime: { type: Date, required: true, default: Date.now },
   matchTime: { type: Date, required: true },
   endTime: { type: Date, required: true },
+  similarTags: { type: [String], default: [] },
 });
 
 conversationSchema.index({ user1: 1, user2: 1 }, { unique: true });
