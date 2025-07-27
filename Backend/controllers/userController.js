@@ -139,7 +139,7 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
-    const {password, ...safeUser} = updatedUser._doc;
+    const { password, ...safeUser } = updatedUser._doc;
     safeUser.revealedUsers.sort(
       (a, b) => new Date(b.matchTime) - new Date(a.matchTime)
     );
@@ -154,7 +154,7 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
       return bTime - aTime;
     });
 
-    res.status(200).json({updatedUser: safeUser});
+    res.status(200).json({ updatedUser: safeUser });
   } catch (error) {
     console.error("Error updating the user: ", error);
     if (error.name === "ValidationError" || error.name === "CastError") {
@@ -166,15 +166,18 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
 userRouter.patch("/remove-connection", verifyToken, async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const { connectionId } = req.body;
+    const { userToRemoveId } = req.body;
     const user = await User.findById(userId);
-    const connection = await User.findById(connectionId);
+    const connection = await User.findById(userToRemoveId);
     if (!user || !connection) {
       res.status(404).json({ message: "User not found" });
     }
-    user.connections = user.connections.filter((c) => !c.equals(connectionId));
-    connection.connections = connection.connections.filter(
-      (c) => !c.equals(userId)
+
+    user.revealedUsers = user.revealedUsers.filter(
+      (r) => !r.user.equals(connection._id)
+    );
+    connection.revealedUsers = connection.revealedUsers.filter(
+      (r) => !r.user.equals(user._id)
     );
     const conversation = await Conversation.findOne({
       $or: [
@@ -196,7 +199,7 @@ userRouter.patch("/remove-connection", verifyToken, async (req, res, next) => {
     await connection.save();
     res.status(200).json({
       savedConversations: user.savedConversations,
-      connections: user.connections,
+      revealedUsers: user.revealedUsers,
       archivedConversations: user.archivedConversations,
     });
   } catch (error) {

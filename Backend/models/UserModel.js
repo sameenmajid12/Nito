@@ -52,6 +52,7 @@ const userSchema = new mongoose.Schema(
     },
     revealedUsers: [
       {
+        _id:false,
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         matchTime: Date,
       },

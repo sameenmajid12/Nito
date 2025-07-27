@@ -57,7 +57,7 @@ function UserModal({
           styles.modalItem,
           pressed && { backgroundColor: "rgba(0,0,0,0.05)" },
         ]}
-        onPress={() => toggleConfirmation("remove", "friend")}
+        onPress={() => toggleConfirmation("remove", "friend", connection.user._id)}
       >
         <Text style={[styles.modalItemText, { color: "red" }]}>
           Remove connection

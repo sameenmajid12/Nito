@@ -116,25 +116,37 @@ export const UserProvider = ({ children }) => {
       setUserError(e);
     }
   };
-  const removeConnection = async (userToRemoveUsername) => {
+  const removeConnection = async (userToRemoveId) => {
     try {
       const response = await axios.patch(
         `${API_BASE_URL}/user/remove-connection`,
-        userToRemoveUsername,
+        { userToRemoveId },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      if (response.status === 200) {
-        const { filteredConnections } = response.data;
-        setUser((prev) => ({ ...prev, connections: filteredConnections }));
-      } else {
-        throw new Error("");
-      }
+      const { revealedUsers, savedConversations, archivedConversations } =
+        response.data;
+      setUser((prev) => {
+        console.log({
+          ...prev,
+          revealedUsers,
+          savedConversations,
+          archivedConversations,
+        });
+        return {
+          ...prev,
+          revealedUsers,
+          savedConversations,
+          archivedConversations,
+        };
+      });
+      addAlert("info", "Connection removed")
     } catch (e) {
       console.error("Error removing connection: ", e);
+      addAlert(e);
       setUserError(e);
     }
   };
@@ -211,4 +223,3 @@ export const UserProvider = ({ children }) => {
   );
 };
 export const useUser = () => useContext(UserContext);
-

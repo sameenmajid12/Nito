@@ -10,9 +10,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useModal } from "../../contexts/ModalContext";
+import { useUser } from "../../contexts/UserContext";
 function ConfirmationView({ confirmationType, cancelConfirmation }) {
   const { logout } = useAuth();
   const { closeModal } = useModal();
+  const { removeConnection } = useUser();
+  if (!confirmationType.data && confirmationType.type !== "logout") {
+    return;
+  }
   const icon =
     confirmationType.type === "block"
       ? "remove-circle"
@@ -49,7 +54,7 @@ function ConfirmationView({ confirmationType, cancelConfirmation }) {
         console.log("Deleting user");
         break;
       case "remove":
-        console.log("Removing connections");
+        removeConnection(confirmationType.data)
         break;
       case "logout":
         logout();

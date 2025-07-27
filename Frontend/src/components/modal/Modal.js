@@ -36,11 +36,11 @@ function Modal({
   const [confirmationType, setConfirmationType] = useState(
     type === "logoutModal" ? { type: "logout" } : null
   );
-  const toggleConfirmation = (type, subject) => {
+  const toggleConfirmation = (type, subject, data) => {
     if (confirmationType) {
       setConfirmationType(null);
     } else {
-      setConfirmationType({ type, subject });
+      setConfirmationType({ type, subject, data });
     }
   };
   useEffect(() => {
