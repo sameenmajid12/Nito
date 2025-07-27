@@ -3,7 +3,7 @@ import { Image } from "expo-image";
 import { useUser } from "../../contexts/UserContext";
 import { colors, FONT_SIZE_S, FONT_SIZE_M, FONT_SIZE_XS } from "../../styles";
 import { formatLastMessageTime } from "../../utils/Format";
-function ConnectionChats({ enterChat }) {
+function ConnectionChats({ navigation }) {
   const { user } = useUser();
   function truncateMessage(message, maxLength, name) {
     if (!message) {
@@ -13,21 +13,21 @@ function ConnectionChats({ enterChat }) {
     return message?.text.slice(0, maxLength - 3) + "...";
   }
   return (
-    <View style={styles.chatListContainer}>
+    <View style={styles.conversationListContainer}>
       <Text style={styles.containerHeader}>Your connections</Text>
-      {user?.savedConversations.map((chat, index) => {
-        const userNum = chat.user1._id === user._id ? "user1" : "user2";
+      {user?.savedConversations?.map((conversation, index) => {
+        const userNum = conversation?.user1?._id === user._id ? "user1" : "user2";
         const isRead =
-          chat.lastReadMessages[userNum]?._id === chat.lastMessage?._id ||
-          chat.lastMessage?.sender === user._id;
-        const otherUser = chat.user1._id === user._id ? chat.user2 : chat.user1;
+          conversation.lastReadMessages[userNum]?._id === conversation.lastMessage?._id ||
+          conversation.lastMessage?.sender === user._id;
+        const otherUser = conversation.user1?._id === user._id ? conversation.user2 : conversation.user1;
         return (
           <Pressable
-            onPress={() => enterChat(chat)}
+            onPress={() => navigation.navigation("Chat", { conversation })}
             key={index}
             style={({ pressed }) => [
-              styles.chat,
-              index === 0 && styles.topChat,
+              styles.conversation,
+              index === 0 && styles.topconversation,
               pressed
                 ? {
                     backgroundColor: colors.black5,
@@ -41,14 +41,14 @@ function ConnectionChats({ enterChat }) {
             ]}
           >
             <Image
-              style={styles.chatProfilePic}
+              style={styles.conversationProfilePic}
               source={otherUser.profilePic}
             ></Image>
-            <View style={styles.chatDetails}>
-              <Text style={styles.chatName}>{otherUser.fullname}</Text>
+            <View style={styles.conversationDetails}>
+              <Text style={styles.conversationName}>{otherUser.fullname}</Text>
               <Text
                 style={[
-                  styles.chatLastMessage,
+                  styles.conversationLastMessage,
                   isRead
                     ? { color: colors.textLight, fontFamily: "Nunito-Medium" }
                     : {
@@ -57,19 +57,19 @@ function ConnectionChats({ enterChat }) {
                       },
                 ]}
               >
-                {truncateMessage(chat.lastMessage, 60, otherUser.fullname)}
+                {truncateMessage(conversation.lastMessage, 60, otherUser.fullname)}
               </Text>
             </View>
             <Text
               style={[
-                styles.chatLastMessageTime,
+                styles.conversationLastMessageTime,
                 isRead
                   ? { color: colors.textLight }
                   : { color: colors.textPrimary },
               ]}
             >
-              {chat.lastMessage &&
-                formatLastMessageTime(new Date(chat.lastMessage.createdAt))}
+              {conversation.lastMessage &&
+                formatLastMessageTime(new Date(conversation.lastMessage.createdAt))}
             </Text>
             {!isRead && <View style={styles.unreadIndicator}></View>}
           </Pressable>
@@ -79,7 +79,7 @@ function ConnectionChats({ enterChat }) {
   );
 }
 const styles = StyleSheet.create({
-  chatListContainer: {
+  conversationListContainer: {
     marginTop: 25,
     rowGap: 0,
     width: "100%",
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_S,
     paddingLeft: 20,
   },
-  chat: {
+  conversation: {
     width: "100%",
     borderBottomWidth: 1,
     paddingHorizontal: 20,
@@ -99,28 +99,28 @@ const styles = StyleSheet.create({
     columnGap: 10,
     alignItems: "center",
   },
-  topChat: {
+  topconversation: {
     borderTopWidth: 1,
     borderTopColor: colors.borderLight,
   },
-  chatProfilePic: {
+  conversationProfilePic: {
     width: 50,
     height: 50,
     borderRadius: 999,
   },
-  chatDetails: {
+  conversationDetails: {
     rowGap: 2,
   },
-  chatName: {
+  conversationName: {
     color: colors.textPrimary,
     fontFamily: "Nunito-Bold",
     fontSize: FONT_SIZE_M,
   },
-  chatLastMessage: {
+  conversationLastMessage: {
     color: colors.textLight,
     fontSize: FONT_SIZE_XS,
   },
-  chatLastMessageTime: {
+  conversationLastMessageTime: {
     position: "absolute",
     right: 10,
     top: 10,
