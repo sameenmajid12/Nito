@@ -63,7 +63,11 @@ export const UserProvider = ({ children }) => {
       setUser(null);
     }
   }, [isAuthenticated, token]);
-
+  useEffect(() => {
+    if (userError) {
+      addAlert("error", userError);
+    }
+  }, [userError]);
   const updateUser = async (updates) => {
     try {
       const response = await axios.patch(
@@ -105,12 +109,9 @@ export const UserProvider = ({ children }) => {
           },
         }
       );
-      if (response.status === 200) {
-        const { profilePic } = response.data;
-        setUser((prev) => ({ ...prev, profilePic }));
-      } else {
-        throw new Error("");
-      }
+      const { profilePic } = response.data;
+      setUser((prev) => ({ ...prev, profilePic }));
+      addAlert("success", "Updated picture");
     } catch (e) {
       console.error("Error updating profile pic: ", e);
       setUserError(e);
@@ -129,21 +130,13 @@ export const UserProvider = ({ children }) => {
       );
       const { revealedUsers, savedConversations, archivedConversations } =
         response.data;
-      setUser((prev) => {
-        console.log({
-          ...prev,
-          revealedUsers,
-          savedConversations,
-          archivedConversations,
-        });
-        return {
-          ...prev,
-          revealedUsers,
-          savedConversations,
-          archivedConversations,
-        };
-      });
-      addAlert("info", "Connection removed")
+      setUser((prev) => ({
+        ...prev,
+        revealedUsers,
+        savedConversations,
+        archivedConversations,
+      }));
+      addAlert("info", "Connection removed");
     } catch (e) {
       console.error("Error removing connection: ", e);
       addAlert(e);
