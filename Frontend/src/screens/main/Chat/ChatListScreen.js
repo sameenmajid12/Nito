@@ -18,30 +18,9 @@ import { useState } from "react";
 import CurrentChat from "../../../components/chat/CurrentChat";
 import ConnectionChats from "../../../components/chat/ConnectionChats";
 import ArchivedChats from "../../../components/chat/ArchivedChats";
-import { useUser } from "../../../contexts/UserContext";
 import SectionSelector from "../../../components/chat/SectionSelector";
 function ChatListScreen({ navigation }) {
-  const { user } = useUser();
   const [selectedSection, setSelectedSection] = useState("current");
-  const enterChat = (conversation) => {
-    const toSafeISOString = (dateField) => {
-      if (!dateField) {
-        return null;
-      }
-      if (dateField instanceof Date) {
-        return dateField.toISOString();
-      }
-      return dateField;
-    };
-    navigation.navigate("Chat", {
-      conversation: {
-        ...conversation,
-        startTime: toSafeISOString(conversation.startTime),
-        endTime: toSafeISOString(conversation.endTime),
-        graceEndTime: toSafeISOString(conversation.graceEndTime),
-      },
-    });
-  };
   const checkSelected = (name) => {
     return selectedSection === name;
   };
@@ -58,9 +37,9 @@ function ChatListScreen({ navigation }) {
         contentContainerStyle={{ alignItems: "center" }}
       >
         {checkSelected("current") ? (
-          <CurrentChat enterChat={enterChat} />
+          <CurrentChat navigation={navigation} />
         ) : checkSelected("connections") ? (
-          <ConnectionChats enterChat={enterChat} />
+          <ConnectionChats navigation={navigation} />
         ) : checkSelected("archived") ? (
           <ArchivedChats />
         ) : null}

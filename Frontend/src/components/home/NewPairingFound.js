@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { colors, FONT_SIZE_S, FONT_SIZE_XXL } from "../../styles";
 import { useUser } from "../../contexts/UserContext";
 
-function YouHaveAMatch({ enterChat }) {
+function NewPairingFound({ navigation }) {
   const scale = useRef(new Animated.Value(1)).current;
   const { user } = useUser();
   const handlePressIn = () => {
@@ -38,13 +38,13 @@ function YouHaveAMatch({ enterChat }) {
         end={{ x: 0.5, y: 0.9 }}
         colors={[colors.accent70, colors.primary]}
       >
-        <Text style={styles.mainHeader}>You have a match!</Text>
+        <Text style={styles.mainHeader}>New pairing found!</Text>
         <Text style={styles.subHeader}>
           Don't lose this opportunity to make a new friend
         </Text>
 
         <Pressable
-          onPress={() => enterChat(user?.currentMatch)}
+          onPress={() => navigation.navigate("Chat", {conversation: user?.currentConversation})}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
         >
@@ -113,4 +113,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default YouHaveAMatch;
+export default NewPairingFound;

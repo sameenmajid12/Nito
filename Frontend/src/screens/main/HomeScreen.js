@@ -1,7 +1,7 @@
 import { SafeAreaView, StyleSheet, View, Text, ScrollView } from "react-native";
 import Header from "../../components/common/Header";
 import { colors, FONT_SIZE_L, textStyles } from "../../styles";
-import YouHaveAMatch from "../../components/home/YouHaveAMatch";
+import NewPairingFound from "../../components/home/NewPairingFound";
 import NextMatchIn from "../../components/home/NextMatchIn";
 import DailyPoll from "../../components/home/DailyPoll";
 import HomeConnections from "../../components/home/HomeConnections";
@@ -9,16 +9,6 @@ import { useUser } from "../../contexts/UserContext";
 
 function HomeScreen({ navigation }) {
   const { user } = useUser();
-  const enterChat = (conversation) => {
-    navigation.navigate("Chat", {
-      conversation: {
-        ...conversation,
-        startTime: conversation.startTime.toISOString(),
-        endTime: conversation.endTime.toISOString(),
-        graceEndTime: conversation.graceEndTime.toISOString(),
-      },
-    });
-  };
   return (
     <SafeAreaView style={styles.page}>
       <Header></Header>
@@ -26,7 +16,7 @@ function HomeScreen({ navigation }) {
         <View style={styles.pageTopWrapper}>
           <Text style={styles.greeting}>Hello, {user.fullname}! 👋</Text>
 
-          <YouHaveAMatch enterChat={enterChat} />
+          <NewPairingFound navigation={navigation} />
           <View
             style={{ flexDirection: "row", columnGap: 10, marginBottom: 10 }}
           >
