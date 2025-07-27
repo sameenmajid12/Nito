@@ -75,11 +75,11 @@ function MessagesContainer({ messages, usersRevealed, otherUser }) {
       <Animated.View
         style={{
           backgroundColor: colors.background,
-          paddingBottom:containerBottomPadding
+          paddingBottom: containerBottomPadding,
         }}
       >
-        <ChatBeginnning user={otherUser} usersRevealed={usersRevealed}/>
-        {messages?.length > 0 ? (
+        <ChatBeginnning user={otherUser} usersRevealed={usersRevealed} />
+        {messages?.length > 0 &&
           messages.map((message, i) => {
             const first = messages[i - 1]?.sender !== message.sender;
             const last = messages[i + 1]?.sender !== message.sender;
@@ -100,10 +100,7 @@ function MessagesContainer({ messages, usersRevealed, otherUser }) {
                 otherUser={otherUser}
               />
             );
-          })
-        ) : (
-          <Text>No messages yet</Text>
-        )}
+          })}
       </Animated.View>
     </ScrollView>
   );
