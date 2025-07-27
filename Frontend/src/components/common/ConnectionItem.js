@@ -37,7 +37,7 @@ function ConnectionItem({ connection, navigation, screen }) {
     <Pressable
       onPress={() =>
         navigation.navigate("UserScreen", {
-          connection,
+          user: connection?.user,
         })
       }
       onPressIn={handlePressIn}
