@@ -11,7 +11,14 @@ import { Image } from "expo-image";
 import { useModal } from "../../contexts/ModalContext";
 import TimeLeft from "./TimeLeft";
 
-function ChatHeader({ navigation, usersRevealed, otherUser, conversation, showTime, toggleTime }) {
+function ChatHeader({
+  navigation,
+  usersRevealed,
+  otherUser,
+  conversation,
+  showTime,
+  toggleTime,
+}) {
   const name = usersRevealed ? otherUser.fullname : otherUser.username;
   const image = usersRevealed
     ? otherUser.profilePic
@@ -32,8 +39,17 @@ function ChatHeader({ navigation, usersRevealed, otherUser, conversation, showTi
         </Pressable>
       </View>
       <View style={styles.headerRight}>
-        <TimeLeft time={"17m 12s left"} showTime={showTime} toggleTime={toggleTime}></TimeLeft>
-        <TouchableOpacity onPress={() => openModal({conversation}, "chatModal")}>
+        {!usersRevealed && (
+          <TimeLeft
+            time={conversation?.endTime}
+            showTime={showTime}
+            toggleTime={toggleTime}
+          ></TimeLeft>
+        )}
+
+        <TouchableOpacity
+          onPress={() => openModal({ conversation }, "chatModal")}
+        >
           <Ionicons style={styles.icons} name="ellipsis-horizontal"></Ionicons>
         </TouchableOpacity>
       </View>
