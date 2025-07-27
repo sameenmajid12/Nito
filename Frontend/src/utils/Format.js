@@ -25,6 +25,20 @@ export function getTimeSince(date) {
   return days === 0 ? "Today" : `${days}d`;
 }
 
+export function getTimeSinceMessage(date) {
+  const now = new Date();
+  const diffMs = now - date;
+  const oneMinute = 1000 * 60;
+  const oneHour = oneMinute * 60;
+
+  if (hours >= 1) return `${hours}h`;
+  const hours = Math.floor(diffMs / oneHour);
+  if (hours >= 1) return `${hours}h`;
+
+  const minutes = Math.floor(diffMs / oneMinute);
+  return minutes === 0 ? "Now" : `${minutes}m`;
+}
+
 function formatAMPM(date) {
   let hours = date.getHours();
   const minutes = date.getMinutes().toString().padStart(2, "0");
@@ -47,4 +61,15 @@ export function formatLastMessageTime(date) {
   }
 
   return getTimeSince(date);
+}
+export function getTimeUntil(futureDate) {
+  const now = new Date();
+  const diffMs = futureDate - now;
+  if (diffMs <= 0) return "0m 0s";
+
+  const totalSeconds = Math.floor(diffMs / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${minutes}m ${seconds}s`;
 }
