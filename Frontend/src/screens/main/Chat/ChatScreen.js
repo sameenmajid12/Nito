@@ -4,7 +4,6 @@ import {
   Keyboard,
   ActivityIndicator,
   View,
-  TouchableWithoutFeedback,
 } from "react-native";
 import { colors } from "../../../styles";
 import MessageInput from "../../../components/chat/MessageInput";
@@ -40,7 +39,8 @@ function ChatScreen({ navigation, route }) {
     Keyboard.dismiss();
     hideTime();
   });
-  const usersRevealed = true;
+  const usersRevealed =
+    conversation.user1Revealed && conversation.user2Revealed;
   const otherUser =
     conversation.user1._id === user._id
       ? conversation.user2
@@ -93,6 +93,18 @@ function ChatScreen({ navigation, route }) {
     ) {
       socket.emit("markConversationAsRead", data);
       setUser((prev) => {
+        if (conversation._id === user.currentConversation._id) {
+          return {
+            ...prev,
+            currentConversation: {
+              ...prev.currentConversation,
+              lastReadMessages: {
+                ...prev.currentConversation.lastReadMessages,
+                [userNum]: conversation.lastMessage,
+              },
+            },
+          };
+        }
         const conversationIndex = prev.savedConversations.findIndex(
           (convo) => convo._id === conversation._id
         );

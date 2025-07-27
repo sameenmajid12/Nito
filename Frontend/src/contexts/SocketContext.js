@@ -32,7 +32,18 @@ export const SocketProvider = ({ children }) => {
       newSocket.emit("register", user._id);
     };
     const handleReceiveMessage = (message) => {
-      console.log("Received message")
+      console.log("Received message");
+      if (message.conversation === user.currentConversation._id.toString()) {
+        console.log("Received message for currentConversation");
+        setUser((prev) => ({
+          ...prev,
+          currentConversation: {
+            ...prev.currentConversation,
+            lastMessage: message,
+          },
+        }));
+        return;
+      }
       const updatedConversations = [...user.savedConversations];
       let conversationFoundAndUpdated = false;
       const conversationIndex = updatedConversations.findIndex(
