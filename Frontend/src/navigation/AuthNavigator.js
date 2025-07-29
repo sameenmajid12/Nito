@@ -6,6 +6,7 @@ import SelectTagsScreen from "../screens/auth/SelectTagsScreen";
 import AccountCreatedScreen from "../screens/auth/AccountCreatedScreen";
 import { RegistrationProvider } from "../contexts/RegistrationContext";
 import { useAuth } from "../contexts/AuthContext";
+import EmailVerificationScreen from "../screens/auth/EmailVerificationScreen";
 const AuthStack = createNativeStackNavigator();
 function AuthNavigator() {
   const { isRegistrationCompleted } = useAuth();
@@ -36,6 +37,10 @@ function AuthNavigator() {
             <AuthStack.Screen
               name="Register2"
               component={SelectTagsScreen}
+            ></AuthStack.Screen>
+            <AuthStack.Screen
+              name="Register3"
+              component={EmailVerificationScreen}
             ></AuthStack.Screen>
           </>
         )}

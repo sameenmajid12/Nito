@@ -38,10 +38,7 @@ export const AuthProvider = ({ children }) => {
   const [authError, setAuthError] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(false);
   const [isRegistrationCompleted, setIsRegistrationCompleted] = useState(false);
-  const [isLoadingRegistration, setIsLoadingRegistration] = useState({
-    skipButton: false,
-    finishButton: false,
-  });
+  const [isLoadingRegistration, setIsLoadingRegistration] = useState(false);
   const [isLoadingLogin, setIsLoadingLogin] = useState(false);
   useEffect(() => {
     const loadTokensAndVerify = async () => {
@@ -139,13 +136,8 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingLogin(false);
     }
   };
-  const register = async (registrationData, skipped) => {
+  const register = async (registrationData) => {
     setAuthError(null);
-    setIsLoadingRegistration(
-      skipped
-        ? { skipButton: true, finishButton: false }
-        : { skipButton: false, finishButton: true }
-    );
     try {
       const formData = new FormData();
       formData.append("fullname", registrationData.fullname);
@@ -173,13 +165,26 @@ export const AuthProvider = ({ children }) => {
         await SecureStore.setItemAsync("refreshToken", refreshToken);
         setToken(accessToken);
       } else {
-        setIsLoadingRegistration({ skipButton: false, finishButton: false });
+        setIsLoadingRegistration(false);
       }
     } catch (e) {
       console.error("Registration failed:", e);
       setIsRegistrationCompleted(false);
     } finally {
-      setIsLoadingRegistration({ skipButton: false, finishButton: false });
+      setIsLoadingRegistration(false);
+    }
+  };
+  const verifyEmail = async (email, code) => {
+    setIsLoadingRegistration(true);
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/verify-email`, {
+        email,
+        code: code.join(""),
+      });
+      return { verified: true, message: response.data.message };
+    } catch (e) {
+      setIsLoadingRegistration(false);
+      return { verified: false, message: e.response?.data?.message };
     }
   };
   const logout = async () => {
@@ -211,6 +216,7 @@ export const AuthProvider = ({ children }) => {
         isLoadingAuth,
         isRegistrationCompleted,
         isLoadingRegistration,
+        verifyEmail,
       }}
     >
       {children}

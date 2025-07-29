@@ -21,8 +21,6 @@ function SelectTagsScreen({ navigation }) {
   const [tags, setTags] = useState(registrationData.tags || []);
   const [tagText, setTagText] = useState("");
   const [error, setError] = useState(false);
-  const { register, isLoadingRegistration, isRegistrationCompleted } =
-    useAuth();
   const addTag = () => {
     setError(false);
     if (tagText.length > 0) {
@@ -67,6 +65,13 @@ function SelectTagsScreen({ navigation }) {
   }, []);
   const navigateBack = () => {
     navigation.replace("Register1");
+  };
+  const continueRegistration = (skipped) => {
+    if (!skipped && tags.length === 0) {
+      setError(true);
+      return;
+    }
+    navigation.replace("Register3");
   };
   const finishRegistration = async (skipped) => {
     setError(false);
@@ -152,17 +157,15 @@ function SelectTagsScreen({ navigation }) {
             ]}
           >
             <Button
-              onPress={() => finishRegistration(true)}
+              onPress={() => continueRegistration(true)}
               title="Skip"
               style={{ width: "48%", height: 45 }}
               variant={"secondary"}
-              isLoading={isLoadingRegistration.skipButton}
             ></Button>
             <Button
-              onPress={() => finishRegistration(false)}
+              onPress={() => continueRegistration(false)}
               title="Finish"
               style={{ width: "48%", height: 45 }}
-              isLoading={isLoadingRegistration.finishButton}
             ></Button>
           </Animated.View>
         </Animated.View>
