@@ -45,6 +45,7 @@ function YourDetailsScreen({ navigation }) {
     email: null,
     password: null,
     retypePassword: null,
+    profilePic:null
   };
   const [formErrors, setFormErrors] = useState(initialFormErrors);
 
@@ -127,7 +128,9 @@ function YourDetailsScreen({ navigation }) {
       currentErrors.retypePassword = "Passwords don't match";
       errorsFound = true;
     }
-
+    if(image === null){
+      currentErrors.profilePic = "Please enter a profile picture"
+    }
     setFormErrors(currentErrors);
     return errorsFound;
   };

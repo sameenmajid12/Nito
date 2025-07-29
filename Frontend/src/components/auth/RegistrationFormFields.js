@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import Input from "../common/Input";
 import ProfilePicture from "../common/ProfilePicture";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
 
 function RegistrationFormFields({
@@ -16,6 +16,11 @@ function RegistrationFormFields({
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [retypePasswordVisible, setRetypePasswordVisible] = useState(false);
   const { updateRegistrationData } = useRegistration();
+  useEffect(() => {
+    if (image) {
+      setFormErrors((prev) => ({ ...prev, profilePic: null }));
+    }
+  }, [image]);
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setFormErrors((prev) => ({ ...prev, [field]: null }));
@@ -34,6 +39,7 @@ function RegistrationFormFields({
           setImage={setImage}
           handleConfirm={updateRegistrationData}
           type={"auth"}
+          error={formErrors.profilePic}
         />
       )}
 

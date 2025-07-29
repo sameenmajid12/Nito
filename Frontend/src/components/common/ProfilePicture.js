@@ -12,7 +12,8 @@ import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { useState } from "react";
 import { useUser } from "../../contexts/UserContext";
-function ProfilePicture({ image, setImage, handleConfirm, type }) {
+import ErrorMessage from "./ErrorMessage";
+function ProfilePicture({ image, setImage, handleConfirm, type, error }) {
   const [isLoadingImage, setIsLoadingImage] = useState(false);
   const { user } = useUser();
   const pickProfilePic = async () => {
@@ -81,52 +82,60 @@ function ProfilePicture({ image, setImage, handleConfirm, type }) {
   };
 
   return (
-    <Pressable
-      onPress={pickProfilePic}
-      style={[
-        styles.cameraContainer,
-        image && !isLoadingImage
-          ? { borderColor: "transparent" }
-          : { borderColor: colors.borderLight },
-        type === "auth"
-          ? { width: 140, height: 140 }
-          : { width: 120, height: 120 },
-      ]}
-    >
-      {isLoadingImage ? (
-        <ActivityIndicator size="large" color={colors.primary} />
-      ) : image ? (
-        <>
-          <Image source={{ uri: image }} style={styles.profilePicture}></Image>
-          {type === "auth" ? (
-            <Pressable
-              onPress={handleClearImage}
-              style={styles.closeIconContainer}
-            >
-              <Ionicons name="close" style={styles.closeIcon}></Ionicons>
-            </Pressable>
-          ) : (
-            <View style={styles.editIcon}>
-              <Ionicons
-                color={colors.white}
-                name="create-outline"
-                size={FONT_SIZE_M}
-              ></Ionicons>
+    <>
+      <Pressable
+        onPress={pickProfilePic}
+        style={[
+          styles.cameraContainer,
+          image && !isLoadingImage
+            ? { borderColor: "transparent" }
+            : type === "auth" && error
+            ? { borderColor: "red" }
+            : { borderColor: colors.borderLight },
+          type === "auth"
+            ? { width: 140, height: 140 }
+            : { width: 120, height: 120 },
+        ]}
+      >
+        {isLoadingImage ? (
+          <ActivityIndicator size="large" color={colors.primary} />
+        ) : image ? (
+          <>
+            <Image
+              source={{ uri: image }}
+              style={styles.profilePicture}
+            ></Image>
+            {type === "auth" ? (
+              <Pressable
+                onPress={handleClearImage}
+                style={styles.closeIconContainer}
+              >
+                <Ionicons name="close" style={styles.closeIcon}></Ionicons>
+              </Pressable>
+            ) : (
+              <View style={styles.editIcon}>
+                <Ionicons
+                  color={colors.white}
+                  name="create-outline"
+                  size={FONT_SIZE_M}
+                ></Ionicons>
+              </View>
+            )}
+          </>
+        ) : (
+          <>
+            <Image
+              source={require("../../assets/icons/camera.svg")}
+              style={styles.cameraIcon}
+            ></Image>
+            <View style={styles.plusIconContainer}>
+              <Ionicons name="add-outline" style={styles.plusIcon}></Ionicons>
             </View>
-          )}
-        </>
-      ) : (
-        <>
-          <Image
-            source={require("../../assets/icons/camera.svg")}
-            style={styles.cameraIcon}
-          ></Image>
-          <View style={styles.plusIconContainer}>
-            <Ionicons name="add-outline" style={styles.plusIcon}></Ionicons>
-          </View>
-        </>
-      )}
-    </Pressable>
+          </>
+        )}
+      </Pressable>
+      {error && <ErrorMessage message={error}></ErrorMessage>}
+    </>
   );
 }
 
