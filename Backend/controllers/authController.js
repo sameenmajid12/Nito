@@ -5,6 +5,8 @@ const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const upload = require("../middleware/uploadImage");
 const s3 = require("../config/s3Client");
+const sendVerificationEmail = require("../utils/sendEmail.js");
+const VerificationCode = require("../models/VerificationCodeModel.js");
 const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const {
   generateAccessToken,
@@ -111,10 +113,53 @@ authRouter.post("/refresh-token", async (req, res) => {
     res.status(500).json({ message: "Invalid or expired refresh token" });
   }
 });
-
+authRouter.post("/send-verification", async (req, res) => {
+  try {
+    console.log("Sending verificaiton email...");
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "No email inserted" });
+    }
+    await sendVerificationEmail(email);
+    res.status(200).json({ message: "Email sent" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Error sending email" });
+  }
+});
+authRouter.post("/verify-email", async (req, res) => {
+  try {
+    console.log("Verifying verification code");
+    const { email, code } = req.body;
+    if (!email || !code) {
+      return res.status(400).json({ message: "Email or code missing" });
+    }
+    const verificationCode = await VerificationCode.findOne({ email });
+    if (!verificationCode) {
+      await sendVerificationEmail(email);
+      return res
+        .status(404)
+        .json({ message: "Verification code not found, new code sent" });
+    }
+    if (verificationCode.expiresAt < new Date()) {
+      await VerificationCode.deleteOne({ email });
+      await sendVerificationEmail(email);
+      return res
+        .status(400)
+        .json({ message: "Verification code expired, new code sent" });
+    }
+    const checkCode = await bcrypt.compare(code, verificationCode.code);
+    if (!checkCode) {
+      return res.status(400).json({ message: "Incorrect verification code" });
+    }
+    await VerificationCode.deleteOne({ email });
+    res.status(200).json({ message: "Email verified" });
+  } catch (e) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 authRouter.get("/test-token", verifyToken, (_, res) => {
   res.status(200).json({ message: "Token valid" });
 });
-
 
 module.exports = { authRouter };
