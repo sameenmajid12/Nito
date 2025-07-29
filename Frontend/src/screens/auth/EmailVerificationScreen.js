@@ -31,22 +31,21 @@ function EmailVerificationScreen({ navigation }) {
   const [code, setCode] = useState([]);
   const [error, setError] = useState("");
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const sendVerificationEmail = async () => {
+    try {
+      await axios.post(`${API_BASE_URL}/auth/send-verification`, {
+        email: registrationData.email,
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
   useEffect(() => {
-    const sendVerificationEmail = async () => {
-      try {
-        await axios.post(`${API_BASE_URL}/auth/send-verification`, {
-          email: registrationData.email,
-        });
-      } catch (e) {
-        console.error(e);
-      } finally {
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 700,
-          useNativeDriver: true,
-        }).start();
-      }
-    };
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 700,
+      useNativeDriver: true,
+    }).start();
     sendVerificationEmail();
   }, []);
   const inputRefs = useRef([]);
@@ -79,7 +78,7 @@ function EmailVerificationScreen({ navigation }) {
     );
     if (verified) {
       setError("");
-      register(registrationData);
+      await register(registrationData);
     } else {
       setError(message);
     }
@@ -141,7 +140,10 @@ function EmailVerificationScreen({ navigation }) {
         ></Button>
         <View style={styles.notReceivedWrapper}>
           <Text style={styles.noReceivedText}>Didn't receive an email? </Text>
-          <TouchableOpacity activeOpacity={TEXT_ACTIVE_OPACITY}>
+          <TouchableOpacity
+            activeOpacity={TEXT_ACTIVE_OPACITY}
+            onPress={sendVerificationEmail}
+          >
             <Text style={styles.noReceivedButton}>Click here</Text>
           </TouchableOpacity>
         </View>
