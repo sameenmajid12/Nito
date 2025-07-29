@@ -120,6 +120,10 @@ authRouter.post("/send-verification", async (req, res) => {
     if (!email) {
       return res.status(400).json({ message: "No email inserted" });
     }
+    const existingVerificationCode = await VerificationCode.findOne({ email });
+    if (existingVerificationCode) {
+      await VerificationCode.deleteOne({email});
+    }
     await sendVerificationEmail(email);
     res.status(200).json({ message: "Email sent" });
   } catch (e) {
