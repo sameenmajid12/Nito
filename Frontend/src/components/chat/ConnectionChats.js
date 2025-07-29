@@ -23,7 +23,7 @@ function ConnectionChats({ navigation }) {
         const otherUser = conversation.user1?._id === user._id ? conversation.user2 : conversation.user1;
         return (
           <Pressable
-            onPress={() => navigation.navigation("Chat", { conversation })}
+            onPress={() => navigation.navigate("Chat", { conversation })}
             key={index}
             style={({ pressed }) => [
               styles.conversation,
