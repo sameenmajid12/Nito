@@ -41,7 +41,7 @@ function UserModal({
               styles.modalItem,
               pressed && { backgroundColor: "rgba(0,0,0,0.05)" },
             ]}
-            onPress={() => viewProfile(connection)}
+            onPress={() => viewProfile(user)}
           >
             <Text style={styles.modalItemText}>View profile</Text>
             <Ionicons
@@ -57,7 +57,7 @@ function UserModal({
           styles.modalItem,
           pressed && { backgroundColor: "rgba(0,0,0,0.05)" },
         ]}
-        onPress={() => toggleConfirmation("remove", "friend", connection.user._id)}
+        onPress={() => toggleConfirmation("remove", "friend", user._id)}
       >
         <Text style={[styles.modalItemText, { color: "red" }]}>
           Remove connection
@@ -73,7 +73,7 @@ function UserModal({
           styles.modalItem,
           pressed && { backgroundColor: "rgba(0,0,0,0.05)" },
         ]}
-        onPress={() => toggleConfirmation("block", "user")}
+        onPress={() => toggleConfirmation("block", "user", user._id)}
       >
         <Text style={[styles.modalItemText, { color: "red" }]}>Block</Text>
         <Ionicons
@@ -87,7 +87,7 @@ function UserModal({
           styles.modalItem,
           pressed && { backgroundColor: "rgba(0,0,0,0.05)" },
         ]}
-        onPress={() => toggleConfirmation("report", "user")}
+        onPress={() => toggleConfirmation("report", "user", user._id)}
       >
         <Text style={[styles.modalItemText, { color: "red" }]}>Report</Text>
         <Ionicons

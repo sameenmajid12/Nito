@@ -83,8 +83,8 @@ function Modal({
     }
     setConfirmationType(null);
   };
-  const viewProfile = (userConnection) => {
-    navigation.navigate("UserScreen", { connection: userConnection });
+  const viewProfile = (userToView) => {
+    navigation.navigate("UserScreen", { user: userToView });
     handleClose();
   };
   const messageUser = async (userToMessage) => {
