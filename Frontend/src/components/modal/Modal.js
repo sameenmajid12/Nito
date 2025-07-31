@@ -12,7 +12,7 @@ import ChatModal from "./ChatModal";
 import { useUser } from "../../contexts/UserContext";
 
 function Modal({
-  connection,
+  user,
   conversation,
   type,
   sort,
@@ -23,7 +23,7 @@ function Modal({
 }) {
   if (
     (type === "chatModal" && !conversation) ||
-    (type === "userModal" && (!connection || !connection.user)) ||
+    (type === "userModal" && !user) ||
     (type === "sortModal" && (!sort || !changeSort)) ||
     (type === "pollModal" && !pollData)
   ) {
@@ -119,7 +119,7 @@ function Modal({
             />
           ) : type === "userModal" ? (
             <UserModal
-              connection={connection}
+              user={user}
               toggleConfirmation={toggleConfirmation}
               messageUser={messageUser}
               viewProfile={viewProfile}

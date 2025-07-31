@@ -3,13 +3,12 @@ import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
 function UserModal({
-  connection,
+  user,
   toggleConfirmation,
   messageUser,
   viewProfile,
   isOnUserScreen,
 }) {
-  const { user } = connection;
   return (
     <>
       {!isOnUserScreen && (

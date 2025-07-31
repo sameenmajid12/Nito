@@ -68,7 +68,7 @@ function ConnectionItem({ connection, navigation, screen }) {
             </Text>
           </View>
           <TouchableOpacity
-            onPress={() => openModal({ connection }, "userModal")}
+            onPress={() => openModal({ user: connection?.user }, "userModal")}
           >
             <Ionicons
               size={20}

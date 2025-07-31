@@ -29,7 +29,6 @@ function ProfileTop({
   isUser,
   user,
   messageUser,
-  connection
 }) {
   if (!user) {
     return;
@@ -145,7 +144,9 @@ function ProfileTop({
           <TouchableOpacity
             activeOpacity={TEXT_ACTIVE_OPACITY}
             style={styles.optionsContainer}
-            onPress={() => openModal({ connection, isOnUserScreen: true },"userModal")}
+            onPress={() =>
+              openModal({ user, isOnUserScreen: true }, "userModal")
+            }
           >
             <Text style={styles.optionsText}>Options</Text>
             <Ionicons name="caret-down" color={colors.primary}></Ionicons>
