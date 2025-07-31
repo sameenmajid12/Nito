@@ -93,13 +93,13 @@ function ChatScreen({ navigation, route }) {
     ) {
       socket.emit("markConversationAsRead", data);
       setUser((prev) => {
-        if (conversation._id === user.currentConversation._id) {
+        if (conversation._id === user.currentConversation?._id) {
           return {
             ...prev,
             currentConversation: {
               ...prev.currentConversation,
               lastReadMessages: {
-                ...prev.currentConversation.lastReadMessages,
+                ...prev.currentConversation?.lastReadMessages,
                 [userNum]: conversation.lastMessage,
               },
             },

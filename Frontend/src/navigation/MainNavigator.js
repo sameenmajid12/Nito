@@ -168,8 +168,8 @@ function MainNavigator() {
       {modalState.visible && (
         <Modal
           type={modalState.name}
-          connection={
-            modalState.name === "userModal" ? modalState.data.connection : null
+          user={
+            modalState.name === "userModal" ? modalState.data.user : null
           }
           conversation={
             modalState.name === "chatModal"

@@ -33,7 +33,7 @@ export const SocketProvider = ({ children }) => {
     };
     const handleReceiveMessage = (message) => {
       console.log("Received message");
-      if (message.conversation === user.currentConversation._id.toString()) {
+      if (message.conversation === user.currentConversation?._id.toString()) {
         console.log("Received message for currentConversation");
         setUser((prev) => ({
           ...prev,
