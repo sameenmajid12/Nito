@@ -1,7 +1,13 @@
 import { Pressable, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
+import { useUser } from "../../contexts/UserContext";
 function ChatModal({ conversation, toggleConfirmation }) {
+  const { user } = useUser();
+  const otherUser =
+    conversation.user1._id === user._id
+      ? conversation.user2
+      : conversation.user1;
   return (
     <>
       <Pressable
@@ -9,7 +15,9 @@ function ChatModal({ conversation, toggleConfirmation }) {
           styles.modalItem,
           pressed && { backgroundColor: "rgba(0,0,0,0.05)" },
         ]}
-        onPress={() => toggleConfirmation("delete", "conversation")}
+        onPress={() =>
+          toggleConfirmation("delete", "conversation", conversation._id)
+        }
       >
         <Text style={[styles.modalItemText, { color: "red" }]}>
           Delete chat
@@ -25,7 +33,7 @@ function ChatModal({ conversation, toggleConfirmation }) {
           styles.modalItem,
           pressed && { backgroundColor: "rgba(0,0,0,0.05)" },
         ]}
-        onPress={() => toggleConfirmation("block", "user")}
+        onPress={() => toggleConfirmation("block", "user", otherUser._id)}
       >
         <Text style={[styles.modalItemText, { color: "red" }]}>Block</Text>
         <Ionicons
@@ -39,7 +47,7 @@ function ChatModal({ conversation, toggleConfirmation }) {
           styles.modalItem,
           pressed && { backgroundColor: "rgba(0,0,0,0.05)" },
         ]}
-        onPress={() => toggleConfirmation("report", "user")}
+        onPress={() => toggleConfirmation("report", "user", otherUser._id)}
       >
         <Text style={[styles.modalItemText, { color: "red" }]}>Report</Text>
         <Ionicons
