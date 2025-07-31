@@ -45,7 +45,17 @@ function ArchivedChats() {
               All past chats in one place!
             </Text>
           </View>
-
+          <View style={styles.listItem}>
+            <Ionicons
+              name="checkmark"
+              size={FONT_SIZE_L}
+              color={colors.primaryDark}
+            ></Ionicons>
+            <Text style={styles.listItemText}>
+              Missed the chance to reveal yourself after a good conversation? Go
+              back and reveal later
+            </Text>
+          </View>
           <View style={styles.listItem}>
             <Ionicons
               name="checkmark"
@@ -59,7 +69,7 @@ function ArchivedChats() {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <Animated.View style={{transform:[{scale:scaleAnim}]}}>
+        <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
           <TouchableOpacity
             onPressIn={() => {
               Animated.spring(scaleAnim, {
@@ -97,7 +107,7 @@ const styles = StyleSheet.create({
   page: {
     flex: 1,
     alignItems: "center",
-    paddingVertical: 65,
+    paddingVertical: 50,
     paddingHorizontal: 50,
     rowGap: 35,
   },
