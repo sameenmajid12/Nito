@@ -15,7 +15,7 @@ const ICON_SIZE = 36;
 const MIN_INPUT_HEIGHT = 45;
 const INITIAL_BOTTOM_VALUE = 0;
 
-function MessageInput({ message, setMessage, sendMessage }) {
+function MessageInput({ message, setMessage, sendMessage, disabled }) {
   const messageInputTranslateY = useRef(
     new Animated.Value(INITIAL_BOTTOM_VALUE)
   ).current;
@@ -64,10 +64,11 @@ function MessageInput({ message, setMessage, sendMessage }) {
         <Ionicons style={styles.attachmentIcon} name="add-circle"></Ionicons>
         <View style={styles.inputContainerRight}>
           <TextInput
+            editable={!disabled}
             value={message}
             onChangeText={setMessage}
             style={styles.messageInput}
-            placeholder="Enter message"
+            placeholder={!disabled?"Enter message":"Conversation has ended"}
             multiline={true}
             placeholderTextColor={colors.textPlaceholder}
           ></TextInput>
