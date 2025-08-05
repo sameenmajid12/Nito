@@ -1,9 +1,13 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { Pressable, StyleSheet, Text } from "react-native";
-import { colors } from "../../styles";
-function RevealButton() {
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { colors, PRIMARY_ACTIVE_OPACITY } from "../../styles";
+function RevealButton({pairAction}) {
   return (
-    <Pressable style={styles.button}>
+    <TouchableOpacity
+      activeOpacity={PRIMARY_ACTIVE_OPACITY}
+      style={styles.button}
+      onPress={()=>pairAction("reveal")}
+    >
       <LinearGradient
         start={{ x: 0.25, y: 0.5 }}
         end={{ x: 1, y: 0.5 }}
@@ -12,7 +16,7 @@ function RevealButton() {
       >
         <Text style={styles.buttonText}>Reveal</Text>
       </LinearGradient>
-    </Pressable>
+    </TouchableOpacity>
   );
 }
 const styles = StyleSheet.create({
@@ -21,17 +25,21 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
   },
-  gradient:{
-    width:"100%",
-    height:"100%",
-    justifyContent:"center",
-    alignItems:"center",
-    borderRadius:999
+  gradient: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 999,
   },
-  buttonText:{
-    color:colors.white,
-    fontFamily:"Nunito-Bold",
-  }
+  buttonText: {
+    color: colors.white,
+    fontFamily: "Nunito-Bold",
+  },
 });
 export default RevealButton;
