@@ -10,11 +10,11 @@ import ReceivedMessage from "./ReceivedMessage";
 import SentMessage from "./SentMessage";
 import { useEffect, useRef } from "react";
 import { colors } from "../../styles";
-import ChatExpired from "./ChatExpired";
+import ChatRevealing from "./ChatRevealing";
 import { useUser } from "../../contexts/UserContext";
 import ChatBeginnning from "./ChatBeginning";
 const INITIAL_BOTTOM_PADDING = 50;
-function MessagesContainer({ messages, usersRevealed, otherUser }) {
+function MessagesContainer({ messages, usersRevealed, otherUser, isRevealing, conversationId }) {
   const scrollViewRef = useRef(null);
   const { user } = useUser();
   const containerBottomPadding = useRef(
@@ -101,6 +101,7 @@ function MessagesContainer({ messages, usersRevealed, otherUser }) {
               />
             );
           })}
+          {isRevealing && <ChatRevealing conversationId={conversationId}/>}
       </Animated.View>
     </ScrollView>
   );
