@@ -191,6 +191,8 @@ function ChatScreen({ navigation, route }) {
             conversation={conversation}
             usersRevealed={usersRevealed}
             otherUser={otherUser}
+            isRevealing={conversation.status === "revealing"}
+            conversationId={conversation._id}
           />
         ) : (
           <View style={{ flex: 1, justifyContent: "flex-end" }}>
@@ -207,6 +209,9 @@ function ChatScreen({ navigation, route }) {
         message={newMessage}
         setMessage={setNewMessage}
         sendMessage={sendMessage}
+        disabled={
+          conversation.status !== "matched" && conversation.status !== "current"
+        }
       ></MessageInput>
     </SafeAreaView>
   );
