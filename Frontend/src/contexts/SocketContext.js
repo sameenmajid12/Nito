@@ -2,11 +2,13 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { API_BASE_URL } from "@env";
 import { useUser } from "../contexts/UserContext";
+import { useAlert } from "./AlertContext";
 const SocketContext = createContext();
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const socketRef = useRef();
   const { user, setUser } = useUser();
+  const { openRevealPhaseAlert } = useAlert();
   useEffect(() => {
     if (!user || !user._id) {
       if (socketRef.current) {
@@ -65,9 +67,19 @@ export const SocketProvider = ({ children }) => {
         }));
       }
     };
+    const handleRevealPhaseStarted = () => {
+      setUser((prev) => ({
+        ...prev,
+        currentConversation: {
+          ...prev.currentConversation,
+          status: "revealing",
+        },
+      }));
+      openRevealPhaseAlert();
+    };
     newSocket.on("connect", registerUser);
     newSocket.on("receiveMessage", handleReceiveMessage);
-    newSocket.on("start-reveal");
+    newSocket.on("revealPhaseStarted", handleRevealPhaseStarted);
     newSocket.on("match-revealed");
     newSocket.on("match-skipped");
     newSocket.on("new-match");

@@ -19,6 +19,7 @@ import Alert from "../components/alert/Alert";
 import { useAlert } from "../contexts/AlertContext";
 import { useUser } from "../contexts/UserContext";
 import { useSocket } from "../contexts/SocketContext";
+import RevealPhaseAlert from "../components/alert/RevealPhaseAlert";
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
 const ChatStack = createNativeStackNavigator();
@@ -114,7 +115,7 @@ function TabNavigator() {
 
 function MainNavigator() {
   const { modalState } = useModal();
-  const { alerts, closeAlert } = useAlert();
+  const { alerts, closeAlert, showRevealPhaseAlert } = useAlert();
   const { user } = useUser();
   const { socket } = useSocket();
   const currentAlert = alerts.length > 0 ? alerts[0] : null;
@@ -197,6 +198,7 @@ function MainNavigator() {
           closeAlert={closeAlert}
         ></Alert>
       )}
+      {showRevealPhaseAlert && <RevealPhaseAlert/>}
     </>
   );
 }
