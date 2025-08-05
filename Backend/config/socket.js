@@ -16,6 +16,27 @@ const initializeSocketIo = (server) => {
       socketUsers[userId] = socket.id;
       socket.userId = userId;
     });
+    socket.on("revealPhaseStarted", () => {
+      console.log("Reveal phase started");
+      io.emit("revealPhaseStarted");
+    });
+    socket.on("pairAction", async ({ conversationId, userId, action }) => {
+      try {
+        const conversation = await Conversation.findById(conversationId);
+        if (!conversation) {
+          return socket.emit("errorMessage", {
+            error: "Conversation not found",
+          });
+        }
+        const userInConversation =
+          conversation.user1.toString() === userId ? "user1" : "user2";
+        conversation[`${userInConversation}Revealed`] =
+          action === "match" ? true : false;
+        await conversation.save();
+      } catch (e) {
+        socket.emit("errorMessage", { error: e.message });
+      }
+    });
     socket.on(
       "sendMessage",
       async ({ receiverId, conversationId, text, clientId }) => {
@@ -51,7 +72,7 @@ const initializeSocketIo = (server) => {
       "markConversationAsRead",
       async ({ conversationId, receiverId }) => {
         try {
-          console.log("Conversation being marked as read..")
+          console.log("Conversation being marked as read..");
           const conversation = await Conversation.findById(conversationId);
           if (!conversation) {
             throw new Error("Conversation not found");
@@ -71,8 +92,10 @@ const initializeSocketIo = (server) => {
       }
     );
     socket.on("disconnect", () => {
-      console.log(`Disconnecting user with socket ID ${socket.userId}`);
-      delete socketUsers[socket.userId];
+      if (socketUsers[socket.userId]) {
+        console.log(`Disconnecting user with socket ID ${socket.userId}`);
+        delete socketUsers[socket.userId];
+      }
     });
   });
 };
