@@ -5,7 +5,7 @@ const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const upload = require("../middleware/uploadImage");
 const s3 = require("../config/s3Client");
-const sendVerificationEmail = require("../utils/sendEmail.js");
+const {sendVerificationEmail} = require("../utils/sendEmail.js");
 const VerificationCode = require("../models/VerificationCodeModel.js");
 const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const {

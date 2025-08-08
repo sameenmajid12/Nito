@@ -2,6 +2,30 @@ const sesClient = require("../config/sesClient");
 const { SendEmailCommand } = require("@aws-sdk/client-ses");
 const VerificationCode = require("../models/VerificationCodeModel");
 const bcrypt = require("bcrypt");
+const clientSendSupportEmail = async (fromAddress, message) => {
+  const command = new SendEmailCommand({
+    Source: "support@nito-app.com",
+    Destination: {
+      ToAddresses: ["support@nito-app.com"],
+    },
+    Message: {
+      Subject: {
+        Data: `Support Inquiry from ${fromAddress}`,
+      },
+      Body: {
+        Text: {
+          Data: message,
+        },
+      },
+    },
+  });
+  try {
+    await sesClient.send(command);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
 const sendVerificationEmail = async (toAddress) => {
   const code = Math.floor(10000 + Math.random() * 90000).toString();
   console.log("Using ses to send email verificaiton...");
@@ -42,7 +66,7 @@ const sendVerificationEmail = async (toAddress) => {
                           <td align="center" style="border: 1px solid gray; width: 50px; height: 50px; border-radius: 10px; font-size: 24px; font-weight: bold; vertical-align: middle; text-align: center; margin:5px">
                             ${num}
                           </td>
-                          ${index < 4 ? '<td style="width: 10px;"></td>' : ''}
+                          ${index < 4 ? '<td style="width: 10px;"></td>' : ""}
                         `
                           )
                           .join("")}
@@ -80,4 +104,4 @@ const sendVerificationEmail = async (toAddress) => {
     throw e;
   }
 };
-module.exports = sendVerificationEmail;
+module.exports = { sendVerificationEmail, clientSendSupportEmail };
