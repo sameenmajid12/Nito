@@ -73,7 +73,7 @@ function RevealPhaseAlert() {
         />
       </Animated.View>
       <View style={styles.content}>
-        <Text style={styles.contentText}>Time to reveal!</Text>
+        <Text style={styles.contentText}>Time to reveal 👀</Text>
         <View style={styles.contentActions}>
           <Pressable style={styles.viewButton}>
             <Text style={styles.viewButtonText}>View</Text>
