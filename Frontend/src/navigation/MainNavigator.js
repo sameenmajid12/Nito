@@ -20,6 +20,7 @@ import { useAlert } from "../contexts/AlertContext";
 import { useUser } from "../contexts/UserContext";
 import { useSocket } from "../contexts/SocketContext";
 import RevealPhaseAlert from "../components/alert/RevealPhaseAlert";
+import HelpAndSupportScreen from "../screens/main/Profile/HelpAndSupportScreen";
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
 const ChatStack = createNativeStackNavigator();
@@ -63,6 +64,10 @@ function ProfileStackScreen() {
         component={ProfileAccountInformationScreen}
       />
       <ProfileStack.Screen name="TagsSelect" component={ProfileTagsScreen} />
+      <ProfileStack.Screen
+        name="Help&Support"
+        component={HelpAndSupportScreen}
+      />
     </ProfileStack.Navigator>
   );
 }
@@ -75,7 +80,8 @@ function TabNavigator() {
     currentRouteName === "Chat" ||
     currentRouteName === "ConnectionScreen" ||
     currentRouteName === "AccountInformation" ||
-    currentRouteName === "TagsSelect";
+    currentRouteName === "TagsSelect" ||
+    currentRouteName === "Help&Support";
 
   useEffect(() => {
     Animated.timing(tabBarOpacity, {
@@ -169,9 +175,7 @@ function MainNavigator() {
       {modalState.visible && (
         <Modal
           type={modalState.name}
-          user={
-            modalState.name === "userModal" ? modalState.data.user : null
-          }
+          user={modalState.name === "userModal" ? modalState.data.user : null}
           conversation={
             modalState.name === "chatModal"
               ? modalState.data.conversation
@@ -198,7 +202,7 @@ function MainNavigator() {
           closeAlert={closeAlert}
         ></Alert>
       )}
-      {showRevealPhaseAlert && <RevealPhaseAlert/>}
+      {showRevealPhaseAlert && <RevealPhaseAlert />}
     </>
   );
 }
