@@ -5,18 +5,51 @@ import {
   Animated,
   ScrollView,
   SafeAreaView,
+  Keyboard,
+  LayoutAnimation
 } from "react-native";
 import { colors, FONT_SIZE_XL } from "../../../styles";
 import ContactUs from "../../../components/support/ContactUs";
 import TextHeader from "../../../components/common/TextHeader";
 import FAQList from "../../../components/support/FAQList";
+import { useState, useEffect } from "react";
 
 function HelpAndSupportScreen({ navigation }) {
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keybaordWillShowListener = Keyboard.addListener(
+      "keyboardWillShow",
+      () => {
+        LayoutAnimation.configureNext({
+          ...LayoutAnimation.Presets.easeInEaseOut,
+          duration: 50,
+        });
+        setKeyboardVisible(true);
+      }
+    );
+
+    const keyboardWillHideListener = Keyboard.addListener(
+      "keyboardWillHide",
+      () => {
+        LayoutAnimation.configureNext({
+          ...LayoutAnimation.Presets.easeInEaseOut,
+          duration: 150,
+        });
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keybaordWillShowListener.remove();
+      keyboardWillHideListener.remove();
+    };
+  }, []);
   return (
     <SafeAreaView style={styles.page}>
       <TextHeader text={"Help & Support"} navigation={navigation} />
 
-      <View style={styles.contentWrapper}>
+      <Animated.View style={styles.contentWrapper}>
         <ScrollView style={styles.scrollContainer}>
           <View style={styles.headerWrapper}>
             <Text style={styles.header}>How can we help?</Text>
@@ -24,10 +57,10 @@ function HelpAndSupportScreen({ navigation }) {
               Find answers to all your questions in one place
             </Text>
           </View>
-          <FAQList/>
+          <FAQList keyboardVisible={keyboardVisible}/>
           <ContactUs />
         </ScrollView>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 }
@@ -39,8 +72,8 @@ const styles = StyleSheet.create({
   contentWrapper: {
     flex: 1,
   },
-  scrollContainer:{
-    padding:30,
+  scrollContainer: {
+    padding: 30,
   },
   headerWrapper: {
     paddingBottom: 20,
