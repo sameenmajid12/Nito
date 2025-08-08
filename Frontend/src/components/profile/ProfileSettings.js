@@ -28,7 +28,7 @@ function ProfileSettings({navigate}) {
             ></Ionicons>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.4} style={styles.button}>
+        <TouchableOpacity onPress={()=>navigate("Help&Support")} activeOpacity={0.4} style={styles.button}>
           <Ionicons
             size={28}
             color={colors.textPrimary}
