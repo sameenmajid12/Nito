@@ -73,22 +73,6 @@ function SelectTagsScreen({ navigation }) {
     }
     navigation.replace("Register3");
   };
-  const finishRegistration = async (skipped) => {
-    setError(false);
-    if (!skipped && tags.length === 0) {
-      setError(true);
-      return;
-    }
-    try {
-      await register(
-        skipped ? registrationData : { ...registrationData, tags },
-        skipped
-      );
-    } catch (e) {
-      console.error("Failed to complete registration:", e);
-      setError(true);
-    }
-  };
   return (
     <SafeAreaView style={styles.page}>
       <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
