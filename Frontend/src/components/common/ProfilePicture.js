@@ -128,8 +128,8 @@ function ProfilePicture({ image, setImage, handleConfirm, type, error }) {
               source={require("../../assets/icons/camera.svg")}
               style={styles.cameraIcon}
             ></Image>
-            <View style={styles.plusIconContainer}>
-              <Ionicons name="add-outline" style={styles.plusIcon}></Ionicons>
+            <View style={[styles.plusIconContainer, {borderColor: error ? "#FF6969" : colors.borderLight}]}>
+              <Ionicons name="add-outline" style={[styles.plusIcon, {color: error? "red" : colors.border}]}></Ionicons>
             </View>
           </>
         )}
@@ -167,7 +167,6 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     fontSize: 20,
-    color: colors.border,
   },
   closeIconContainer: {
     position: "absolute",
