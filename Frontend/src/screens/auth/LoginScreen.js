@@ -33,13 +33,12 @@ function LoginScreen({ navigation }) {
   const [school, setSchool] = useState(initialSchoolState);
   const [schoolDropDown, setSchoolDropDown] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [authError, setAuthError] = useState(false);
   const initialFormErrors = { email: null, password: null, school: null };
   const [formErrors, setFormErrors] = useState(initialFormErrors);
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
-  const { login, isLoadingLogin } = useAuth();
+  const { login, isLoadingLogin, authError } = useAuth();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const animatedPageContentPaddingTop = useRef(
@@ -84,7 +83,6 @@ function LoginScreen({ navigation }) {
   }, [fadeAnim]);
   const validateInput = () => {
     setFormErrors(initialFormErrors);
-    setAuthError(false);
     let errorsFound = false;
     if (email === "") {
       setFormErrors((prev) => ({ ...prev, email: "Please enter your email" }));
@@ -105,6 +103,15 @@ function LoginScreen({ navigation }) {
       setFormErrors((prev) => ({
         ...prev,
         school: "Please enter your school",
+      }));
+      errorsFound = true;
+    }
+    const escapedDomain = school.emailDomain.replace(/\./g, "\\.");
+    const emailRegex = new RegExp(`^[a-zA-Z0-9._%+-]+@${escapedDomain}$`);
+    if (!emailRegex.test(email)) {
+      setFormErrors((prev) => ({
+        ...prev,
+        email: `Please enter a ${school.name} email`,
       }));
       errorsFound = true;
     }
@@ -172,7 +179,7 @@ function LoginScreen({ navigation }) {
             />
             {authError && (
               <ErrorMessage
-                message={"Incorrect email or password. Please try again."}
+                message={"Incorrect email or password. Please try again"}
                 style={{ marginTop: 10 }}
               />
             )}

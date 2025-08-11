@@ -116,28 +116,25 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (loginData) => {
     setIsLoadingLogin(true);
+    setAuthError(false);
     try {
       const response = await axios.post(
         `${API_BASE_URL}/auth/login`,
         loginData
       );
-      if (response.status === 200) {
-        const { accessToken, refreshToken } = response.data;
-        await SecureStore.setItemAsync("accessToken", accessToken);
-        await SecureStore.setItemAsync("refreshToken", refreshToken);
-        setToken(accessToken);
-        setIsAuthenticated(true);
-      } else {
-        throw new Error("Login failed");
-      }
+      const { accessToken, refreshToken } = response.data;
+      await SecureStore.setItemAsync("accessToken", accessToken);
+      await SecureStore.setItemAsync("refreshToken", refreshToken);
+      setToken(accessToken);
+      setIsAuthenticated(true);
     } catch (e) {
-      console.error("Error logging in: ", e);
+      setAuthError(true);
     } finally {
       setIsLoadingLogin(false);
     }
   };
   const register = async (registrationData) => {
-    setAuthError(null);
+    setAuthError(false);
     try {
       const formData = new FormData();
       formData.append("fullname", registrationData.fullname);
@@ -168,7 +165,7 @@ export const AuthProvider = ({ children }) => {
         setIsLoadingRegistration(false);
       }
     } catch (e) {
-      console.error("Registration failed:", e);
+      setAuthError(true);
       setIsRegistrationCompleted(false);
     } finally {
       setIsLoadingRegistration(false);
