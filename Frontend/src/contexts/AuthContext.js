@@ -86,14 +86,10 @@ export const AuthProvider = ({ children }) => {
       });
       console.log("Refreshing access token on frontend...");
 
-      if (response.status === 200) {
-        const { accessToken } = response.data;
-        await SecureStore.setItemAsync("accessToken", accessToken);
-        setToken(accessToken);
-        return accessToken;
-      } else {
-        throw new Error("Failed to refresh token");
-      }
+      const { accessToken } = response.data;
+      await SecureStore.setItemAsync("accessToken", accessToken);
+      setToken(accessToken);
+      return accessToken;
     } catch (e) {
       console.log("Token error: ", e);
       logout();
@@ -155,15 +151,11 @@ export const AuthProvider = ({ children }) => {
           },
         }
       );
-      if (response.status === 201) {
-        setIsRegistrationCompleted(true);
-        const { accessToken, refreshToken } = response.data;
-        await SecureStore.setItemAsync("accessToken", accessToken);
-        await SecureStore.setItemAsync("refreshToken", refreshToken);
-        setToken(accessToken);
-      } else {
-        setIsLoadingRegistration(false);
-      }
+      setIsRegistrationCompleted(true);
+      const { accessToken, refreshToken } = response.data;
+      await SecureStore.setItemAsync("accessToken", accessToken);
+      await SecureStore.setItemAsync("refreshToken", refreshToken);
+      setToken(accessToken);
     } catch (e) {
       setAuthError(true);
       setIsRegistrationCompleted(false);

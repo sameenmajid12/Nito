@@ -45,12 +45,8 @@ export const UserProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        if (response.status === 200) {
-          const { user } = response.data;
-          setUser(user);
-        } else {
-          throw new Error("Failed to retrieve user");
-        }
+        const { user } = response.data;
+        setUser(user);
       } catch (e) {
         console.error("User retrieval error: ", e);
       } finally {
@@ -79,14 +75,12 @@ export const UserProvider = ({ children }) => {
           },
         }
       );
-      if (response.status === 200) {
-        const { updatedUser } = response.data;
-        setUser(updatedUser);
-        if (updates.tags) {
-          addAlert("success", "Tags updated");
-        } else {
-          addAlert("success", "Information updated");
-        }
+      const { updatedUser } = response.data;
+      setUser(updatedUser);
+      if (updates.tags) {
+        addAlert("success", "Tags updated");
+      } else {
+        addAlert("success", "Information updated");
       }
     } catch (e) {
       console.error("Error updating user: ", e);
@@ -170,12 +164,8 @@ export const UserProvider = ({ children }) => {
           },
         }
       );
-      if (response.status === 200) {
-        const { blockedUsers } = response.data;
-        setUser((prev) => ({ ...prev, blockedUsers }));
-      } else {
-        throw new Error("");
-      }
+      const { blockedUsers } = response.data;
+      setUser((prev) => ({ ...prev, blockedUsers }));
     } catch (e) {
       console.error("Error blocking user: ", e);
       setUserError(e);

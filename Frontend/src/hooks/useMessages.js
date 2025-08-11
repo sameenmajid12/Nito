@@ -20,10 +20,9 @@ function useMessages(conversationId) {
           },
         }
       );
-      if (response.status === 200) {
         const { conversationMessages } = response.data;
         setMessages(conversationMessages);
-      }
+      
     } catch (e) {
       console.error(e);
     } finally {
