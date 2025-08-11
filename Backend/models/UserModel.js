@@ -15,6 +15,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
     },
     password: {
       type: String,
@@ -52,7 +54,7 @@ const userSchema = new mongoose.Schema(
     },
     revealedUsers: [
       {
-        _id:false,
+        _id: false,
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         matchTime: Date,
       },
