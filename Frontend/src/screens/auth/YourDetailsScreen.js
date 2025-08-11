@@ -14,6 +14,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRegistration } from "../../contexts/RegistrationContext";
 import { Ionicons } from "@expo/vector-icons";
 import RegistrationFormFields from "../../components/auth/RegistrationFormFields";
+import axios from "axios";
+import { API_BASE_URL } from "@env";
 function YourDetailsScreen({ navigation }) {
   const { updateRegistrationData, registrationData, resetRegistration } =
     useRegistration();
@@ -36,7 +38,7 @@ function YourDetailsScreen({ navigation }) {
     retypePassword: registrationData.password || "",
   });
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [image, setImage] = useState(registrationData.image || null);
+  const [image, setImage] = useState(registrationData.profilePic.uri || null);
 
   //FORM ERRORS
   const initialFormErrors = {
@@ -45,7 +47,7 @@ function YourDetailsScreen({ navigation }) {
     email: null,
     password: null,
     retypePassword: null,
-    profilePic:null
+    profilePic: null,
   };
   const [formErrors, setFormErrors] = useState(initialFormErrors);
 
@@ -84,7 +86,7 @@ function YourDetailsScreen({ navigation }) {
   }, []);
 
   //USER INPUT VALIDATION
-  const validateFields = () => {
+  const validateFields = async () => {
     let currentErrors = { ...initialFormErrors };
     let errorsFound = false;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
@@ -104,12 +106,20 @@ function YourDetailsScreen({ navigation }) {
     if (formData.email === "") {
       currentErrors.email = "Please enter your school email";
       errorsFound = true;
-    } else if (!school || !school.emailDomain) {
-      currentErrors.email = "Please select your school first.";
-      errorsFound = true;
     } else if (!emailRegex.test(formData.email)) {
       currentErrors.email = `Email must end with @${registrationData.school.emailDomain}`;
       errorsFound = true;
+    }
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/auth/check-email?email=${formData.email}`
+      );
+      if (response.data.emailInUse) {
+        currentErrors.email = `Email already in use`;
+        errorsFound = true;
+      }
+    } catch (e) {
+      console.log(e);
     }
 
     //CHECK IF PASSWORD IS EMPTY OR CONTAINS THE REQUIRED CHARACTER
@@ -128,16 +138,16 @@ function YourDetailsScreen({ navigation }) {
       currentErrors.retypePassword = "Passwords don't match";
       errorsFound = true;
     }
-    if(image === null){
-      currentErrors.profilePic = "Please enter a profile picture"
+    if (image === null) {
+      currentErrors.profilePic = "Please enter a profile picture";
     }
     setFormErrors(currentErrors);
     return errorsFound;
   };
 
   //MAIN REGISTRATION FUNCTION
-  const continueRegistration = () => {
-    const errorsFound = validateFields();
+  const continueRegistration = async() => {
+    const errorsFound = await validateFields();
     if (!errorsFound) {
       updateRegistrationData({
         fullname: formData.fullname,
@@ -153,7 +163,6 @@ function YourDetailsScreen({ navigation }) {
     resetRegistration();
     navigation.replace("Register");
   };
-
   return (
     <SafeAreaView style={styles.page}>
       <Animated.View

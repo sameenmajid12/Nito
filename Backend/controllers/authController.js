@@ -5,7 +5,7 @@ const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const upload = require("../middleware/uploadImage");
 const s3 = require("../config/s3Client");
-const {sendVerificationEmail} = require("../utils/sendEmail.js");
+const { sendVerificationEmail } = require("../utils/sendEmail.js");
 const VerificationCode = require("../models/VerificationCodeModel.js");
 const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const {
@@ -27,6 +27,7 @@ authRouter.post("/register", upload.single("profilePic"), async (req, res) => {
     if (!req.file || !req.file.buffer) {
       return res.status(400).json({ message: "Profile picture missing" });
     }
+
     const existingUser = await User.findOne({ email: newUserInfo.email });
     if (existingUser) {
       return res
@@ -66,6 +67,9 @@ authRouter.post("/login", async (req, res) => {
   try {
     console.log("Loggin in..");
     const userInfo = req.body;
+    if(!userInfo.school._id){
+      return res.status(400).json({message:"School has to be selected"})
+    }
     const user = await User.findOne({
       email: userInfo.email,
       school: userInfo.school._id,
@@ -122,7 +126,7 @@ authRouter.post("/send-verification", async (req, res) => {
     }
     const existingVerificationCode = await VerificationCode.findOne({ email });
     if (existingVerificationCode) {
-      await VerificationCode.deleteOne({email});
+      await VerificationCode.deleteOne({ email });
     }
     await sendVerificationEmail(email);
     res.status(200).json({ message: "Email sent" });
@@ -165,5 +169,17 @@ authRouter.post("/verify-email", async (req, res) => {
 authRouter.get("/test-token", verifyToken, (_, res) => {
   res.status(200).json({ message: "Token valid" });
 });
+authRouter.get("/check-email", async (req, res, next) => {
+  try {
+    const { email } = req.query;
+    if (!email) {
+      return res.status(400).json({ message: "Email required" });
+    }
 
+    const user = await User.findOne({ email });
+    res.status(200).json({ emailInUse: !!user });
+  } catch (e) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 module.exports = { authRouter };
