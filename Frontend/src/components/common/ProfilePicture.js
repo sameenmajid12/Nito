@@ -13,9 +13,11 @@ import * as ImageManipulator from "expo-image-manipulator";
 import { useState } from "react";
 import { useUser } from "../../contexts/UserContext";
 import ErrorMessage from "./ErrorMessage";
+import { useRegistration } from "../../contexts/RegistrationContext";
 function ProfilePicture({ image, setImage, handleConfirm, type, error }) {
   const [isLoadingImage, setIsLoadingImage] = useState(false);
   const { user } = useUser();
+  const {registrationData} = useRegistration();
   const pickProfilePic = async () => {
     setIsLoadingImage(true);
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -69,7 +71,7 @@ function ProfilePicture({ image, setImage, handleConfirm, type, error }) {
       }
     } else {
       if (type === "auth") {
-        setImage(null);
+        setImage(registrationData.profilePic.uri);
       } else {
         setImage(user.profilePic);
       }
