@@ -12,18 +12,15 @@ import {
   FONT_SIZE_L,
   FONT_SIZE_M,
   FONT_SIZE_S,
-  FONT_SIZE_XS,
   FONT_SIZE_XXS,
 } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useUser } from "../../contexts/UserContext";
 import { getTimeSinceMessage, getTimeUntil } from "../../utils/Format";
+import PairEmptyState from "./PairEmptyState";
 function CurrentChat({ navigation }) {
   const { user } = useUser();
   const conversation = user.currentConversation;
-  if (!conversation) {
-    return;
-  }
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const [timeLeft, setTimeLeft] = useState(
     getTimeUntil(new Date(conversation?.endTime))
@@ -45,107 +42,113 @@ function CurrentChat({ navigation }) {
   };
   const userNum = conversation?.user1._id === user._id ? "user1" : "user2";
   const otherUserNum = userNum === "user1" ? "user2" : "user1";
-  const otherUser = conversation[otherUserNum];
+  const otherUser = conversation?.[otherUserNum];
   const isRead =
     conversation?.lastReadMessages[userNum]?._id ===
       conversation?.lastMessage?._id ||
-    conversation.lastMessage.sender === user._id;
+    conversation?.lastMessage.sender === user._id;
   return (
     <View style={styles.pageContainer}>
-      <Text style={styles.time}>
-        {timeLeft ? `${timeLeft} left` : "Time's up!"}{" "}
-      </Text>
-      <View style={styles.mainContainer}>
-        <Image
-          source={require("../../assets/images/anonymous-user.png")}
-          style={styles.image}
-        ></Image>
-        <View>
-          <Text style={styles.username}>@{otherUser.username}</Text>
-          <View style={styles.lastMessageWrapper}>
-            <Text
+      {user.currentConversation ? (
+        <>
+          <Text style={styles.time}>
+            {timeLeft ? `${timeLeft} left` : "Time's up!"}{" "}
+          </Text>
+          <View style={styles.mainContainer}>
+            <Image
+              source={require("../../assets/images/anonymous-user.png")}
+              style={styles.image}
+            ></Image>
+            <View>
+              <Text style={styles.username}>@{otherUser.username}</Text>
+              <View style={styles.lastMessageWrapper}>
+                <Text
+                  style={[
+                    styles.lastMessage,
+                    { color: isRead ? colors.textLight : colors.textPrimary },
+                  ]}
+                >
+                  {conversation?.lastMessage?.text
+                    ? conversation?.lastMessage?.sender === otherUser._id
+                      ? `${formatLastMessage(conversation?.lastMessage?.text)}`
+                      : `Message sent`
+                    : "You have 30 minutes, say hi and see if there’s a match!"}{" "}
+                </Text>
+                <Text
+                  style={[
+                    { color: isRead ? colors.textLight : colors.textPrimary },
+                    styles.messageTime,
+                  ]}
+                >
+                  (
+                  {getTimeSinceMessage(
+                    new Date(conversation?.lastMessage?.createdAt)
+                  )}
+                  )
+                </Text>
+                {!isRead && (
+                  <Ionicons
+                    name="ellipse"
+                    color={colors.accent70}
+                    size={FONT_SIZE_XXS}
+                  ></Ionicons>
+                )}
+              </View>
+            </View>
+            <TouchableOpacity
+              onPressIn={() => {
+                Animated.spring(scaleAnim, {
+                  toValue: 0.95,
+                  useNativeDriver: true,
+                  speed: 50,
+                  bounciness: 5,
+                }).start();
+              }}
+              onPressOut={() => {
+                Animated.spring(scaleAnim, {
+                  toValue: 1,
+                  useNativeDriver: true,
+                  speed: 20,
+                  bounciness: 15,
+                }).start();
+              }}
               style={[
-                styles.lastMessage,
-                { color: isRead ? colors.textLight : colors.textPrimary },
+                styles.buttonContainer,
+                { transform: [{ scale: scaleAnim }] },
               ]}
+              onPress={() =>
+                navigation.navigate("Chat", {
+                  conversation: user.currentConversation,
+                })
+              }
+              activeOpacity={0.8}
             >
-              {conversation?.lastMessage?.text
-                ? conversation?.lastMessage?.sender === otherUser._id
-                  ? `${formatLastMessage(conversation?.lastMessage?.text)}`
-                  : `Message sent`
-                : "You have 30 minutes, say hi and see if there’s a match!"}{" "}
-            </Text>
-            <Text
-              style={[
-                { color: isRead ? colors.textLight : colors.textPrimary },
-                styles.messageTime,
-              ]}
-            >
-              (
-              {getTimeSinceMessage(
-                new Date(conversation?.lastMessage?.createdAt)
-              )}
-              )
-            </Text>
-            {!isRead && (
+              <Text style={styles.buttonText}>Chat now</Text>
               <Ionicons
-                name="ellipse"
-                color={colors.accent70}
-                size={FONT_SIZE_XXS}
+                name="arrow-forward"
+                size={FONT_SIZE_S}
+                color={colors.white}
               ></Ionicons>
-            )}
+            </TouchableOpacity>
           </View>
-        </View>
-        <TouchableOpacity
-          onPressIn={() => {
-            Animated.spring(scaleAnim, {
-              toValue: 0.95,
-              useNativeDriver: true,
-              speed: 50,
-              bounciness: 5,
-            }).start();
-          }}
-          onPressOut={() => {
-            Animated.spring(scaleAnim, {
-              toValue: 1,
-              useNativeDriver: true,
-              speed: 20,
-              bounciness: 15,
-            }).start();
-          }}
-          style={[
-            styles.buttonContainer,
-            { transform: [{ scale: scaleAnim }] },
-          ]}
-          onPress={() =>
-            navigation.navigate("Chat", {
-              conversation: user.currentConversation,
-            })
-          }
-          activeOpacity={0.8}
-        >
-          <Text style={styles.buttonText}>Chat now</Text>
-          <Ionicons
-            name="arrow-forward"
-            size={FONT_SIZE_S}
-            color={colors.white}
-          ></Ionicons>
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.infoText}>
-        You both like:{" "}
-        <Text style={styles.interests}>
-          {Array.isArray(user?.currentConversation?.similarTags) &&
-            user?.currentConversation?.similarTags?.map(
-              (tag, i) =>
-                `${tag}${
-                  i === user.currentConversation.similarTags?.length - 1
-                    ? ""
-                    : ", "
-                }`
-            )}
-        </Text>
-      </Text>
+          <Text style={styles.infoText}>
+            You both like:{" "}
+            <Text style={styles.interests}>
+              {Array.isArray(user?.currentConversation?.similarTags) &&
+                user?.currentConversation?.similarTags?.map(
+                  (tag, i) =>
+                    `${tag}${
+                      i === user.currentConversation.similarTags?.length - 1
+                        ? ""
+                        : ", "
+                    }`
+                )}
+            </Text>
+          </Text>
+        </>
+      ) : (
+        <PairEmptyState />
+      )}
     </View>
   );
 }
