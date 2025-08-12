@@ -2,7 +2,6 @@ import { Image } from "expo-image";
 import { StyleSheet, Text, View } from "react-native";
 import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_XXL } from "../../styles";
 function PairEmptyState() {
-  console.log("Pair empty state");
   return (
     <View style={styles.mainWrapper}>
       <Image
