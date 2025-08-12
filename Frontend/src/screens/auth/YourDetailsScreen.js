@@ -38,7 +38,7 @@ function YourDetailsScreen({ navigation }) {
     retypePassword: registrationData.password || "",
   });
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [image, setImage] = useState(registrationData.profilePic.uri || null);
+  const [image, setImage] = useState(registrationData.profilePic?.uri || null);
 
   //FORM ERRORS
   const initialFormErrors = {
