@@ -15,7 +15,7 @@ function RegistrationFormFields({
 }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [retypePasswordVisible, setRetypePasswordVisible] = useState(false);
-  const { updateRegistrationData } = useRegistration();
+  const { updateRegistrationData, registrationData } = useRegistration();
   useEffect(() => {
     if (image) {
       setFormErrors((prev) => ({ ...prev, profilePic: null }));
@@ -40,6 +40,7 @@ function RegistrationFormFields({
           handleConfirm={updateRegistrationData}
           type={"auth"}
           error={formErrors.profilePic}
+          registrationData={registrationData}
         />
       )}
 
