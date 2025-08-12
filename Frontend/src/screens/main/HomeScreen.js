@@ -6,6 +6,7 @@ import NextMatchIn from "../../components/home/NextMatchIn";
 import DailyPoll from "../../components/home/DailyPoll";
 import HomeConnections from "../../components/home/HomeConnections";
 import { useUser } from "../../contexts/UserContext";
+import WaitingForPair from "../../components/home/WaitingForPair";
 
 function HomeScreen({ navigation }) {
   const { user } = useUser();
@@ -16,7 +17,7 @@ function HomeScreen({ navigation }) {
         <View style={styles.pageTopWrapper}>
           <Text style={styles.greeting}>Hello, {user.fullname}! 👋</Text>
 
-          <NewPairingFound navigation={navigation} />
+          {user.currentConversation?<NewPairingFound navigation={navigation} />:<WaitingForPair/>}
           <View
             style={{ flexDirection: "row", columnGap: 10, marginBottom: 10 }}
           >
