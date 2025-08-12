@@ -27,8 +27,8 @@ const conversationSchema = new mongoose.Schema({
       default: null,
     },
   },
-  user1Revealed: { type: Boolean, default: false },
-  user2Revealed: { type: Boolean, default: false },
+  user1Revealed: { type: Boolean, default: null },
+  user2Revealed: { type: Boolean, default: null },
   status: {
     type: String,
     enum: ["current", "revealing", "matched", "archived"],
