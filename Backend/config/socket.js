@@ -31,8 +31,26 @@ const initializeSocketIo = (server) => {
         const userInConversation =
           conversation.user1.toString() === userId ? "user1" : "user2";
         conversation[`${userInConversation}Revealed`] =
-          action === "match" ? true : false;
+          action === "reveal" ? true : false;
         await conversation.save();
+        socket.emit("pairActionComplete", { action });
+      } catch (e) {
+        socket.emit("errorMessage", { error: e.message });
+      }
+    });
+    socket.on("undoPairAction", async ({ conversationId, userId }) => {
+      try {
+        const conversation = await Conversation.findById(conversationId);
+        if (!conversation) {
+          return socket.emit("errorMessage", {
+            error: "Conversation not found",
+          });
+        }
+        const userInConversation =
+          conversation.user1.toString() === userId ? "user1" : "user2";
+        conversation[`${userInConversation}Revealed`] = null;
+        await conversation.save();
+        socket.emit("undoPairActionComplete");
       } catch (e) {
         socket.emit("errorMessage", { error: e.message });
       }

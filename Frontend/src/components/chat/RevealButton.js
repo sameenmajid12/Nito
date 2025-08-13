@@ -1,12 +1,18 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { colors, PRIMARY_ACTIVE_OPACITY } from "../../styles";
-function RevealButton({pairAction}) {
+function RevealButton({ pairAction, isLoading }) {
   return (
     <TouchableOpacity
+      disabled={isLoading}
       activeOpacity={PRIMARY_ACTIVE_OPACITY}
       style={styles.button}
-      onPress={()=>pairAction("reveal")}
+      onPress={() => pairAction("reveal")}
     >
       <LinearGradient
         start={{ x: 0.25, y: 0.5 }}
@@ -14,7 +20,11 @@ function RevealButton({pairAction}) {
         colors={[colors.primaryDark, colors.accent70]}
         style={styles.gradient}
       >
-        <Text style={styles.buttonText}>Reveal</Text>
+        {!isLoading ? (
+          <Text style={styles.buttonText}>Reveal</Text>
+        ) : (
+          <ActivityIndicator color={colors.white}></ActivityIndicator>
+        )}
       </LinearGradient>
     </TouchableOpacity>
   );

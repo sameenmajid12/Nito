@@ -189,10 +189,10 @@ function ChatScreen({ navigation, route }) {
           <MessagesContainer
             messages={messages}
             conversation={conversation}
+            setConversation={setConversation}
             usersRevealed={usersRevealed}
             otherUser={otherUser}
             isRevealing={conversation.status === "revealing"}
-            conversationId={conversation._id}
           />
         ) : (
           <View style={{ flex: 1, justifyContent: "flex-end" }}>

@@ -1,13 +1,14 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { colors, TEXT_ACTIVE_OPACITY } from "../../styles";
-function SkipButton({ pairAction }) {
+function SkipButton({ pairAction, isLoading }) {
   return (
     <TouchableOpacity
+      disabled={isLoading}
       onPress={() => pairAction("skip")}
       activeOpacity={TEXT_ACTIVE_OPACITY}
       style={styles.button}
     >
-      <Text style={styles.buttonText}>Skip</Text>
+      {!isLoading ? <Text style={styles.buttonText}>Skip</Text>:<ActivityIndicator color={colors.primaryDark}></ActivityIndicator>}
     </TouchableOpacity>
   );
 }
