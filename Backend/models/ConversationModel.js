@@ -34,6 +34,11 @@ const conversationSchema = new mongoose.Schema({
     enum: ["current", "revealing", "matched", "archived"],
     default: "current",
   },
+  school: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "School",
+    required: true,
+  },
   startTime: { type: Date, required: true, default: Date.now },
   matchTime: { type: Date, required: true },
   endTime: { type: Date, required: true },
