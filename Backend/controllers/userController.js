@@ -98,6 +98,45 @@ userRouter.get("/:userId", verifyToken, async (req, res, next) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+userRouter.get("/me/reveal-finalized", verifyToken, async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    console.log(`User id in reveal finalized ${userId}`);
+    const updatedUserFields = await User.findById(userId)
+      .select(
+        "revealedUsers lastPairStatus archivedConversations savedConversations"
+      )
+      .populate([
+        {
+          path: "revealedUsers",
+          options: { sort: { matchTime: 1 } },
+          populate: { path: "user", select: "fullname profilePic username" },
+        },
+        {
+          path: "savedConversations",
+          populate: [
+            { path: "user1", select: "fullname profilePic username" },
+            { path: "user2", select: "fullname profilePic username" },
+            { path: "lastMessage" },
+            {
+              path: "lastReadMessages",
+              populate: [
+                { path: "user1", model: "Message" },
+                { path: "user2", model: "Message" },
+              ],
+            },
+          ],
+        },
+      ]);
+    if (!updatedUserFields) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ updatedUserFields });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 userRouter.patch("/update", verifyToken, async (req, res, next) => {
   try {
     console.log("Updating user...");
@@ -300,6 +339,25 @@ userRouter.post("/verify-password", verifyToken, async (req, res, next) => {
       return res.status(401).json({ message: "Incorrect password" });
     }
     res.status(200).json({ message: "Password verified successfully" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+userRouter.put("/pair-status/viewed", verifyToken, async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (!user.lastPairStatus) {
+      return res.status(400).json({ message: "No last pair status to update" });
+    }
+    user.lastPairStatus.viewed = true;
+    await user.save();
+    res.status(200).json({ updatedLastPairStatus: user.lastPairStatus });
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: "Internal server error" });
