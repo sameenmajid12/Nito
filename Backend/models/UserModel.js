@@ -94,6 +94,21 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    lastPairStatus: {
+      status: {
+        type: String,
+        enum: ["matched", "skipped"],
+        default: null,
+      },
+      updatedAt: {
+        type: Date,
+        default: null,
+      },
+      viewed: {
+        type: Boolean,
+        default: null,
+      },
+    },
   },
   { timestamps: true }
 );
