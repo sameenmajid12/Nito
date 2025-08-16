@@ -16,10 +16,17 @@ const initializeSocketIo = (server) => {
       socketUsers[userId] = socket.id;
       socket.userId = userId;
     });
+
     socket.on("revealPhaseStarted", () => {
       console.log("Reveal phase started");
       io.emit("revealPhaseStarted");
     });
+
+    socket.on("revealPhaseFinalized", () => {
+      console.log("Received revealPhaseFinalized from lambda")
+      socket.broadcast.emit("revealPhaseFinalized");
+    }); 
+
     socket.on("pairAction", async ({ conversationId, userId, action }) => {
       try {
         const conversation = await Conversation.findById(conversationId);
@@ -30,14 +37,34 @@ const initializeSocketIo = (server) => {
         }
         const userInConversation =
           conversation.user1.toString() === userId ? "user1" : "user2";
+
         conversation[`${userInConversation}Revealed`] =
           action === "reveal" ? true : false;
         await conversation.save();
-        socket.emit("pairActionComplete", { action });
+        const receiverId =
+          userInConversation === "user1"
+            ? conversation.user2
+            : conversation.user1;
+        await conversation.populate([
+          { path: "user1", select: "username" },
+          { path: "user2", select: "username" },
+          { path: "lastMessage" },
+          { path: "lastReadMessages.user1", model: "Message" },
+          { path: "lastReadMessages.user2", model: "Message" },
+        ]);
+        const receiverSocket = socketUsers[receiverId];
+        if (receiverSocket) {
+          io.to(receiverSocket).emit(
+            "otherUserPairActionComplete",
+            conversation
+          );
+        }
+        socket.emit("pairActionComplete", conversation);
       } catch (e) {
         socket.emit("errorMessage", { error: e.message });
       }
     });
+
     socket.on("undoPairAction", async ({ conversationId, userId }) => {
       try {
         const conversation = await Conversation.findById(conversationId);
@@ -55,6 +82,7 @@ const initializeSocketIo = (server) => {
         socket.emit("errorMessage", { error: e.message });
       }
     });
+
     socket.on(
       "sendMessage",
       async ({ receiverId, conversationId, text, clientId }) => {
@@ -86,6 +114,7 @@ const initializeSocketIo = (server) => {
         }
       }
     );
+
     socket.on(
       "markConversationAsRead",
       async ({ conversationId, receiverId }) => {
@@ -109,6 +138,7 @@ const initializeSocketIo = (server) => {
         }
       }
     );
+
     socket.on("disconnect", () => {
       if (socketUsers[socket.userId]) {
         console.log(`Disconnecting user with socket ID ${socket.userId}`);
