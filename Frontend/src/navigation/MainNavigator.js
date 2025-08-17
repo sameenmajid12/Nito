@@ -18,7 +18,6 @@ import UserScreen from "../screens/main/UserScreen";
 import Alert from "../components/alert/Alert";
 import { useAlert } from "../contexts/AlertContext";
 import { useUser } from "../contexts/UserContext";
-import { useSocket } from "../contexts/SocketContext";
 import RevealPhaseAlert from "../components/alert/RevealPhaseAlert";
 import HelpAndSupportScreen from "../screens/main/Profile/HelpAndSupportScreen";
 const Tab = createBottomTabNavigator();
@@ -123,34 +122,27 @@ function MainNavigator() {
   const { modalState } = useModal();
   const { alerts, closeAlert, showRevealPhaseAlert } = useAlert();
   const { user } = useUser();
-  const { socket } = useSocket();
   const currentAlert = alerts.length > 0 ? alerts[0] : null;
   const navigation = useNavigation();
   useEffect(() => {
-    const matchRevealed = (data) => {
-      if (data && data.matchedUser) {
-        navigation.navigate("MatchScreen", {
-          type: "match",
-          matchedUser: data.matchedUser,
-        });
-      }
-    };
-    const matchSkipped = () => {
-      navigation.navigate("MatchScreen", {
-        type: "nomatch",
-      });
-    };
-    if (user && navigation && socket) {
-      socket.on("match-reveal", matchRevealed);
-      socket.on("match-skip", matchSkipped);
+    const pairStatus = user.lastPairStatus;
+    if (!pairStatus || !pairStatus.status || pairStatus.viewed === null) {
+      return;
     }
-    return () => {
-      if (socket) {
-        socket.off("match-reveal", matchRevealed);
-        socket.off("match-skip", matchSkipped);
-      }
-    };
-  }, [navigation, user, socket]);
+
+    if (!pairStatus.viewed) {
+      const conversation = user.currentConversation;
+      if (!conversation) return;
+      console.log(`Revealed users: `, user.revealedUsers);
+      const matchedUserObj = user.revealedUsers?.[user.revealedUsers?.length - 1];
+      const matchedUser = matchedUserObj?.user;
+
+      navigation.navigate("MatchScreen", {
+        type: pairStatus.status,
+        matchedUser,
+      });
+    }
+  }, [user]);
   return (
     <>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>

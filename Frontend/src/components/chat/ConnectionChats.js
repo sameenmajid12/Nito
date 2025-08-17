@@ -97,7 +97,7 @@ function ConnectionChats({ navigation }) {
         </View>
       )}
     </View>
-  );
+  );f
 }
 const styles = StyleSheet.create({
   conversationListContainer: {
