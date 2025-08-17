@@ -1,11 +1,29 @@
 import { View, TextInput, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_L } from "../../styles";
-function Search({ search, setSearch }) {
+import { useEffect } from "react";
+import { useUser } from "../../contexts/UserContext";
+function Search({ search, setSearch, connections, setConnections }) {
+  const { user } = useUser();
+  useEffect(() => {
+    if (search.length === 0) {
+      setConnections(user?.revealedUsers);
+    } else {
+      const filteredConnections = connections.filter((c) =>
+        c.user.fullname.toLowerCase().includes(search.toLowerCase())
+      );
+      setConnections(filteredConnections);
+    }
+  }, [search]);
   return (
     <View style={styles.searchContainer}>
       <Ionicons style={styles.searchIcon} name="search-outline"></Ionicons>
-      <TextInput style={styles.searchInput} placeholder="Search"></TextInput>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search"
+        value={search}
+        onChangeText={setSearch}
+      ></TextInput>
     </View>
   );
 }

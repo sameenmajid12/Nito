@@ -2,7 +2,6 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  TextInput,
   View,
   Keyboard,
 } from "react-native";
@@ -12,12 +11,31 @@ import ConnectionList from "../../components/common/ConnectionList";
 import SortConnection from "../../components/connection/SortConnection";
 import SearchConnection from "../../components/connection/SearchConnection";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "../../contexts/UserContext";
 function ConnectionScreen({ navigation }) {
   const { user } = useUser();
   const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
   const [sortState, setSortState] = useState("newestfirst");
+  const [connections, setConnections] = useState(user?.revealedUsers);
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    if (!connections) return;
+    setConnections((prev) => {
+      const sorted = [...prev].sort((a, b) => {
+        const timeA = new Date(a.matchTime).getTime();
+        const timeB = new Date(b.matchTime).getTime();
+        if (sortState === "newestfirst") {
+          return timeB - timeA;
+        } else if (sortState === "oldestfirst") {
+          return timeA - timeB;
+        } else {
+          return a.user.fullname.localeCompare(b.user.fullname);
+        }
+      });
+      return sorted;
+    });
+  }, [sortState]);
   return (
     <SafeAreaView style={styles.page}>
       <TextHeader navigation={navigation} text={"Connections"} />
@@ -25,7 +43,12 @@ function ConnectionScreen({ navigation }) {
         <ScrollView>
           <View style={styles.mainContainer}>
             <View style={styles.headerWrapper}>
-              <SearchConnection />
+              <SearchConnection
+                connections={connections}
+                setConnections={setConnections}
+                search={search}
+                setSearch={setSearch}
+              />
               <View style={styles.divider}></View>
               <SortConnection
                 sortState={sortState}
@@ -33,7 +56,7 @@ function ConnectionScreen({ navigation }) {
               />
             </View>
             <ConnectionList
-              connections={user?.revealedUsers}
+              connections={connections}
               gap={15}
               sortState={sortState}
               navigation={navigation}
@@ -60,10 +83,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.borderLight,
   },
-  headerWrapper:{
-    paddingHorizontal:30,
-    paddingTop:30,
-    rowGap:20
-  }
+  headerWrapper: {
+    paddingHorizontal: 30,
+    paddingTop: 30,
+    rowGap: 20,
+  },
 });
 export default ConnectionScreen;
