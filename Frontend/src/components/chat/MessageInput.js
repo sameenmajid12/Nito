@@ -91,17 +91,19 @@ function MessageInput({ message, setMessage, sendMessage, disabled }) {
 const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: colors.background,
-    minHeight: 85,
+    minHeight:85,
+    marginBottom:0,
     position: "absolute",
     bottom: 0,
-    right: 0,
-    left: 0,
+    right: 25,
+    left: 25,
     justifyContent: "flex-start",
+    borderTopLeftRadius:25,
+    borderTopRightRadius:25
   },
   inputContainer: {
     backgroundColor: colors.background,
     maxHeight: 60,
-    marginHorizontal: 25,
     borderWidth: 1,
     borderColor: colors.borderLight,
     minHeight: MIN_INPUT_HEIGHT,

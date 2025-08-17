@@ -35,7 +35,14 @@ function ChatScreen({ navigation, route }) {
       setShowTime(false);
     }
   };
-  const tapGesture = Gesture.Tap().onTouchesDown(() => {
+  const mainGesture = Gesture.Pan().onStart((event) => {
+    if (Math.abs(event.translationY) > Math.abs(event.translationX)) {
+      return;
+    }
+    Keyboard.dismiss();
+    hideTime();
+  });
+  const sideGesture = Gesture.Tap().onTouchesDown(() => {
     Keyboard.dismiss();
     hideTime();
   });
@@ -185,27 +192,29 @@ function ChatScreen({ navigation, route }) {
         showTime={showTime}
         toggleTime={toggleTime}
       />
-
-      <GestureDetector gesture={tapGesture}>
-        {!loadingMessages ? (
-          <MessagesContainer
-            messages={messages}
-            conversation={conversation}
-            setConversation={setConversation}
-            isMatch={isMatch}
-            otherUser={otherUser}
-            isRevealing={isRevealing}
-          />
-        ) : (
-          <View style={{ flex: 1, justifyContent: "flex-end" }}>
-            <ActivityIndicator
-              color={colors.primary}
-              size="large"
-              style={styles.loader}
+      <View style={{ flex: 1, flexDirection:"row" }}>
+        <GestureDetector gesture={sideGesture}><View style={{width:25}}></View></GestureDetector>
+        <GestureDetector gesture={mainGesture}>
+          {!loadingMessages ? (
+            <MessagesContainer
+              messages={messages}
+              conversation={conversation}
+              setConversation={setConversation}
+              isMatch={isMatch}
+              otherUser={otherUser}
+              isRevealing={isRevealing}
             />
-          </View>
-        )}
-      </GestureDetector>
+          ) : (
+            <View style={{ flex: 1, justifyContent: "flex-end" }}>
+              <ActivityIndicator
+                color={colors.primary}
+                size="large"
+                style={styles.loader}
+              />
+            </View>
+          )}
+        </GestureDetector>
+      </View>
 
       <MessageInput
         message={newMessage}

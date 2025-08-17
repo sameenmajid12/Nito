@@ -71,11 +71,12 @@ function MessagesContainer({ messages, isMatch, otherUser, isRevealing, conversa
       style={[styles.mainContainer]}
       contentContainerStyle={{}}
       ref={scrollViewRef}
+      showsVerticalScrollIndicator={false}
     >
       <Animated.View
         style={{
           backgroundColor: colors.background,
-          paddingBottom: containerBottomPadding,
+          marginBottom: containerBottomPadding,
         }}
       >
         <ChatBeginnning user={otherUser} isMatch={isMatch} />
@@ -109,7 +110,7 @@ function MessagesContainer({ messages, isMatch, otherUser, isRevealing, conversa
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    padding: 25,
+    paddingRight:25
   },
 });
 export default MessagesContainer;

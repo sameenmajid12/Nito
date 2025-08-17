@@ -26,9 +26,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     maxWidth: "70%",
     marginBottom: 1,
-    shadowColor: "#000",
-    shadowRadius: 1,
-    shadowOpacity: 0.05,
+    shadowColor: colors.primary,
+    shadowRadius: 4,
+    shadowOpacity: 0.075,
     shadowOffset: { width: 0, height: 0 },
   },
   text: {
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   last: {
     marginBottom: 20,
     shadowRadius: 4,
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.075,
     shadowOffset: { width: 0, height: 4 },
   },
   name: {
