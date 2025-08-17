@@ -44,7 +44,6 @@ function ConnectionScreen({ navigation }) {
           <View style={styles.mainContainer}>
             <View style={styles.headerWrapper}>
               <SearchConnection
-                connections={connections}
                 setConnections={setConnections}
                 search={search}
                 setSearch={setSearch}

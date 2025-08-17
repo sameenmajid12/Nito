@@ -3,14 +3,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_L } from "../../styles";
 import { useEffect } from "react";
 import { useUser } from "../../contexts/UserContext";
-function Search({ search, setSearch, connections, setConnections }) {
+function Search({ search, setSearch, setConnections }) {
   const { user } = useUser();
   useEffect(() => {
     if (search.length === 0) {
-      setConnections(user?.revealedUsers);
+      setConnections(user.revealedUsers);
     } else {
-      const filteredConnections = connections.filter((c) =>
-        c.user.fullname.toLowerCase().includes(search.toLowerCase())
+      const filteredConnections = user.revealedUsers.filter((c) =>
+        c.user.fullname.toLowerCase().includes(search.toLowerCase().trim())
       );
       setConnections(filteredConnections);
     }
