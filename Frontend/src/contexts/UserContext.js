@@ -186,6 +186,23 @@ export const UserProvider = ({ children }) => {
       addAlert("error", "Convo not found");
     }
   };
+  const updateUserAfterRevealPhaseFinalized = async () => {
+    try {
+      console.log("Reveal phase finalized received on frontend");
+      const response = await axios.get(`${API_BASE_URL}/user/me/reveal-finalized`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const { updatedUserFields } = response.data;
+      setUser((prev) => ({
+        ...prev,
+        ...updatedUserFields,
+      }));
+    } catch (e) {
+      console.error("Error updating after reveal phase finalized: ", e);
+    }
+  };
   return (
     <UserContext.Provider
       value={{
@@ -199,6 +216,7 @@ export const UserProvider = ({ children }) => {
         blockUser,
         setUser,
         getConversation,
+        updateUserAfterRevealPhaseFinalized,
       }}
     >
       {children}

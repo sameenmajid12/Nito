@@ -7,7 +7,7 @@ const SocketContext = createContext();
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const socketRef = useRef();
-  const { user, setUser } = useUser();
+  const { user, setUser, updateUserAfterRevealPhaseFinalized } = useUser();
   const { openRevealPhaseAlert } = useAlert();
   useEffect(() => {
     if (!user || !user._id) {
@@ -33,6 +33,7 @@ export const SocketProvider = ({ children }) => {
     const registerUser = () => {
       newSocket.emit("register", user._id);
     };
+
     const handleReceiveMessage = (message) => {
       console.log("Received message");
       if (message.conversation === user.currentConversation?._id.toString()) {
@@ -67,6 +68,7 @@ export const SocketProvider = ({ children }) => {
         }));
       }
     };
+
     const handleRevealPhaseStarted = () => {
       setUser((prev) => ({
         ...prev,
@@ -77,14 +79,26 @@ export const SocketProvider = ({ children }) => {
       }));
       openRevealPhaseAlert();
     };
+
+    const handleOtherUserPairAction = (updatedConversation) => {
+      const conversation = user.currentConversation;
+      if (!conversation) {
+        return;
+      }
+      setUser((prev) => ({
+        ...prev,
+        currentConversation: updatedConversation,
+      }));
+    };
+
     newSocket.on("connect", registerUser);
     newSocket.on("receiveMessage", handleReceiveMessage);
     newSocket.on("revealPhaseStarted", handleRevealPhaseStarted);
-    newSocket.on("match-revealed");
-    newSocket.on("match-skipped");
-    newSocket.on("new-match");
+    newSocket.on("revealPhaseFinalized", updateUserAfterRevealPhaseFinalized);
+    newSocket.on("otherUserPairActionComplete", handleOtherUserPairAction);
     newSocket.on("typing");
     newSocket.on("read");
+
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
