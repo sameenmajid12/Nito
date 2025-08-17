@@ -39,8 +39,9 @@ function ChatScreen({ navigation, route }) {
     Keyboard.dismiss();
     hideTime();
   });
-  const usersRevealed =
-    conversation.user1Revealed && conversation.user2Revealed;
+  const isMatch = conversation.status === "matched";
+  const isRevealing = conversation.status === "revealing";
+  const isCurrent = conversation.status === "current";
   const otherUser =
     conversation.user1._id === user._id
       ? conversation.user2
@@ -178,7 +179,8 @@ function ChatScreen({ navigation, route }) {
       <ChatHeader
         navigation={navigation}
         conversation={conversation}
-        usersRevealed={usersRevealed}
+        isMatch={isMatch}
+        isCurrent={isCurrent}
         otherUser={otherUser}
         showTime={showTime}
         toggleTime={toggleTime}
@@ -190,9 +192,9 @@ function ChatScreen({ navigation, route }) {
             messages={messages}
             conversation={conversation}
             setConversation={setConversation}
-            usersRevealed={usersRevealed}
+            isMatch={isMatch}
             otherUser={otherUser}
-            isRevealing={conversation.status === "revealing"}
+            isRevealing={isRevealing}
           />
         ) : (
           <View style={{ flex: 1, justifyContent: "flex-end" }}>
@@ -209,9 +211,7 @@ function ChatScreen({ navigation, route }) {
         message={newMessage}
         setMessage={setNewMessage}
         sendMessage={sendMessage}
-        disabled={
-          conversation.status !== "matched" && conversation.status !== "current"
-        }
+        disabled={!isMatch && !isCurrent}
       ></MessageInput>
     </SafeAreaView>
   );

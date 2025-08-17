@@ -13,14 +13,15 @@ import TimeLeft from "./TimeLeft";
 
 function ChatHeader({
   navigation,
-  usersRevealed,
+  isMatch,
+  isCurrent,
   otherUser,
   conversation,
   showTime,
   toggleTime,
 }) {
-  const name = usersRevealed ? otherUser.fullname : otherUser.username;
-  const image = usersRevealed
+  const name = isMatch ? otherUser.fullname : otherUser.username;
+  const image = isMatch
     ? otherUser.profilePic
     : require("../../assets/images/anonymous-user.png");
   const { openModal } = useModal();
@@ -39,7 +40,7 @@ function ChatHeader({
         </Pressable>
       </View>
       <View style={styles.headerRight}>
-        {!usersRevealed && (
+        {isCurrent && (
           <TimeLeft
             time={conversation?.endTime}
             showTime={showTime}

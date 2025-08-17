@@ -14,7 +14,7 @@ import ChatRevealing from "./ChatRevealing";
 import { useUser } from "../../contexts/UserContext";
 import ChatBeginnning from "./ChatBeginning";
 const INITIAL_BOTTOM_PADDING = 50;
-function MessagesContainer({ messages, usersRevealed, otherUser, isRevealing, conversation, setConversation }) {
+function MessagesContainer({ messages, isMatch, otherUser, isRevealing, conversation, setConversation }) {
   const scrollViewRef = useRef(null);
   const { user } = useUser();
   const containerBottomPadding = useRef(
@@ -78,7 +78,7 @@ function MessagesContainer({ messages, usersRevealed, otherUser, isRevealing, co
           paddingBottom: containerBottomPadding,
         }}
       >
-        <ChatBeginnning user={otherUser} usersRevealed={usersRevealed} />
+        <ChatBeginnning user={otherUser} isMatch={isMatch} />
         {messages?.length > 0 &&
           messages.map((message, i) => {
             const first = messages[i - 1]?.sender !== message.sender;
@@ -96,7 +96,7 @@ function MessagesContainer({ messages, usersRevealed, otherUser, isRevealing, co
                 text={message.text}
                 first={first}
                 last={last}
-                usersRevealed={usersRevealed}
+                isMatch={isMatch}
                 otherUser={otherUser}
               />
             );

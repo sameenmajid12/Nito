@@ -4,17 +4,17 @@ import { colors, FONT_SIZE_L } from "../../styles";
 
 function ChatBeginnning({
   user,
-  usersRevealed,
+  isMatch,
 }) {
-  const image = usersRevealed
+  const image = isMatch
     ? user.profilePic
     : require("../../assets/images/anonymous-user.png");
   return (
     <View style={styles.sectionWrapper}>
       <Image style={styles.profilePic} source={image}></Image>
       <View style={styles.textWrapper}>
-        {usersRevealed && <Text style={styles.fullname}>{user.fullname}</Text>}
-        <Text style={usersRevealed ? styles.username : styles.fullname}>
+        {isMatch && <Text style={styles.fullname}>{user.fullname}</Text>}
+        <Text style={isMatch ? styles.username : styles.fullname}>
           @{user.username}
         </Text>
         <Text style={styles.startMessage}>
