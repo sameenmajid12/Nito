@@ -15,36 +15,38 @@ function ChatRevealing({ conversation, setConversation }) {
   const [isLoadingReveal, setIsLoadingReveal] = useState(false);
   const [isLoadingSkip, setIsLoadingSkip] = useState(false);
   useEffect(() => {
-    if (socket) {
-      socket.on("pairActionComplete", ({ action }) => {
-        setConversation((prev) => ({
-          ...prev,
-          [`${userNum}Revealed`]: action === "reveal" ? true : false,
-        }));
-        setUser((prev) => ({
-          ...prev,
-          currentConversation: {
-            ...prev.currentConversation,
-            [`${userNum}Revealed`]: action === "reveal" ? true : false,
-          },
-        }));
-        setIsLoadingReveal(false);
-        setIsLoadingSkip(false);
-      });
-      socket.on("undoPairActionComplete", () => {
-        setConversation((prev) => ({
-          ...prev,
+    const handlePairActionComplete = (updatedConversation) => {
+      setConversation(updatedConversation);
+      setUser((prev) => ({
+        ...prev,
+        currentConversation: updatedConversation,
+      }));
+      setIsLoadingReveal(false);
+      setIsLoadingSkip(false);
+    };
+    const handleUndoPairActionComplete = () => {
+      setConversation((prev) => ({
+        ...prev,
+        [`${userNum}Revealed`]: null,
+      }));
+      setUser((prev) => ({
+        ...prev,
+        currentConversation: {
+          ...prev.currentConversation,
           [`${userNum}Revealed`]: null,
-        }));
-        setUser((prev) => ({
-          ...prev,
-          currentConversation: {
-            ...prev.currentConversation,
-            [`${userNum}Revealed`]: null,
-          },
-        }));
-      });
+        },
+      }));
+    };
+    if (socket) {
+      socket.on("pairActionComplete", handlePairActionComplete);
+      socket.on("undoPairActionComplete", handleUndoPairActionComplete);
     }
+    return () => {
+      if (socket) {
+        socket.off("pairActionComplete", handlePairActionComplete);
+        socket.off("undoPairActionComplete", handleUndoPairActionComplete);
+      }
+    };
   }, [socket]);
   const pairAction = (action) => {
     if (action === "reveal") {
@@ -80,7 +82,7 @@ function ChatRevealing({ conversation, setConversation }) {
       ) : (
         <View style={styles.voteWrapper}>
           <Text style={styles.votedText}>
-            You've choosen to
+            You've choosen to{" "}
             <Text style={styles.voteOption}>
               {userVote ? "REVEAL" : "SKIP"}
             </Text>
