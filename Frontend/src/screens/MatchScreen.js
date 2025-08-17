@@ -11,10 +11,41 @@ import { colors, FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_XXL } from "../styles";
 import MatchedUsersImages from "../components/match/MatchedUserImages";
 import Logo from "../components/common/Logo";
 import { Ionicons } from "@expo/vector-icons";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useUser } from "../contexts/UserContext";
+import axios from "axios";
+import { API_BASE_URL } from "@env";
+import { useAuth } from "../contexts/AuthContext";
 function MatchScreen({ navigation, route }) {
-  const {type, matchedUser} = route.params
-  if (type === "match" && !matchedUser) {
+  const { user, setUser } = useUser();
+  const { token } = useAuth();
+  useEffect(() => {
+    const markAsViewed = async () => {
+      try {
+        const response = await axios.put(
+          `${API_BASE_URL}/user/pair-status/viewed`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const { updatedLastPairStatus } = response.data;
+        setUser((prev) => ({
+          ...prev,
+          lastPairStatus: updatedLastPairStatus,
+        }));
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    if (user?.lastPairStatus && !user.lastPairStatus.viewed) {
+      markAsViewed();
+    }
+  }, []);
+  const { type, matchedUser } = route.params;
+  if (type === "matched" && !matchedUser) {
     return;
   }
   const buttonBGColor = useRef(new Animated.Value(0)).current;
@@ -30,23 +61,23 @@ function MatchScreen({ navigation, route }) {
     inputRange: [0, 1],
     outputRange: [colors.background, "#F0E2FF"],
   });
-  const header = type === "match" ? "IT'S A MATCH!" : "No match this time..";
+  const header = type === "matched" ? "IT'S A MATCH!" : "No match this time..";
   const subheader =
-    type === "match"
+    type === "matched"
       ? "You both hit reveal. Time to connect and start something new"
       : "Don’t worry you have a potential connection waiting for you";
   const middleAsset =
-    type === "match" ? (
+    type === "matched" ? (
       <MatchedUsersImages matchedUser={matchedUser} />
     ) : (
       <Text style={styles.noMatchIcon}>;(</Text>
     );
   const primaryButtonText =
-    type === "match"
+    type === "matched"
       ? "Send a message to your new friend"
       : "Chat with your new anonymous friend";
   const secondaryButtonText =
-    type === "match"
+    type === "matched"
       ? `View ${matchedUser.fullname}'s profile`
       : "View your profile";
   return (
@@ -64,12 +95,12 @@ function MatchScreen({ navigation, route }) {
         <Logo width={60} height={30}></Logo>
       </TouchableOpacity>
       <View
-        style={[styles.mainContainer, { rowGap: type === "match" ? 40 : 0 }]}
+        style={[styles.mainContainer, { rowGap: type === "matched" ? 40 : 0 }]}
       >
         <Text
           style={[
             styles.header,
-            type === "match"
+            type === "matched"
               ? { fontSize: 48, color: colors.primaryDark }
               : { fontSize: FONT_SIZE_XXL, color: colors.primary },
           ]}
@@ -80,7 +111,7 @@ function MatchScreen({ navigation, route }) {
         <Text
           style={[
             styles.subheader,
-            { marginBottom: type === "match" ? 0 : 30 },
+            { marginBottom: type === "matched" ? 0 : 30 },
           ]}
         >
           {subheader}
