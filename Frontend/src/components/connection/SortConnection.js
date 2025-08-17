@@ -34,6 +34,8 @@ const styles = StyleSheet.create({
   sortContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    paddingHorizontal:30,
+    paddingBottom:20
   },
   sortContainerSections: {
     flexDirection: "row",

@@ -42,24 +42,27 @@ function ConnectionScreen({ navigation }) {
       <GestureDetector gesture={tapGesture}>
         <ScrollView>
           <View style={styles.mainContainer}>
-            <View style={styles.headerWrapper}>
-              <SearchConnection
-                setConnections={setConnections}
-                search={search}
-                setSearch={setSearch}
-              />
-              <View style={styles.divider}></View>
-              <SortConnection
-                sortState={sortState}
-                setSortState={setSortState}
-              />
-            </View>
-            <ConnectionList
-              connections={connections}
-              gap={15}
-              sortState={sortState}
-              navigation={navigation}
+            <SearchConnection
+              setConnections={setConnections}
+              search={search}
+              setSearch={setSearch}
             />
+            <View style={styles.divider}></View>
+
+            <GestureDetector gesture={tapGesture}>
+              <View>
+                <SortConnection
+                  sortState={sortState}
+                  setSortState={setSortState}
+                />
+                <ConnectionList
+                  connections={connections}
+                  gap={15}
+                  sortState={sortState}
+                  navigation={navigation}
+                />
+              </View>
+            </GestureDetector>
           </View>
         </ScrollView>
       </GestureDetector>
@@ -81,6 +84,7 @@ const styles = StyleSheet.create({
     height: 1,
     borderTopWidth: 1,
     borderTopColor: colors.borderLight,
+    marginHorizontal:30
   },
   headerWrapper: {
     paddingHorizontal: 30,
