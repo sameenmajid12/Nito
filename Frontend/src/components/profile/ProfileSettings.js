@@ -1,19 +1,19 @@
 import { View, Text, StyleSheet, Switch, TouchableOpacity } from "react-native";
 import ProfileSectionHeader from "./ProfileSectionHeader";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  colors,
-  FONT_SIZE_L,
-  FONT_SIZE_M,
-} from "../../styles";
+import { colors, FONT_SIZE_L, FONT_SIZE_M, TEXT_ACTIVE_OPACITY } from "../../styles";
 import { useModal } from "../../contexts/ModalContext";
-function ProfileSettings({navigate}) {
-  const {openModal} = useModal();
+function ProfileSettings({ navigate }) {
+  const { openModal } = useModal();
   return (
     <View style={styles.mainContainer}>
       <ProfileSectionHeader header={"Settings"} />
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity onPress={()=>navigate("AccountInformation")} activeOpacity={0.4} style={styles.button}>
+        <TouchableOpacity
+          onPress={() => navigate("AccountInformation")}
+          activeOpacity={TEXT_ACTIVE_OPACITY}
+          style={styles.button}
+        >
           <Ionicons
             size={28}
             color={colors.textPrimary}
@@ -28,7 +28,11 @@ function ProfileSettings({navigate}) {
             ></Ionicons>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigate("Help&Support")} activeOpacity={0.4} style={styles.button}>
+        <TouchableOpacity
+          onPress={() => navigate("Help&Support")}
+          activeOpacity={TEXT_ACTIVE_OPACITY}
+          style={styles.button}
+        >
           <Ionicons
             size={28}
             color={colors.textPrimary}
@@ -43,7 +47,11 @@ function ProfileSettings({navigate}) {
             ></Ionicons>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigate("TagsSelect")} activeOpacity={0.4} style={styles.button}>
+        <TouchableOpacity
+          onPress={() => navigate("TagsSelect")}
+          activeOpacity={TEXT_ACTIVE_OPACITY}
+          style={styles.button}
+        >
           <Ionicons
             size={28}
             color={colors.textPrimary}
@@ -58,18 +66,19 @@ function ProfileSettings({navigate}) {
             ></Ionicons>
           </View>
         </TouchableOpacity>
-        <View style={styles.button}>
+        <TouchableOpacity onPress={()=>openModal(null, "notificationModal")} activeOpacity={TEXT_ACTIVE_OPACITY} style={styles.button}>
           <Ionicons
             size={28}
             color={colors.textPrimary}
             name="notifications-outline"
           ></Ionicons>
-          <View style={styles.right}>
-            <Text style={styles.buttonText}>Notifications</Text>
-            <Switch value={true} trackColor={{true:colors.primary}}></Switch>
-          </View>
-        </View>
-        <TouchableOpacity activeOpacity={0.4} style={styles.button} onPress={()=>openModal(null, "logoutModal")}>
+          <Text style={styles.buttonText}>Notifications</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={TEXT_ACTIVE_OPACITY}
+          style={styles.button}
+          onPress={() => openModal(null, "logoutModal")}
+        >
           <Ionicons size={28} color={"red"} name="log-out-outline"></Ionicons>
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>

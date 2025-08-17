@@ -9,7 +9,11 @@ export const ModalProvider = ({ children }) => {
   });
 
   const openModal = (data, name) => {
-    if (name !== "logoutModal" && (!name || !data)) {
+    if (
+      name !== "logoutModal" &&
+      name !== "notificationModal" &&
+      (!name || !data)
+    ) {
       return;
     }
     setModalState({ visible: true, data: data, name: name });

@@ -109,6 +109,24 @@ const userSchema = new mongoose.Schema(
         default: null,
       },
     },
+    notifications: {
+      revealPhases: {
+        type: Boolean,
+        default: true,
+      },
+      matches: {
+        type: Boolean,
+        default: true,
+      },
+      messages: {
+        type: Boolean,
+        default: true,
+      },
+      pairings: {
+        type: Boolean,
+        default: true,
+      },
+    },
   },
   { timestamps: true }
 );

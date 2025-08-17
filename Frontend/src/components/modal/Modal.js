@@ -1,15 +1,15 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
 import { Animated, StyleSheet, View, Pressable, Text } from "react-native";
 import { useModal } from "../../contexts/ModalContext";
-import { colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
-import { Image } from "expo-image";
+import { colors, FONT_SIZE_M } from "../../styles";
 import ConfirmationView from "./ConfirmationView";
 import SortConnectionsModal from "./SortConnectionModal";
 import DailyPollModal from "./DailyPollModal";
 import UserModal from "./UserModal";
 import ChatModal from "./ChatModal";
 import { useUser } from "../../contexts/UserContext";
+import NotificationModal from "./NotificationModal";
+import { useNotifications } from "../../contexts/NotificationContext";
 
 function Modal({
   user,
@@ -29,10 +29,20 @@ function Modal({
   ) {
     return null;
   }
+
   const { closeModal } = useModal();
+  const { updateUser, getConversation } = useUser();
+  const { notificationsUpdated, notifications, setNotificationsUpdated } =
+    useNotifications();
+  const closeModalAndUpdateNotifications = () => {
+    if (type === "notificationModal" && notificationsUpdated) {
+      updateUser({ notifications });
+      setNotificationsUpdated(false);
+    }
+    closeModal();
+  };
   const slideAnim = useRef(new Animated.Value(600)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
-  const { getConversation } = useUser();
   const [confirmationType, setConfirmationType] = useState(
     type === "logoutModal" ? { type: "logout" } : null
   );
@@ -73,7 +83,11 @@ function Modal({
       }),
     ]).start(({ finished }) => {
       if (finished) {
-        closeModal();
+        if (type === "notificationModal") {
+          closeModalAndUpdateNotifications();
+        } else {
+          closeModal();
+        }
       }
     });
   };
@@ -138,19 +152,24 @@ function Modal({
             />
           ) : type === "pollModal" ? (
             <DailyPollModal data={pollData} handleClose={handleClose} />
+          ) : type === "notificationModal" ? (
+            <NotificationModal />
           ) : null}
         </View>
-        {!confirmationType && type !== "sortModal" && type !== "pollModal" && (
-          <Pressable
-            style={({ pressed }) => [
-              styles.closeButton,
-              { backgroundColor: pressed ? "#EBE1EC" : colors.background },
-            ]}
-            onPress={handleClose}
-          >
-            <Text style={styles.closeButtonText}>Close</Text>
-          </Pressable>
-        )}
+        {!confirmationType &&
+          type !== "sortModal" &&
+          type !== "pollModal" &&
+          type !== "notificationModal" && (
+            <Pressable
+              style={({ pressed }) => [
+                styles.closeButton,
+                { backgroundColor: pressed ? "#EBE1EC" : colors.background },
+              ]}
+              onPress={handleClose}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </Pressable>
+          )}
       </Animated.View>
     </Pressable>
   );
