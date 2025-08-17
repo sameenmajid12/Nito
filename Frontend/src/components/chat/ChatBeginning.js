@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     justifyContent:"center",
     alignItems:"center",
     rowGap:20,
-    marginBottom:30
+    marginVertical:30
   },
   profilePic: {
     width: 150,
