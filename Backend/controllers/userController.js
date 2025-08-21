@@ -8,6 +8,7 @@ const s3 = require("../config/s3Client");
 const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const mongoose = require("mongoose");
 const Conversation = require("../models/ConversationModel");
+const { getEmbeddings, computeAverageVector } = require("../utils/vectors");
 userRouter.get("/me", verifyToken, async (req, res) => {
   try {
     console.log("Getting user...");
@@ -48,7 +49,7 @@ userRouter.get("/me", verifyToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    const { password, ...safeUser } = user._doc;
+    const { password, vectorTags, vectorTagsAverage, ...safeUser } = user._doc;
     safeUser.revealedUsers.sort(
       (a, b) => new Date(b.matchTime) - new Date(a.matchTime)
     );
@@ -104,7 +105,7 @@ userRouter.get("/me/reveal-finalized", verifyToken, async (req, res, next) => {
     console.log(`User id in reveal finalized ${userId}`);
     const updatedUserFields = await User.findById(userId)
       .select(
-        "revealedUsers lastPairStatus archivedConversations savedConversations"
+        "revealedUsers lastPairStatus archivedConversations savedConversations currentConversation"
       )
       .populate([
         {
@@ -178,7 +179,8 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
-    const { password, ...safeUser } = updatedUser._doc;
+    const { password, vectorTags, vectorTagsAverage, ...safeUser } =
+      updatedUser._doc;
     safeUser.revealedUsers.sort(
       (a, b) => new Date(b.matchTime) - new Date(a.matchTime)
     );
@@ -199,6 +201,40 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
     if (error.name === "ValidationError" || error.name === "CastError") {
       return res.status(400).json({ message: "Invalid Input" });
     }
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+userRouter.patch("/update-tags", verifyToken, async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const { tags: newTags } = req.body;
+    const user = await User.findById(userId).select("tags vectorTags vectorTagsAverage");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const removedTags = user.tags.filter((t) => !newTags.includes(t));
+    const addedTags = newTags.filter((t) => !user.tags.includes(t));
+    if (removedTags.length > 0) {
+      user.vectorTags = user.vectorTags.filter(
+        (t) => !removedTags.includes(t.tag)
+      );
+    }
+    if (addedTags.length > 0) {
+      const tagEmbeddings = await getEmbeddings(addedTags);
+      if (tagEmbeddings) {
+        addedTags.forEach((tag, i) => {
+          user.vectorTags.push({ tag, embedding: tagEmbeddings[i] });
+        });
+      } else {
+        return res.status(500).json({ message: "Internal server error" });
+      }
+    }
+    user.tags = newTags;
+    user.vectorTagsAverage = computeAverageVector(user.vectorTags);
+    await user.save();
+    return res.status(200).json({ updatedTags: user.tags });
+  } catch (e) {
+    console.error(e);
     res.status(500).json({ message: "Internal server error" });
   }
 });

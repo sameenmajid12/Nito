@@ -13,6 +13,7 @@ const {
   generateRefreshToken,
 } = require("../utils/token.js");
 const verifyToken = require("../middleware/verifyToken.js");
+const { getEmbeddings, computeAverageVector } = require("../utils/vectors.js");
 authRouter.post("/register", upload.single("profilePic"), async (req, res) => {
   try {
     const newUserInfo = req.body;
@@ -48,7 +49,21 @@ authRouter.post("/register", upload.single("profilePic"), async (req, res) => {
     newUserInfo.profilePic = fileUrl;
     newUserInfo.tags = JSON.parse(newUserInfo.tags);
     newUserInfo.school = JSON.parse(newUserInfo.school);
-
+    if (newUserInfo.tags && newUserInfo.tags.length > 0) {
+      const embeddings = await getEmbeddings(newUserInfo.tags);
+      if (!embeddings) {
+        return res
+          .status(500)
+          .json({ message: "Failed to generate embeddings" });
+      }
+      newUserInfo.vectorTags = newUserInfo.tags.map((tag, i) => ({
+        tag,
+        embedding: embeddings[i],
+      }));
+      newUserInfo.vectorTagsAverage = computeAverageVector(
+        newUserInfo.vectorTags
+      );
+    }
     const user = await User.create(newUserInfo);
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
@@ -67,8 +82,8 @@ authRouter.post("/login", async (req, res) => {
   try {
     console.log("Loggin in..");
     const userInfo = req.body;
-    if(!userInfo.school._id){
-      return res.status(400).json({message:"School has to be selected"})
+    if (!userInfo.school._id) {
+      return res.status(400).json({ message: "School has to be selected" });
     }
     const user = await User.findOne({
       email: userInfo.email,
