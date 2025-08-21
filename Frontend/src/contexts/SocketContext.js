@@ -90,11 +90,18 @@ export const SocketProvider = ({ children }) => {
         currentConversation: updatedConversation,
       }));
     };
-
+    const handleRevealPhaseFinalized = async ({ schoolId }) => {
+      console.log(`Is school id(${schoolId}) = user.school._id(${user.school._id}):  ${user.school._id !== schoolId}`)
+      
+      if (user.school._id !== schoolId) {
+        return;
+      }
+      await updateUserAfterRevealPhaseFinalized();
+    };
     newSocket.on("connect", registerUser);
     newSocket.on("receiveMessage", handleReceiveMessage);
     newSocket.on("revealPhaseStarted", handleRevealPhaseStarted);
-    newSocket.on("revealPhaseFinalized", updateUserAfterRevealPhaseFinalized);
+    newSocket.on("revealPhaseFinalized", handleRevealPhaseFinalized);
     newSocket.on("otherUserPairActionComplete", handleOtherUserPairAction);
     newSocket.on("typing");
     newSocket.on("read");
