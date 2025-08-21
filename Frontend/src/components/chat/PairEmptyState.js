@@ -17,12 +17,12 @@ function PairEmptyState() {
 }
 const styles = StyleSheet.create({
   mainWrapper: {
-    paddingTop: 75,
+    paddingTop: 105,
     rowGap: 20,
   },
   image: {
-    width: 351.97,
-    height: 254.28,
+    width: 267.15,
+    height: 193,
   },
   textWrapper: {},
   descText: {
