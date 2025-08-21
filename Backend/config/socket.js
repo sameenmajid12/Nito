@@ -22,9 +22,9 @@ const initializeSocketIo = (server) => {
       io.emit("revealPhaseStarted");
     });
 
-    socket.on("revealPhaseFinalized", () => {
-      console.log("Received revealPhaseFinalized from lambda")
-      socket.broadcast.emit("revealPhaseFinalized");
+    socket.on("revealPhaseFinalized", ({schoolId}) => {
+      console.log(`Received revealPhaseFinalized for ${schoolId} from lambda`)
+      io.emit("revealPhaseFinalized", {schoolId});
     }); 
 
     socket.on("pairAction", async ({ conversationId, userId, action }) => {
