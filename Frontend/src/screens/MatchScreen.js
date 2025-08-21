@@ -7,7 +7,14 @@ import {
   Pressable,
   Animated,
 } from "react-native";
-import { colors, FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_XXL } from "../styles";
+import {
+  colors,
+  FONT_SIZE_M,
+  FONT_SIZE_XL,
+  FONT_SIZE_XXL,
+  PRIMARY_ACTIVE_OPACITY,
+  TEXT_ACTIVE_OPACITY,
+} from "../styles";
 import MatchedUsersImages from "../components/match/MatchedUserImages";
 import Logo from "../components/common/Logo";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,7 +24,7 @@ import axios from "axios";
 import { API_BASE_URL } from "@env";
 import { useAuth } from "../contexts/AuthContext";
 function MatchScreen({ navigation, route }) {
-  const { user, setUser } = useUser();
+  const { user, setUser, getConversation } = useUser();
   const { token } = useAuth();
   useEffect(() => {
     const markAsViewed = async () => {
@@ -45,7 +52,8 @@ function MatchScreen({ navigation, route }) {
     }
   }, []);
   const { type, matchedUser } = route.params;
-  if (type === "matched" && !matchedUser) {
+  const isMatch = type !== "matched";
+  if (isMatch && !matchedUser) {
     return;
   }
   const buttonBGColor = useRef(new Animated.Value(0)).current;
@@ -61,29 +69,40 @@ function MatchScreen({ navigation, route }) {
     inputRange: [0, 1],
     outputRange: [colors.background, "#F0E2FF"],
   });
-  const header = type === "matched" ? "IT'S A MATCH!" : "No match this time..";
-  const subheader =
-    type === "matched"
-      ? "You both hit reveal. Time to connect and start something new"
-      : "Don’t worry you have a potential connection waiting for you";
-  const middleAsset =
-    type === "matched" ? (
-      <MatchedUsersImages matchedUser={matchedUser} />
-    ) : (
-      <Text style={styles.noMatchIcon}>;(</Text>
-    );
-  const primaryButtonText =
-    type === "matched"
-      ? "Send a message to your new friend"
-      : "Chat with your new anonymous friend";
-  const secondaryButtonText =
-    type === "matched"
-      ? `View ${matchedUser.fullname}'s profile`
-      : "View your profile";
+  const header = isMatch ? "IT'S A MATCH!" : "No match this time..";
+  const subheader = isMatch
+    ? `You and ${matchedUser.fullname} both hit reveal. Time to connect and start something new!`
+    : "Don’t worry you have potential connections waiting for you";
+  const middleAsset = isMatch ? (
+    <MatchedUsersImages matchedUser={matchedUser} />
+  ) : (
+    <Text style={styles.noMatchIcon}>;(</Text>
+  );
+  const primaryButtonText = isMatch
+    ? "Send a message to your new friend"
+    : "View your profile";
+  const secondaryButtonText = isMatch
+    ? `View ${matchedUser.fullname}'s profile`
+    : "Go back";
+
+  const viewMatchedUserProfile = () => {
+    navigation.navigate("UserScreen", { user: matchedUser });
+  };
+  const viewUserProfile = () => {
+    navigation.replace("MainTabs", {
+      screen: "ProfileTab",
+    });
+  };
+  const messageUser = async () => {
+    const conversation = await getConversation(matchedUser);
+    if (conversation) {
+      navigation.navigate("Chat", { conversation });
+    }
+  };
   return (
     <SafeAreaView style={styles.page}>
       <TouchableOpacity
-        activeOpacity={0.5}
+        activeOpacity={TEXT_ACTIVE_OPACITY}
         onPress={() => navigation.goBack()}
         style={styles.logo}
       >
@@ -94,13 +113,11 @@ function MatchScreen({ navigation, route }) {
         ></Ionicons>
         <Logo width={60} height={30}></Logo>
       </TouchableOpacity>
-      <View
-        style={[styles.mainContainer, { rowGap: type === "matched" ? 40 : 0 }]}
-      >
+      <View style={[styles.mainContainer, { rowGap: isMatch ? 40 : 0 }]}>
         <Text
           style={[
             styles.header,
-            type === "matched"
+            isMatch
               ? { fontSize: 48, color: colors.primaryDark }
               : { fontSize: FONT_SIZE_XXL, color: colors.primary },
           ]}
@@ -108,18 +125,14 @@ function MatchScreen({ navigation, route }) {
           {header}
         </Text>
         {middleAsset}
-        <Text
-          style={[
-            styles.subheader,
-            { marginBottom: type === "matched" ? 0 : 30 },
-          ]}
-        >
+        <Text style={[styles.subheader, { marginBottom: isMatch ? 0 : 30 }]}>
           {subheader}
         </Text>
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
-            activeOpacity={0.8}
+            activeOpacity={PRIMARY_ACTIVE_OPACITY}
             style={styles.sendMessageButton}
+            onPress={isMatch ? messageUser : viewUserProfile}
           >
             <Text style={styles.sendMessageButtonText}>
               {primaryButtonText}
@@ -129,6 +142,9 @@ function MatchScreen({ navigation, route }) {
             onPressIn={() => animateBackground(true)}
             onPressOut={() => animateBackground(false)}
             style={styles.viewProfileButton}
+            onPress={
+              isMatch ? viewMatchedUserProfile : () => navigation.goBack()
+            }
           >
             <Animated.View
               style={[
