@@ -59,7 +59,11 @@ const userSchema = new mongoose.Schema(
         matchTime: Date,
       },
     ],
-
+    skippedUsers: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User",
+      default: [],
+    },
     blockedUsers: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "User",
@@ -69,6 +73,7 @@ const userSchema = new mongoose.Schema(
     currentConversation: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Conversation",
+      default:null
     },
     savedConversations: {
       type: [mongoose.Schema.Types.ObjectId],
@@ -126,6 +131,15 @@ const userSchema = new mongoose.Schema(
         type: Boolean,
         default: true,
       },
+    },
+    vectorTags: [
+      {
+        tag: String,
+        embedding: [Number],
+      },
+    ],
+    vectorTagsAverage: {
+      type: [Number],
     },
   },
   { timestamps: true }
