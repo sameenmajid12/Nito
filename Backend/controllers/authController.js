@@ -14,6 +14,7 @@ const {
 } = require("../utils/token.js");
 const verifyToken = require("../middleware/verifyToken.js");
 const { getEmbeddings, computeAverageVector } = require("../utils/vectors.js");
+const crypto = require("crypto");
 authRouter.post("/register", upload.single("profilePic"), async (req, res) => {
   try {
     const newUserInfo = req.body;
@@ -176,8 +177,53 @@ authRouter.post("/verify-email", async (req, res) => {
       return res.status(400).json({ message: "Incorrect verification code" });
     }
     await VerificationCode.deleteOne({ email });
-    res.status(200).json({ message: "Email verified" });
+    const { type } = req.body;
+    if (type === "registration") {
+      res.status(200).json({ message: "Email verified" });
+    } else if (type === "passwordReset") {
+      const user = await User.findOne({ email: email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const resetToken = crypto.randomBytes(32).toString("hex");
+      const hashedToken = crypto
+        .createHash("sha256")
+        .update(resetToken)
+        .digest("hex");
+      user.resetToken = hashedToken;
+      user.resetTokenExpiry = Date.now() + 15 * 60 * 1000;
+      await user.save();
+
+      res.status(200).json({ resetToken });
+    }
   } catch (e) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+authRouter.post("/reset-password", async (req, res) => {
+  try {
+    const { resetToken, newPassword } = req.body;
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    const user = await User.findOne({
+      resetToken: hashedToken,
+      resetTokenExpiry: { $gt: Date.now() },
+    });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetToken = undefined;
+    user.resetTokenExpiry = undefined;
+    await user.save();
+
+    res.json({ message: "Password reset successful" });
+  } catch (e) {
+    console.error(e);
     res.status(500).json({ message: "Internal server error" });
   }
 });
