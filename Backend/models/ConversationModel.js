@@ -40,8 +40,8 @@ const conversationSchema = new mongoose.Schema({
     required: true,
   },
   startTime: { type: Date, required: true, default: Date.now },
-  matchTime: { type: Date, required: true },
-  endTime: { type: Date, required: true },
+  revealTime: { type: Date, required: true, default: () => new Date(Date.now() + 30 * 60 * 1000) },
+  endTime: { type: Date, required: true,  default: () => new Date(Date.now() + 35 * 60 * 1000) },
   similarTags: { type: [String], default: [] },
 });
 
