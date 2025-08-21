@@ -77,11 +77,26 @@ export const UserProvider = ({ children }) => {
       );
       const { updatedUser } = response.data;
       setUser(updatedUser);
-      if (updates.tags) {
-        addAlert("success", "Tags updated");
-      } else {
-        addAlert("success", "Information updated");
-      }
+      addAlert("success", "Information updated");
+    } catch (e) {
+      console.error("Error updating user: ", e);
+      setUserError(e);
+    }
+  };
+  const updateTags = async (tags) => {
+    try {
+      const response = await axios.patch(
+        `${API_BASE_URL}/user/update-tags`,
+        { tags },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const { updatedTags } = response.data;
+      setUser((prev) => ({ ...prev, tags: updatedTags }));
+      addAlert("success", "Tags updated")
     } catch (e) {
       console.error("Error updating user: ", e);
       setUserError(e);
@@ -189,11 +204,14 @@ export const UserProvider = ({ children }) => {
   const updateUserAfterRevealPhaseFinalized = async () => {
     try {
       console.log("Reveal phase finalized received on frontend");
-      const response = await axios.get(`${API_BASE_URL}/user/me/reveal-finalized`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        `${API_BASE_URL}/user/me/reveal-finalized`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const { updatedUserFields } = response.data;
       setUser((prev) => ({
         ...prev,
@@ -208,6 +226,7 @@ export const UserProvider = ({ children }) => {
       value={{
         user,
         updateUser,
+        updateTags,
         isLoadingUser,
         userError,
         updateProfilePic,
