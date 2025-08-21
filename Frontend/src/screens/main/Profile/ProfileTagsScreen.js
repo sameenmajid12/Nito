@@ -1,4 +1,13 @@
-import { SafeAreaView, StyleSheet, View, Text, Pressable, Keyboard, TouchableOpacity } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  Keyboard,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { colors } from "../../../styles";
 import { FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_S } from "../../../styles";
 import { useEffect, useState } from "react";
@@ -8,11 +17,12 @@ import TextHeader from "../../../components/common/TextHeader";
 import { useUser } from "../../../contexts/UserContext";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 function ProfileTagsScreen({ navigation }) {
-  const { user, updateUser } = useUser();
+  const { user, updateTags } = useUser();
   const [newTag, setNewTag] = useState("");
   const [tags, setTags] = useState(user.tags);
   const [error, setError] = useState("");
   const [changesMade, setChangesMade] = useState(false);
+  const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
   useEffect(() => {
     if (
       !tags.every((val, i) => val === user.tags[i]) ||
@@ -43,13 +53,15 @@ function ProfileTagsScreen({ navigation }) {
   const reset = () => {
     setTags(user.tags);
   };
-  const save = () => {
+  const save = async () => {
     if (!changesMade) return;
     else if (tags.length === 0) {
       setError("Please keep at least one tag for better matches!");
     } else {
-      updateUser({ tags: tags });
+      setIsLoadingUpdate(true);
+      await updateTags(tags);
       setChangesMade(false);
+      setIsLoadingUpdate(false);
     }
   };
   const tapGesture = Gesture.Tap().onTouchesDown(() => Keyboard.dismiss());
@@ -73,7 +85,7 @@ function ProfileTagsScreen({ navigation }) {
           <TagContainer tags={tags} setTags={setTags} />
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-            activeOpacity={0.75}
+              activeOpacity={0.75}
               onPress={reset}
               style={[
                 changesMade ? styles.clearActive : styles.clearDisabled,
@@ -92,7 +104,7 @@ function ProfileTagsScreen({ navigation }) {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-            activeOpacity={0.5}
+              activeOpacity={0.5}
               style={[
                 changesMade ? styles.saveActive : styles.saveDisabled,
                 styles.button,
@@ -100,7 +112,7 @@ function ProfileTagsScreen({ navigation }) {
               disabled={!changesMade}
               onPress={save}
             >
-              <Text style={styles.saveText}>Save</Text>
+              {!isLoadingUpdate ? <Text style={styles.saveText}>Save</Text> : <ActivityIndicator color={colors.white}></ActivityIndicator>}
             </TouchableOpacity>
           </View>
         </View>
