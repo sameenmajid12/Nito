@@ -50,7 +50,7 @@ function Alert({ state, message, _id, closeAlert }) {
       : state === "error"
       ? "#F95958"
       : state === "success"
-      ? "#40CC4D"
+      ? colors.accent70
       : state === "warning"
       ? "#FFC353"
       : "";
