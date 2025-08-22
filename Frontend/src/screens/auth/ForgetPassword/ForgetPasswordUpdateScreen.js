@@ -1,7 +1,4 @@
-import {
-  StyleSheet,
-  View,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import Input from "../../../components/common/Input";
 import { useState } from "react";
@@ -93,6 +90,7 @@ function ForgotPasswordUpdateScreen({ navigation, route }) {
       buttonText={"Update"}
       confirm={resetPassword}
       isLoading={isLoading}
+      navigation={navigation}
     />
   );
 }

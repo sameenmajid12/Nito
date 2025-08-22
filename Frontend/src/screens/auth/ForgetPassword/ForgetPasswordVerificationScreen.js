@@ -52,6 +52,7 @@ function ForgtoPasswordVerificationScreen({ route, navigation }) {
       confirm={continueToNext}
       buttonText={"Continue"}
       inputComponent={inputComponent}
+      navigation={navigation}
     />
   );
 }

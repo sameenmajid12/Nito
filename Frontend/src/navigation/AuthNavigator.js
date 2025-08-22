@@ -21,7 +21,7 @@ function AuthNavigator() {
   return (
     <RegistrationProvider>
       <AuthStack.Navigator
-        screenOptions={{ headerShown: false, animation: "none" }}
+        screenOptions={{ headerShown: false, animation: "none", gestureEnabled: false }}
       >
         {isRegistrationCompleted ? (
           <AuthStack.Screen

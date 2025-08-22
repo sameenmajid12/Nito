@@ -34,6 +34,7 @@ function ForgotPasswordEmailScreen({ navigation }) {
       subheader={
         "Enter your email and enter the verificaiton code sent your email on the next page"
       }
+      navigation={navigation}
     />
   );
 }

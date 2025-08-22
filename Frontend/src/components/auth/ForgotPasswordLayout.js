@@ -25,6 +25,7 @@ function ForgotPasswordLayout({
   buttonText,
   inputComponent,
   isLoading,
+  navigation,
 }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const keyboardOffset = useRef(new Animated.Value(0)).current;
@@ -64,6 +65,7 @@ function ForgotPasswordLayout({
         <TouchableOpacity
           style={styles.backButton}
           activeOpacity={TEXT_ACTIVE_OPACITY}
+          onPress={() => navigation.goBack()}
         >
           <Ionicons
             name="chevron-back"
