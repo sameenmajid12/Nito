@@ -106,7 +106,8 @@ function SelectTagsScreen({ navigation }) {
             <View style={{ justifyContent: "flex-end" }}>
               <Button
                 title={"Add"}
-                style={{ width: 120, height: 35 }}
+                buttonStyle={styles.addButton}
+                textStyle={styles.addButtonText}
                 variant={"tertiary"}
                 onPress={addTag}
               ></Button>
@@ -143,13 +144,13 @@ function SelectTagsScreen({ navigation }) {
             <Button
               onPress={() => continueRegistration(true)}
               title="Skip"
-              style={{ width: "48%", height: 45 }}
+              buttonStyle={styles.mainButton}
               variant={"secondary"}
             ></Button>
             <Button
               onPress={() => continueRegistration(false)}
               title="Finish"
-              style={{ width: "48%", height: 45 }}
+              buttonStyle={styles.mainButton}
             ></Button>
           </Animated.View>
         </Animated.View>
@@ -188,6 +189,18 @@ const styles = StyleSheet.create({
     width: "100%",
     columnGap: "4%",
   },
+  addButton: {
+    width: 120,
+    height: 35,
+    backgroundColor: colors.accent70,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  addButtonText: { fontFamily: "Nunito-Bold", color: colors.white },
+  mainButton: { width: "48%", height: 45, borderRadius: 10 },
   navigateBack: {
     flexDirection: "row",
     columnGap: 3,

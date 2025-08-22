@@ -94,7 +94,7 @@ function EmailVerificationScreen({ navigation }) {
         <Button
           onPress={finishRegistration}
           title={"Continue"}
-          style={{ width: "100%", height: 45 }}
+          buttonStyle={styles.button}
           isLoading={isLoadingRegistration}
         ></Button>
         <View style={styles.notReceivedWrapper}>
@@ -146,22 +146,7 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_S,
     textAlign: "center",
   },
-  inputWrapper: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  input: {
-    width: 60,
-    height: 60,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    borderRadius: 10,
-    textAlign: "center",
-    color: colors.textPrimary,
-    fontFamily: "Nunito-Medium",
-    fontSize: FONT_SIZE_L,
-  },
+  
   notReceivedWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -174,5 +159,6 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontFamily: "Nunito-Bold",
   },
+  button: { width: "100%", height: 45, borderRadius:10 },
 });
 export default EmailVerificationScreen;

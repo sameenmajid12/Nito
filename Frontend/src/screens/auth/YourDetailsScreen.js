@@ -146,7 +146,7 @@ function YourDetailsScreen({ navigation }) {
   };
 
   //MAIN REGISTRATION FUNCTION
-  const continueRegistration = async() => {
+  const continueRegistration = async () => {
     const errorsFound = await validateFields();
     if (!errorsFound) {
       updateRegistrationData({
@@ -199,12 +199,7 @@ function YourDetailsScreen({ navigation }) {
         <Button
           onPress={continueRegistration}
           title={"Continue"}
-          style={{
-            width: "100%",
-            height: 45,
-            marginTop: 10,
-            marginBottom: 15,
-          }}
+          buttonStyle={styles.buttonStyle}
         ></Button>
         <Text
           style={{
@@ -231,6 +226,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     columnGap: 5,
+  },
+  buttonStyle: {
+    width: "100%",
+    height: 45,
+    marginTop: 10,
+    marginBottom: 15,
+    borderRadius:10
   },
 });
 

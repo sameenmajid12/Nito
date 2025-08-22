@@ -12,37 +12,38 @@ import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useRegistration } from "../../contexts/RegistrationContext";
+import Button from "../../components/common/Button";
 
 function AccountCreatedScreen() {
-  const {getStartedAfterRegistration} = useAuth();
-  const {resetRegistration} = useRegistration();
-  const scaleAnim = useRef(new Animated.Value(1)).current; 
+  const { getStartedAfterRegistration } = useAuth();
+  const { resetRegistration } = useRegistration();
+  const scaleAnim = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const CIRCLE_BASE_SIZE = 240;
-  const ICONS_SIZE = 150; 
+  const ICONS_SIZE = 150;
 
   useEffect(() => {
     const animation = Animated.loop(
       Animated.sequence([
         Animated.timing(scaleAnim, {
-          toValue: 250 / 240, 
+          toValue: 250 / 240,
           duration: 1000,
           useNativeDriver: true,
           easing: Animated.easing,
         }),
         Animated.timing(scaleAnim, {
-          toValue: 1, 
+          toValue: 1,
           duration: 1000,
           useNativeDriver: true,
           easing: Animated.easing,
         }),
       ])
     );
-    Animated.timing(fadeAnim,{
-      toValue:1,
-      useNativeDriver:true,
-      duration:700
-    }).start()
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      duration: 700,
+    }).start();
     animation.start();
 
     return () => {
@@ -50,13 +51,13 @@ function AccountCreatedScreen() {
     };
   }, [scaleAnim]);
 
-  const handleGetStarted=()=>{
+  const handleGetStarted = () => {
     resetRegistration();
-    getStartedAfterRegistration ();
-  }
+    getStartedAfterRegistration();
+  };
   return (
     <SafeAreaView style={styles.page}>
-      <Animated.View style={[styles.pageContainer,{opacity:fadeAnim}]}>
+      <Animated.View style={[styles.pageContainer, { opacity: fadeAnim }]}>
         <Logo width={75} height={50} style={{ marginBottom: "40%" }}></Logo>
         <View style={styles.mainContainer}>
           <View style={styles.circlesWrapper}>
@@ -67,7 +68,7 @@ function AccountCreatedScreen() {
                   transform: [
                     { translateX: -CIRCLE_BASE_SIZE / 2 },
                     { translateY: -CIRCLE_BASE_SIZE / 2 },
-                    { scale: scaleAnim }, 
+                    { scale: scaleAnim },
                   ],
                 },
               ]}
@@ -84,22 +85,12 @@ function AccountCreatedScreen() {
           <Text style={styles.createdText}>
             Congrats! Your account has been created successfully.
           </Text>
-          <TouchableOpacity activeOpacity={0.9} style={styles.button} onPress={handleGetStarted}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 5,
-              }}
-            >
-              <Text style={styles.buttonText}>Get Started</Text>
-              <Ionicons
-                name="arrow-forward-outline"
-                size={FONT_SIZE_M}
-                color={colors.white}
-              ></Ionicons>
-            </View>
-          </TouchableOpacity>
+          <Button
+            title={"Get Started"}
+            onPress={handleGetStarted}
+            buttonStyle={styles.button}
+            textIcon={"arrow-forward"}
+          />
         </View>
       </Animated.View>
     </SafeAreaView>
@@ -120,14 +111,14 @@ const styles = StyleSheet.create({
     rowGap: 20,
   },
   circlesWrapper: {
-    width: 250, 
-    height: 250, 
-    position: "relative", 
+    width: 250,
+    height: 250,
+    position: "relative",
   },
   outerCirclePulsing: {
     backgroundColor: colors.accent40,
     width: 240,
-    height: 240, 
+    height: 240,
     borderRadius: 999,
     position: "absolute",
     top: "50%",
@@ -135,8 +126,8 @@ const styles = StyleSheet.create({
   },
   innerCircleFixed: {
     backgroundColor: colors.accent,
-    width: 200, 
-    height: 200, 
+    width: 200,
+    height: 200,
     borderRadius: 999,
     justifyContent: "center",
     alignItems: "center",
@@ -153,13 +144,10 @@ const styles = StyleSheet.create({
     color: colors.textLight,
     lineHeight: 24,
     textAlign: "center",
-    marginBottom:20
+    marginBottom: 20,
   },
   button: {
     width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.primary,
     height: 45,
     borderRadius: 99,
   },

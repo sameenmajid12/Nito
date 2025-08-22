@@ -9,7 +9,12 @@ import {
   Easing,
   TouchableOpacity,
 } from "react-native";
-import { colors, FONT_SIZE_M, TEXT_ACTIVE_OPACITY, textStyles } from "../../styles";
+import {
+  colors,
+  FONT_SIZE_M,
+  TEXT_ACTIVE_OPACITY,
+  textStyles,
+} from "../../styles";
 import Button from "../../components/common/Button";
 import DecorationShapes from "../../components/auth/DecorationShapes";
 import Input from "../../components/common/Input";
@@ -174,7 +179,7 @@ function LoginScreen({ navigation }) {
             <Button
               onPress={loginUser}
               title="Login"
-              style={{ width: "80%", height: 45, marginTop: 10 }}
+              buttonStyle={styles.buttonStyle}
               isLoading={isLoadingLogin}
             />
             {authError && (
@@ -183,7 +188,10 @@ function LoginScreen({ navigation }) {
                 style={{ marginTop: 10 }}
               />
             )}
-            <TouchableOpacity activeOpacity={TEXT_ACTIVE_OPACITY} onPress={()=>navigation.navigate("ForgotPassword")}>
+            <TouchableOpacity
+              activeOpacity={TEXT_ACTIVE_OPACITY}
+              onPress={() => navigation.navigate("ForgotPassword")}
+            >
               <Text
                 style={[
                   styles.forgotPassword,
@@ -197,7 +205,7 @@ function LoginScreen({ navigation }) {
             <View style={{ flexDirection: "row", columnGap: 5 }}>
               <Text style={styles.noAccountText}>Don't have an account?</Text>
               <TouchableOpacity
-                activeOpacity={0.5}
+                activeOpacity={TEXT_ACTIVE_OPACITY}
                 onPress={() => navigation.replace("Register")}
               >
                 <Text style={styles.noAccountAction}>Register</Text>
@@ -255,6 +263,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   inputStyle: { borderRadius: 10, paddingHorizontal: 18 },
+  buttonStyle: { width: "80%", height: 45, marginTop: 10, borderRadius: 10 },
 });
 
 export default LoginScreen;

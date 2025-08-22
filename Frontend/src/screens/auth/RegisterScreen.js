@@ -104,7 +104,7 @@ function RegisterScreen({ navigation }) {
           />
           <Button
             title="Register"
-            style={{ width: "80%", height: 45, marginTop: 10 }}
+            buttonStyle={styles.buttonStyle}
             onPress={continueRegistration}
           />
           <TouchableOpacity activeOpacity={0.5}>
@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
     marginTop: 15,
   },
+  buttonStyle: { width: "80%", height: 45, marginTop: 10, borderRadius: 10 },
 });
 
 export default RegisterScreen;
