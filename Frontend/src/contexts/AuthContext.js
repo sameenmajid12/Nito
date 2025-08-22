@@ -163,14 +163,28 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingRegistration(false);
     }
   };
-  const verifyEmail = async (email, code) => {
+  const sendVerificationEmail = async (email) => {
+    try {
+      await axios.post(`${API_BASE_URL}/auth/send-verification`, {
+        email: email,
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  const verifyEmail = async (email, code, type) => {
     setIsLoadingRegistration(true);
     try {
       const response = await axios.post(`${API_BASE_URL}/auth/verify-email`, {
         email,
         code: code.join(""),
+        type,
       });
-      return { verified: true, message: response.data.message };
+      return {
+        verified: true,
+        message: response.data.message,
+        resetToken: response.data.resetToken,
+      };
     } catch (e) {
       setIsLoadingRegistration(false);
       return { verified: false, message: e.response?.data?.message };
@@ -206,6 +220,7 @@ export const AuthProvider = ({ children }) => {
         isRegistrationCompleted,
         isLoadingRegistration,
         verifyEmail,
+        sendVerificationEmail,
       }}
     >
       {children}
