@@ -9,7 +9,7 @@ import {
   Easing,
   TouchableOpacity,
 } from "react-native";
-import { colors, FONT_SIZE_M, textStyles } from "../../styles";
+import { colors, FONT_SIZE_M, TEXT_ACTIVE_OPACITY, textStyles } from "../../styles";
 import Button from "../../components/common/Button";
 import DecorationShapes from "../../components/auth/DecorationShapes";
 import Input from "../../components/common/Input";
@@ -183,7 +183,7 @@ function LoginScreen({ navigation }) {
                 style={{ marginTop: 10 }}
               />
             )}
-            <TouchableOpacity activeOpacity={0.5}>
+            <TouchableOpacity activeOpacity={TEXT_ACTIVE_OPACITY} onPress={()=>navigation.navigate("ForgotPassword")}>
               <Text
                 style={[
                   styles.forgotPassword,
