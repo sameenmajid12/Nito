@@ -25,48 +25,27 @@ import axios from "axios";
 import { API_BASE_URL } from "@env";
 import { useAuth } from "../../contexts/AuthContext";
 import ErrorMessage from "../../components/common/ErrorMessage";
+import EmailVerificationInput from "../../components/auth/EmailVerificationInput";
 function EmailVerificationScreen({ navigation }) {
   const { registrationData } = useRegistration();
-  const { verifyEmail, register, isLoadingRegistration } = useAuth();
+  const {
+    verifyEmail,
+    register,
+    isLoadingRegistration,
+    sendVerificationEmail,
+  } = useAuth();
   const [code, setCode] = useState([]);
   const [error, setError] = useState("");
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const sendVerificationEmail = async () => {
-    try {
-      await axios.post(`${API_BASE_URL}/auth/send-verification`, {
-        email: registrationData.email,
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  };
+
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 700,
       useNativeDriver: true,
     }).start();
-    sendVerificationEmail();
+    sendVerificationEmail(registrationData.email);
   }, []);
-  const inputRefs = useRef([]);
-
-  const changeText = (num, index) => {
-    if (num.length <= 1) {
-      setCode((prev) => {
-        const newCode = [...prev];
-        newCode[index] = num;
-        return newCode;
-      });
-      if (index < 4 && num) {
-        inputRefs.current[index + 1]?.focus();
-      }
-    }
-  };
-  const handleKeyPress = (e, index) => {
-    if (e.nativeEvent.key === "Backspace" && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-  };
 
   const navigateBack = () => {
     navigation.replace("Register2");
@@ -74,7 +53,8 @@ function EmailVerificationScreen({ navigation }) {
   const finishRegistration = async () => {
     const { verified, message } = await verifyEmail(
       registrationData.email,
-      code
+      code,
+      "registration"
     );
     if (verified) {
       setError("");
@@ -105,33 +85,12 @@ function EmailVerificationScreen({ navigation }) {
           </Text>
         </View>
 
-        <View>
-          <View style={styles.inputWrapper}>
-            {[...Array(5)].map((_, index) => {
-              return (
-                <TextInput
-                  ref={(el) => (inputRefs.current[index] = el)}
-                  key={index}
-                  keyboardType="numeric"
-                  style={[
-                    styles.input,
-                    { borderColor: error ? "red" : colors.borderLight },
-                  ]}
-                  value={code[index]}
-                  onKeyPress={(e) => handleKeyPress(e, index)}
-                  onChangeText={(text) => changeText(text, index)}
-                  maxLength={1}
-                ></TextInput>
-              );
-            })}
-          </View>
-          {error && (
-            <ErrorMessage
-              message={error}
-              style={{ marginTop: 5 }}
-            ></ErrorMessage>
-          )}
-        </View>
+        <EmailVerificationInput
+          code={code}
+          setCode={setCode}
+          error={error}
+          inputSize={60}
+        />
         <Button
           onPress={finishRegistration}
           title={"Continue"}
@@ -142,7 +101,7 @@ function EmailVerificationScreen({ navigation }) {
           <Text style={styles.noReceivedText}>Didn't receive an email? </Text>
           <TouchableOpacity
             activeOpacity={TEXT_ACTIVE_OPACITY}
-            onPress={sendVerificationEmail}
+            onPress={() => sendVerificationEmail(registrationData.email)}
           >
             <Text style={styles.noReceivedButton}>Click here</Text>
           </TouchableOpacity>
