@@ -73,7 +73,7 @@ const userSchema = new mongoose.Schema(
     currentConversation: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Conversation",
-      default:null
+      default: null,
     },
     savedConversations: {
       type: [mongoose.Schema.Types.ObjectId],
@@ -141,6 +141,8 @@ const userSchema = new mongoose.Schema(
     vectorTagsAverage: {
       type: [Number],
     },
+    resetToken: String,
+    resetTokenExpiry: Date,
   },
   { timestamps: true }
 );
