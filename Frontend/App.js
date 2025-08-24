@@ -14,6 +14,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AlertProvider } from "./src/contexts/AlertContext";
 import { PollProvider } from "./src/contexts/PollContext";
 import { NotificationProvider } from "./src/contexts/NotificationContext";
+import { PhaseTimerProvider } from "./src/contexts/PhaseTimerContext";
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Nunito-Regular": require("./src/assets/fonts/Nunito-Regular.ttf"),
@@ -32,11 +33,13 @@ export default function App() {
             <UserProvider>
               <NotificationProvider>
                 <SocketProvider>
-                  <ModalProvider>
-                    <PollProvider>
-                      <AppNavigator />
-                    </PollProvider>
-                  </ModalProvider>
+                  <PhaseTimerProvider>
+                    <ModalProvider>
+                      <PollProvider>
+                        <AppNavigator />
+                      </PollProvider>
+                    </ModalProvider>
+                  </PhaseTimerProvider>
                 </SocketProvider>
               </NotificationProvider>
             </UserProvider>
