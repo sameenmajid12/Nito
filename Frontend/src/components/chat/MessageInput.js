@@ -9,7 +9,6 @@ import {
   Pressable,
 } from "react-native";
 import { colors } from "../../styles";
-import { FONT_SIZE_XL } from "../../styles";
 import { useEffect, useRef } from "react";
 const ICON_SIZE = 36;
 const MIN_INPUT_HEIGHT = 45;
@@ -61,27 +60,33 @@ function MessageInput({ message, setMessage, sendMessage, disabled }) {
       ]}
     >
       <Animated.View style={[styles.inputContainer]}>
-        <Ionicons style={styles.attachmentIcon} name="add-circle"></Ionicons>
+        <Ionicons
+          color={colors.primary}
+          size={ICON_SIZE}
+          name="add-circle"
+        ></Ionicons>
         <View style={styles.inputContainerRight}>
           <TextInput
             editable={!disabled}
             value={message}
             onChangeText={setMessage}
             style={styles.messageInput}
-            placeholder={!disabled?"Enter message":"Conversation has ended"}
+            placeholder={!disabled ? "Enter message" : "Conversation has ended"}
             multiline={true}
             placeholderTextColor={colors.textPlaceholder}
           ></TextInput>
-          {message === "" ? (
-            <Ionicons style={styles.voiceIcon} name="mic"></Ionicons>
-          ) : (
-            <Pressable onPress={sendMessage}>
-              <Ionicons
-                style={styles.sendIcon}
-                name="arrow-up-circle"
-              ></Ionicons>
-            </Pressable>
-          )}
+
+          <Pressable
+            onPress={() => {
+              if (message !== "") sendMessage();
+            }}
+          >
+            <Ionicons
+              size={ICON_SIZE}
+              color={message === "" ? colors.primary50 : colors.primary}
+              name="arrow-up-circle"
+            ></Ionicons>
+          </Pressable>
         </View>
       </Animated.View>
     </Animated.View>
@@ -91,15 +96,15 @@ function MessageInput({ message, setMessage, sendMessage, disabled }) {
 const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: colors.background,
-    minHeight:85,
-    marginBottom:0,
+    minHeight: 85,
+    marginBottom: 0,
     position: "absolute",
     bottom: 0,
     right: 25,
     left: 25,
     justifyContent: "flex-start",
-    borderTopLeftRadius:25,
-    borderTopRightRadius:25
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
   inputContainer: {
     backgroundColor: colors.background,
@@ -118,13 +123,9 @@ const styles = StyleSheet.create({
     fontSize: ICON_SIZE,
     color: colors.primary,
   },
-  voiceIcon: {
-    fontSize: FONT_SIZE_XL,
-    color: colors.primary,
-  },
+
   sendIcon: {
     fontSize: ICON_SIZE,
-    color: colors.primary,
   },
   messageInput: {
     fontFamily: "Nunito-SemiBold",
