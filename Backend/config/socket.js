@@ -22,11 +22,14 @@ const initializeSocketIo = (server) => {
       io.emit("revealPhaseStarted");
     });
 
-    socket.on("revealPhaseFinalized", ({schoolId}) => {
-      console.log(`Received revealPhaseFinalized for ${schoolId} from lambda`)
-      io.emit("revealPhaseFinalized", {schoolId});
-    }); 
-
+    socket.on("revealPhaseFinalized", ({ schoolId }) => {
+      console.log(`Received revealPhaseFinalized for ${schoolId} from lambda`);
+      io.emit("revealPhaseFinalized", { schoolId });
+    });
+    socket.on("phaseTimerUpdated", () => {
+      console.log("Phase timers updated");
+      io.emit("phaseTimerUpdated");
+    });
     socket.on("pairAction", async ({ conversationId, userId, action }) => {
       try {
         const conversation = await Conversation.findById(conversationId);
