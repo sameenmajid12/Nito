@@ -11,6 +11,7 @@ const {
 } = require("./controllers/conversationController.js");
 const { pollRouter } = require("./controllers/pollController.js");
 const { supportRouter } = require("./controllers/supportController.js");
+const { phaseTimerRouter } = require("./controllers/phaseTimerController.js");
 const initializeSocketIo = require("./config/socket.js");
 const connectDB = require("./config/db.js");
 
@@ -31,6 +32,7 @@ app.use("/user", userRouter);
 app.use("/conversation", conversationRouter);
 app.use("/dailypoll", pollRouter);
 app.use("/support", supportRouter);
+app.use("/phase-timer", phaseTimerRouter);
 const server = http.createServer(app);
 initializeSocketIo(server);
 app.get("/", async (req, res, next) => {
