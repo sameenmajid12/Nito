@@ -1,21 +1,33 @@
 import {
   Animated,
-  ScrollView,
+  FlatList,
   StyleSheet,
   Keyboard,
   Easing,
   Text,
+  ActivityIndicator,
 } from "react-native";
 import ReceivedMessage from "./ReceivedMessage";
 import SentMessage from "./SentMessage";
 import { useEffect, useRef } from "react";
-import { colors } from "../../styles";
+import { colors, FONT_SIZE_XL, FONT_SIZE_XXL } from "../../styles";
 import ChatRevealing from "./ChatRevealing";
 import { useUser } from "../../contexts/UserContext";
-import ChatBeginnning from "./ChatBeginning";
+import ChatBeginning from "./ChatBeginning";
 const INITIAL_BOTTOM_PADDING = 50;
-function MessagesContainer({ messages, isMatch, otherUser, isRevealing, conversation, setConversation }) {
-  const scrollViewRef = useRef(null);
+function MessagesContainer({
+  messages,
+  isMatch,
+  otherUser,
+  isRevealing,
+  conversation,
+  setConversation,
+  hasMore,
+  loadOlderMessages,
+  isLoadingMore,
+  setIsLoadingMore,
+}) {
+  const flatListRef = useRef(null);
   const { user } = useUser();
   const containerBottomPadding = useRef(
     new Animated.Value(INITIAL_BOTTOM_PADDING)
@@ -24,12 +36,14 @@ function MessagesContainer({ messages, isMatch, otherUser, isRevealing, conversa
     const keyboardWillShowListener = Keyboard.addListener(
       "keyboardWillShow",
       (e) => {
+        const {endCoordinates, duration } = e;
         Animated.timing(containerBottomPadding, {
-          toValue: e.endCoordinates.height + 40,
-          duration: 0, //Feels delayed if higher duration used because of padding view having to increase in height
+          toValue: endCoordinates.height + 40,
+          duration: duration,
           easing: Easing.bezier(0, 0, 0.2, 1),
           useNativeDriver: false,
         }).start();
+        scrollToBottom();
       }
     );
 
@@ -52,65 +66,73 @@ function MessagesContainer({ messages, isMatch, otherUser, isRevealing, conversa
     };
   }, []);
   useEffect(() => {
-    scrollToBottom(false);
-  }, []);
-  useEffect(() => {
-    scrollToBottom(true);
+    if (isLoadingMore) {
+      setIsLoadingMore(false);
+    } else {
+      scrollToBottom();
+    }
   }, [messages]);
-  const scrollToBottom = (animated) => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated });
+
+  const scrollToBottom = (animated = true) => {
+    if (flatListRef.current && messages.length > 0) {
+      flatListRef.current.scrollToOffset({ offset: 0, animated });
     }
   };
   const isByUser = (message) => {
     return message.sender === user._id;
   };
+  const renderItem = ({ item, index }) => {
+    const first = messages[index + 1]?.sender !== item.sender;
+    const last = messages[index - 1]?.sender !== item.sender;
+
+    return isByUser(item) ? (
+      <SentMessage key={item._id} text={item.text} first={first} last={last} />
+    ) : (
+      <ReceivedMessage
+        key={item._id}
+        text={item.text}
+        first={first}
+        last={last}
+        isMatch={isMatch}
+        otherUser={otherUser}
+      />
+    );
+  };
   return (
-    <ScrollView
-      onContentSizeChange={() => scrollToBottom(true)}
-      style={[styles.mainContainer]}
-      contentContainerStyle={{}}
-      ref={scrollViewRef}
-      showsVerticalScrollIndicator={false}
-    >
-      <Animated.View
-        style={{
-          backgroundColor: colors.background,
-          marginBottom: containerBottomPadding,
+    <Animated.View style={{ flex: 1, paddingBottom: containerBottomPadding }}>
+      <FlatList
+        ref={flatListRef}
+        data={messages}
+        renderItem={renderItem}
+        keyExtractor={(item) => item._id}
+        contentContainerStyle={{
+          paddingRight: 25,
         }}
-      >
-        <ChatBeginnning user={otherUser} isMatch={isMatch} />
-        {messages?.length > 0 &&
-          messages.map((message, i) => {
-            const first = messages[i - 1]?.sender !== message.sender;
-            const last = messages[i + 1]?.sender !== message.sender;
-            return isByUser(message) ? (
-              <SentMessage
-                key={message._id}
-                text={message.text}
-                first={first}
-                last={last}
-              />
-            ) : (
-              <ReceivedMessage
-                key={message._id}
-                text={message.text}
-                first={first}
-                last={last}
-                isMatch={isMatch}
-                otherUser={otherUser}
-              />
-            );
-          })}
-          {isRevealing && <ChatRevealing conversation={conversation} setConversation={setConversation}/>}
-      </Animated.View>
-    </ScrollView>
+        inverted
+        onEndReached={() => loadOlderMessages()}
+        onEndReachedThreshold={0.1}
+        ListHeaderComponent={
+          isRevealing ? (
+            <ChatRevealing
+              conversation={conversation}
+              setConversation={setConversation}
+            />
+          ) : null
+        }
+        ListFooterComponent={
+          isLoadingMore ? (
+            <ActivityIndicator
+              color={colors.primary}
+              size={FONT_SIZE_XXL}
+              style={{ marginVertical: 30 }}
+            />
+          ) : !hasMore ? (
+            <ChatBeginning user={otherUser} isMatch={isMatch} />
+          ) : null
+        }
+        showsVerticalScrollIndicator={false}
+      />
+    </Animated.View>
   );
 }
-const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    paddingRight:25
-  },
-});
 export default MessagesContainer;

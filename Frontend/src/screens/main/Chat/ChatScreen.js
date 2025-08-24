@@ -18,10 +18,14 @@ function ChatScreen({ navigation, route }) {
   const [conversation, setConversation] = useState(route.params.conversation);
   const {
     messages,
-    isLoadingMessages,
+    isLoadingInitial,
     setNewMessage,
     newMessage,
     sendMessage,
+    hasMore,
+    loadOlderMessages,
+    isLoadingMore,
+    setIsLoadingMore,
   } = useMessages(conversation);
   const [showTime, setShowTime] = useState(false);
   const toggleTime = () => {
@@ -55,7 +59,7 @@ function ChatScreen({ navigation, route }) {
     if (messages.length > 0) {
       setConversation((prev) => ({
         ...prev,
-        lastMessage: messages[messages.length - 1],
+        lastMessage: messages[0],
       }));
     }
   }, [messages]);
@@ -71,12 +75,12 @@ function ChatScreen({ navigation, route }) {
         showTime={showTime}
         toggleTime={toggleTime}
       />
-      <View style={{ flex: 1, flexDirection: "row" }}>
+      <View style={styles.gestureWrapper}>
         <GestureDetector gesture={sideGesture}>
           <View style={{ width: 25 }}></View>
         </GestureDetector>
         <GestureDetector gesture={mainGesture}>
-          {!isLoadingMessages ? (
+          {!isLoadingInitial ? (
             <MessagesContainer
               messages={messages}
               conversation={conversation}
@@ -84,9 +88,13 @@ function ChatScreen({ navigation, route }) {
               isMatch={isMatch}
               otherUser={otherUser}
               isRevealing={isRevealing}
+              hasMore={hasMore}
+              isLoadingMore={isLoadingMore}
+              loadOlderMessages={loadOlderMessages}
+              setIsLoadingMore={setIsLoadingMore}
             />
           ) : (
-            <View style={{ flex: 1, justifyContent: "flex-end" }}>
+            <View style={styles.loadingScreen}>
               <ActivityIndicator
                 color={colors.primary}
                 size="large"
@@ -115,5 +123,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: 100,
   },
+  gestureWrapper: { flex: 1, flexDirection: "row" },
+  loadingScreen: { flex: 1, justifyContent: "flex-end" },
 });
 export default ChatScreen;

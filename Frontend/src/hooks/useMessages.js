@@ -10,18 +10,27 @@ function useMessages(conversation) {
   const { user, setUser } = useUser();
   const { socket } = useSocket();
   const [messages, setMessages] = useState([]);
-  const [isLoadingMessages, setIsLoadingMessage] = useState(false);
+  const [isLoadingInitial, setIsLoadingInitial] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [newMessage, setNewMessage] = useState("");
-  const [hasLoadedMessages, setHasLoadedMessages] = useState(false);
+  const [hasLoadedInitial, setHasLoadedInitial] = useState(false);
   const otherUser =
     conversation.user1._id === user._id
       ? conversation.user2
       : conversation.user1;
-  const getMessages = async () => {
-    setIsLoadingMessage(true);
+  const getMessages = async (before) => {
+    if (before) {
+      setIsLoadingMore(true);
+    } else {
+      setIsLoadingInitial(true);
+    }
+
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/conversation/${conversation._id}/messages`,
+        `${API_BASE_URL}/conversation/${conversation._id}/messages?before=${
+          before || ""
+        }&limit=${20}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -30,33 +39,46 @@ function useMessages(conversation) {
       );
       if (response.status === 200) {
         const { conversationMessages } = response.data;
-        setMessages(conversationMessages);
+        if (conversationMessages.length < 20) {
+          setHasMore(false);
+        }
+        if (before) {
+          setMessages((prev) => [...prev, ...conversationMessages]);
+        } else {
+          setMessages(conversationMessages);
+        }
       }
     } catch (e) {
       console.error(e);
     } finally {
-      setIsLoadingMessage(false);
-      setHasLoadedMessages(true);
+      if (!before) {
+        setIsLoadingInitial(false);
+        setHasLoadedInitial(true);
+      }
     }
   };
-
+  const loadOlderMessages = () => {
+    if (!hasMore || isLoadingMore || messages.length === 0) return;
+    const oldestMessageDate = messages[messages.length - 1].createdAt;
+    getMessages(oldestMessageDate);
+  };
   useEffect(() => {
-    if (conversation && !hasLoadedMessages) {
+    if (conversation && !hasLoadedInitial) {
       getMessages();
     }
-  }, [conversation, hasLoadedMessages]);
+  }, [conversation, hasLoadedInitial]);
 
   useEffect(() => {
     const userNum = user._id === conversation.user1._id ? "user1" : "user2";
-    const data = {
-      conversationId: conversation._id,
-      receiverId: otherUser._id,
-    };
     if (
       conversation.lastMessage?._id !==
         conversation.lastReadMessages[userNum]?._id &&
       conversation.lastMessage?.sender !== user._id
     ) {
+      const data = {
+        conversationId: conversation._id,
+        receiverId: otherUser._id,
+      };
       socket.emit("markConversationAsRead", data);
       setUser((prev) => {
         if (conversation._id === user.currentConversation?._id) {
@@ -109,7 +131,7 @@ function useMessages(conversation) {
           newMessages[indexToReplace] = message;
           return newMessages;
         } else {
-          return [...prevMessages, message];
+          return [message, ...prevMessages];
         }
       });
     };
@@ -138,16 +160,21 @@ function useMessages(conversation) {
       text: newMessage.trim(),
     };
     socket.emit("sendMessage", messageToSend);
-    setMessages((prevMessages) => [...prevMessages, tempMessage]);
+    setMessages((prevMessages) => [tempMessage, ...prevMessages]);
     setNewMessage("");
   };
 
   return {
     messages,
-    isLoadingMessages,
+    isLoadingInitial,
     setNewMessage,
     newMessage,
     sendMessage,
+    loadOlderMessages,
+    hasLoadedInitial,
+    hasMore,
+    isLoadingMore,
+    setIsLoadingMore,
   };
 }
 
