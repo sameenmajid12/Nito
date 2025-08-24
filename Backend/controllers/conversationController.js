@@ -9,8 +9,10 @@ conversationRouter.get(
   verifyToken,
   async (req, res) => {
     try {
+      console.log("Getting messages");
       const { conversationId } = req.params;
       const { _id: userId } = req.user;
+      const { limit, before } = req.query;
       const conversation = await Conversation.findById(conversationId);
       if (!conversation) {
         return res.status(404).json({ message: "Conversation not found" });
@@ -23,9 +25,13 @@ conversationRouter.get(
           .status(403)
           .json({ message: "Not authorized to retrieve messages" });
       }
-      const messages = await Message.find({
-        conversation: conversationId,
-      }).sort({ createdAt: 1 });
+      const query = { conversation: conversationId };
+      if (before.length > 0) {
+        query.createdAt = { $lt: new Date(before) };
+      }
+      const messages = await Message.find(query)
+        .sort({ createdAt: -1 })
+        .limit(Math.min(Number(limit) || 20, 50));
       res.status(200).json({ conversationMessages: messages || [] });
     } catch (e) {
       res.status(500).json({ message: "Internal server error" });
@@ -35,7 +41,7 @@ conversationRouter.get(
 conversationRouter.get(
   "/with/:otherUserId",
   verifyToken,
-  async (req, res, next) => {
+  async (req, res) => {
     try {
       const userId = req.user._id;
       const { otherUserId } = req.params;
