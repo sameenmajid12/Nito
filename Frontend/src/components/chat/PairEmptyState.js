@@ -1,7 +1,9 @@
 import { Image } from "expo-image";
 import { StyleSheet, Text, View } from "react-native";
 import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_XXL } from "../../styles";
+import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 function PairEmptyState() {
+  const { countdowns } = usePhaseTimer();
   return (
     <View style={styles.mainWrapper}>
       <Image
@@ -10,7 +12,7 @@ function PairEmptyState() {
       ></Image>
       <View style={styles.textWrapper}>
         <Text style={styles.descText}>Next pairing in</Text>
-        <Text style={styles.timeText}>17m 12s</Text>
+        <Text style={styles.timeText}>{countdowns.untilNextPair}</Text>
       </View>
     </View>
   );

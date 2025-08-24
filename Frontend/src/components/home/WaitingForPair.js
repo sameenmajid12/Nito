@@ -1,13 +1,15 @@
 import { StyleSheet, View, Text } from "react-native";
 import { colors, FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_XXL } from "../../styles";
-
+import { getTimeUntil } from "../../utils/Format";
+import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 function WaitingForPair() {
+  const { countdowns } = usePhaseTimer();
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.decorationLine}></View>
       <View style={styles.textWrapper}>
         <Text style={styles.header}>Waiting for pair...</Text>
-        <Text style={styles.subheader}>Next in 17m 22s</Text>
+        <Text style={styles.subheader}>Next in {countdowns.untilNextPair}</Text>
       </View>
     </View>
   );
@@ -16,7 +18,7 @@ const styles = StyleSheet.create({
   mainWrapper: {
     backgroundColor: colors.primary,
     padding: 20,
-    paddingVertical:25,
+    paddingVertical: 25,
     borderRadius: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
@@ -25,7 +27,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     columnGap: 20,
-    marginBottom:5
+    marginBottom: 5,
   },
   decorationLine: {
     width: 3,
@@ -33,9 +35,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 999,
   },
-  textWrapper:{
-    justifyContent:"center",
-    rowGap:5
+  textWrapper: {
+    justifyContent: "center",
+    rowGap: 5,
   },
   header: {
     fontFamily: "Nunito-Bold",
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
   subheader: {
     fontFamily: "Nunito-SemiBold",
     color: colors.white70,
-    fontSize:FONT_SIZE_M
+    fontSize: FONT_SIZE_M,
   },
 });
 export default WaitingForPair;

@@ -3,10 +3,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
 import { colors, FONT_SIZE_XXL } from "../../styles";
 import { getTimeUntil } from "../../utils/Format";
+import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 
-function TimeLeft({ time, showTime, toggleTime }) {
+function TimeLeft({  showTime, toggleTime }) {
+  const {countdowns} = usePhaseTimer();
   const opacityAnim = useRef(new Animated.Value(0)).current;
-  const [timeLeft, setTimeLeft] = useState(getTimeUntil(new Date(time)));
 
   useEffect(() => {
     const fadeIn = () => {
@@ -27,13 +28,6 @@ function TimeLeft({ time, showTime, toggleTime }) {
     else fadeOut();
   }, [showTime]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft(getTimeUntil(new Date(time)));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [time]);
 
   return (
     <View style={styles.sectionWrapper}>
@@ -45,7 +39,7 @@ function TimeLeft({ time, showTime, toggleTime }) {
         />
       </Pressable>
       <Animated.View style={[styles.timeContainer, { opacity: opacityAnim }]}>
-        <Text style={styles.timeText}>{timeLeft} left</Text>
+        <Text style={styles.timeText}>{countdowns.untilRevealStart} left</Text>
       </Animated.View>
     </View>
   );

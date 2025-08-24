@@ -6,9 +6,11 @@ import { useSocket } from "../../contexts/SocketContext";
 import { useUser } from "../../contexts/UserContext";
 import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 
 function ChatRevealing({ conversation, setConversation }) {
   const { socket } = useSocket();
+  const {untilRevealEnd} = usePhaseTimer();
   const { user, setUser } = useUser();
   const userNum = conversation.user1._id === user._id ? "user1" : "user2";
   const userVote = conversation?.[`${userNum}Revealed`];
@@ -86,7 +88,7 @@ function ChatRevealing({ conversation, setConversation }) {
             <Text style={styles.voteOption}>
               {userVote ? "REVEAL" : "SKIP"}
             </Text>
-            , result will be out in {"\n"}2m 22s
+            , result will be out in {"\n"}{countdowns.untilRevealEnd}
           </Text>
           <View style={styles.undoWrapper}>
             <TouchableOpacity
