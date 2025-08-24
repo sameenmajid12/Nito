@@ -64,6 +64,23 @@ export const UserProvider = ({ children }) => {
       addAlert("error", userError);
     }
   }, [userError]);
+  const refreshUser = async () => {
+    try {
+      console.log("Logging in...");
+      if (!token || !isAuthenticated) {
+        return;
+      }
+      const response = await axios.get(`${API_BASE_URL}/user/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const { user } = response.data;
+      setUser(user);
+    } catch (e) {
+      console.error("User retrieval error: ", e);
+    }
+  };
   const updateUser = async (updates) => {
     try {
       const response = await axios.patch(
@@ -96,7 +113,7 @@ export const UserProvider = ({ children }) => {
       );
       const { updatedTags } = response.data;
       setUser((prev) => ({ ...prev, tags: updatedTags }));
-      addAlert("success", "Tags updated")
+      addAlert("success", "Tags updated");
     } catch (e) {
       console.error("Error updating user: ", e);
       setUserError(e);
@@ -236,6 +253,7 @@ export const UserProvider = ({ children }) => {
         setUser,
         getConversation,
         updateUserAfterRevealPhaseFinalized,
+        refreshUser
       }}
     >
       {children}
