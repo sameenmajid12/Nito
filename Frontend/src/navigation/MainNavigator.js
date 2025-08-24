@@ -191,7 +191,7 @@
             closeAlert={closeAlert}
           ></Alert>
         )}
-        {showRevealPhaseAlert && <RevealPhaseAlert />}
+        {showRevealPhaseAlert && <RevealPhaseAlert navigation={navigation}/>}
       </>
     );
   }

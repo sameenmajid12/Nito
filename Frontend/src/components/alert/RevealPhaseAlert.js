@@ -11,9 +11,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_M, FONT_SIZE_XXS } from "../../styles";
 import { useAlert } from "../../contexts/AlertContext";
+import { useUser } from "../../contexts/UserContext";
 const ALERT_WIDTH = 300;
-function RevealPhaseAlert() {
+function RevealPhaseAlert({ navigation }) {
   const { closeRevealPhaseAlert } = useAlert();
+  const { user } = useUser();
   const AnimatedLinearGradient =
     Animated.createAnimatedComponent(LinearGradient);
   const gradientTranslateY = useRef(new Animated.Value(0)).current;
@@ -29,7 +31,7 @@ function RevealPhaseAlert() {
       Animated.timing(gradientTranslateY, {
         toValue: 1,
         duration: 5000,
-        easing: Easing.bezier(0,1.04,0.75,1.01),
+        easing: Easing.bezier(0, 1.04, 0.75, 1.01),
         useNativeDriver: false,
       }),
     ]).start();
@@ -75,7 +77,14 @@ function RevealPhaseAlert() {
       <View style={styles.content}>
         <Text style={styles.contentText}>Time to reveal 👀</Text>
         <View style={styles.contentActions}>
-          <Pressable style={styles.viewButton}>
+          <Pressable
+            style={styles.viewButton}
+            onPress={() =>
+              navigation.navigate("Chat", {
+                conversation: user.currentConversation,
+              })
+            }
+          >
             <Text style={styles.viewButtonText}>View</Text>
           </Pressable>
           <View style={styles.contentActionsDivider}></View>
