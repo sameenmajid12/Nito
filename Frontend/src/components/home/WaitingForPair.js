@@ -16,13 +16,13 @@ function WaitingForPair() {
 }
 const styles = StyleSheet.create({
   mainWrapper: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primary70,
     padding: 20,
     paddingVertical: 25,
     borderRadius: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     flexDirection: "row",
     alignItems: "center",

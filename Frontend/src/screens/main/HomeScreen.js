@@ -1,8 +1,21 @@
-import { SafeAreaView, StyleSheet, View, Text, ScrollView, RefreshControl } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import Header from "../../components/common/Header";
-import { colors, FONT_SIZE_L, FONT_SIZE_S, FONT_SIZE_XS, FONT_SIZE_XXS } from "../../styles";
+import {
+  colors,
+  FONT_SIZE_L,
+  FONT_SIZE_S,
+  FONT_SIZE_XS,
+  FONT_SIZE_XXS,
+} from "../../styles";
 import NewPairingFound from "../../components/home/NewPairingFound";
-import NextMatchIn from "../../components/home/NextMatchIn";
+import NextPairIn from "../../components/home/NexPairIn";
 import DailyPoll from "../../components/home/DailyPoll";
 import HomeConnections from "../../components/home/HomeConnections";
 import { useUser } from "../../contexts/UserContext";
@@ -11,10 +24,11 @@ import { useState } from "react";
 
 function HomeScreen({ navigation }) {
   const { user, refreshUser } = useUser();
+  const isPaired = user.currentConversation !== null;
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = async () => {
     setRefreshing(true);
-    await refreshUser(); 
+    await refreshUser();
     setRefreshing(false);
   };
   return (
@@ -22,13 +36,17 @@ function HomeScreen({ navigation }) {
       <Header />
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary50}/>
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.primary50}
+          />
         }
       >
         <View style={styles.pageTopWrapper}>
           <Text style={styles.greeting}>Hello, {user.fullname}! 👋</Text>
 
-          {user.currentConversation ? (
+          {isPaired ? (
             <NewPairingFound navigation={navigation} />
           ) : (
             <WaitingForPair />
@@ -36,8 +54,8 @@ function HomeScreen({ navigation }) {
           <View
             style={{ flexDirection: "row", columnGap: 10, marginBottom: 10 }}
           >
-            <NextMatchIn />
-            <DailyPoll />
+            {isPaired && <NextPairIn />}
+            <DailyPoll isPaired={isPaired}/>
           </View>
         </View>
         <HomeConnections navigation={navigation} />

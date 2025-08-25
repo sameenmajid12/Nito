@@ -5,15 +5,11 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import {
-  colors,
-  FONT_SIZE_S,
-  FONT_SIZE_XS,
-} from "../../styles";
+import { colors, FONT_SIZE_M, FONT_SIZE_S, FONT_SIZE_XS } from "../../styles";
 import { useModal } from "../../contexts/ModalContext";
 import { useEffect, useState } from "react";
 
-function DailyPoll() {
+function DailyPoll({ isPaired }) {
   const [pollOpen, setPollOpen] = useState(false);
   const { openModal, modalState } = useModal();
 
@@ -37,17 +33,34 @@ function DailyPoll() {
   };
 
   return (
-    <View style={styles.mainContainer}>
+    <View style={[styles.mainContainer, { borderRadius: isPaired ? 12 : 15 }]}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Daily poll</Text>
-        <Text style={styles.question} numberOfLines={1}>
+        <Text
+          style={[
+            styles.headerText,
+            { fontSize: isPaired ? FONT_SIZE_S : FONT_SIZE_M },
+          ]}
+        >
+          Daily poll
+        </Text>
+        <Text
+          style={[
+            styles.question,
+            { fontSize: isPaired ? FONT_SIZE_S : FONT_SIZE_M },
+          ]}
+          numberOfLines={1}
+        >
           {pollData.question}
         </Text>
       </View>
       <TouchableOpacity
         activeOpacity={0.85}
         onPress={showPollData}
-        style={[styles.button, pollOpen ? styles.pollOpen : styles.pollClosed]}
+        style={[
+          styles.button,
+          pollOpen ? styles.pollOpen : styles.pollClosed,
+          { shadowOpacity: isPaired ? 0.1 : 0.05 },
+        ]}
       >
         <Text style={styles.buttonText}>Vote now</Text>
       </TouchableOpacity>
@@ -58,21 +71,19 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: colors.accent55,
-    borderRadius: 12,
     paddingHorizontal: 15,
     paddingVertical: 15,
     justifyContent: "space-between",
+    rowGap: 15,
   },
   header: {},
   headerText: {
     color: "rgba(255,255,255,0.7)",
     fontFamily: "Nunito-Bold",
-    fontSize: FONT_SIZE_S,
   },
   question: {
     color: colors.white,
     fontFamily: "Nunito-Bold",
-    fontSize: FONT_SIZE_S,
   },
   button: {
     width: "100%",
@@ -85,7 +96,6 @@ const styles = StyleSheet.create({
   pollClosed: {
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
     shadowRadius: 5,
   },
   pollOpen: {
