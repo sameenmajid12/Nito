@@ -6,7 +6,7 @@ import ForgotPasswordLayout from "../../../components/auth/ForgotPasswordLayout"
 function ForgotPasswordEmailScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-
+  const emailRegex = /^[A-Za-z0-9]+@/;
   const continueToNext = () => {
     if (email.length === 0) {
       setError("Please enter your email");
@@ -35,6 +35,7 @@ function ForgotPasswordEmailScreen({ navigation }) {
         "Enter your email and enter the verificaiton code sent your email on the next page"
       }
       navigation={navigation}
+      buttonDisabled={!emailRegex.test(email)}
     />
   );
 }

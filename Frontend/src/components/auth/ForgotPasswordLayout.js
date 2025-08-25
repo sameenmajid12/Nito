@@ -26,6 +26,7 @@ function ForgotPasswordLayout({
   inputComponent,
   isLoading,
   navigation,
+  buttonDisabled,
 }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const keyboardOffset = useRef(new Animated.Value(0)).current;
@@ -81,11 +82,13 @@ function ForgotPasswordLayout({
         <View style={{ flex: 1 }} />
         <TouchableOpacity
           style={[
-            styles.continueButton,
+            styles.button,
+            buttonDisabled ? styles.disabled : styles.active,
             { transform: [{ translateY: keyboardOffset }] },
           ]}
           activeOpacity={PRIMARY_ACTIVE_OPACITY}
           onPress={confirm}
+          disabled={buttonDisabled}
         >
           {isLoading ? (
             <ActivityIndicator color={colors.white}></ActivityIndicator>
@@ -125,15 +128,20 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Medium",
     color: colors.textLight,
   },
-  continueButton: {
+  button: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.primary,
     height: 45,
     borderRadius: 10,
+  },
+  active: {
+    backgroundColor:colors.primary,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
+  },
+  disabled:{
+    backgroundColor:colors.primary50
   },
   continueButtonText: {
     color: colors.white,

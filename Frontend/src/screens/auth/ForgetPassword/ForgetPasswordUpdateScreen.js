@@ -91,6 +91,9 @@ function ForgotPasswordUpdateScreen({ navigation, route }) {
       confirm={resetPassword}
       isLoading={isLoading}
       navigation={navigation}
+      buttonDisabled={
+        password.trim().length === 0 || retypePassword.trim().length === 0
+      }
     />
   );
 }

@@ -39,7 +39,7 @@ function ForgtoPasswordVerificationScreen({ route, navigation }) {
       />
       <View style={styles.missingCodeWrapper}>
         <Text style={styles.missingCode}>Didn't get an email? </Text>
-        <TouchableOpacity activeOpacity={TEXT_ACTIVE_OPACITY}>
+        <TouchableOpacity activeOpacity={TEXT_ACTIVE_OPACITY} onPress={()=>sendVerificationEmail(email)}>
           <Text style={styles.missingCodeLink}>Click here</Text>
         </TouchableOpacity>
       </View>
@@ -53,6 +53,7 @@ function ForgtoPasswordVerificationScreen({ route, navigation }) {
       buttonText={"Continue"}
       inputComponent={inputComponent}
       navigation={navigation}
+      buttonDisabled={code.length < 5 || code[4] === ""}
     />
   );
 }
