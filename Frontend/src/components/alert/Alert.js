@@ -7,12 +7,17 @@ import {
   Animated,
   Easing,
   Pressable,
+  PanResponder,
 } from "react-native";
 import { colors, FONT_SIZE_L, FONT_SIZE_XS } from "../../styles";
+
 const ALERT_WIDTH = 200;
+
 function Alert({ state, message, _id, closeAlert }) {
   const translateY = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(1)).current;
+
+  // Show alert
   useEffect(() => {
     Animated.timing(translateY, {
       toValue: 70,
@@ -20,20 +25,42 @@ function Alert({ state, message, _id, closeAlert }) {
       easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
       useNativeDriver: true,
     }).start();
-    const timeout = setTimeout(() => {
-      Animated.timing(opacityAnim, {
-        toValue: 0,
-        duration: 300,
-        easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
-        useNativeDriver: true,
-      }).start(() => {
-        closeAlert(_id);
-      });
-    }, 4700);
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [_id]);
+
+   const timeout = setTimeout(() => closeAlert(), 4700);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
+  const dismissAlert = () => {
+    Animated.timing(translateY, {
+      toValue: -200,
+      duration: 200,
+      easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
+      useNativeDriver: true,
+    }).start(() => closeAlert(_id));
+  };
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: (e, gestureState) => {
+        translateY.setValue(70 + gestureState.dy);
+      },
+      onPanResponderRelease: (e, gestureState) => {
+        console.log(gestureState.dy);
+        if (gestureState.dy < -40) {
+          dismissAlert();
+        } else {
+          Animated.spring(translateY, {
+            toValue: 70,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
+
   const iconName =
     state === "info"
       ? "information-circle-outline"
@@ -54,38 +81,30 @@ function Alert({ state, message, _id, closeAlert }) {
       : state === "warning"
       ? "#FFC353"
       : "";
+
   return (
     <Animated.View
+      {...panResponder.panHandlers}
       style={[
         styles.alertContainer,
         {
-          transform: [
-            { translateY: translateY },
-            { translateX: -ALERT_WIDTH / 2 },
-          ],
-          backgroundColor: backgroundColor,
+          transform: [{ translateY }, { translateX: -ALERT_WIDTH / 2 }],
+          backgroundColor,
           opacity: opacityAnim,
         },
       ]}
     >
       <View style={styles.containerLeft}>
-        <Ionicons
-          size={FONT_SIZE_L}
-          color={colors.white}
-          name={iconName}
-        ></Ionicons>
+        <Ionicons size={FONT_SIZE_L} color={colors.white} name={iconName} />
         <Text style={styles.messageText}>{message}</Text>
       </View>
-      <Pressable onPress={() => closeAlert(_id)}>
-        <Ionicons
-          size={FONT_SIZE_L}
-          color={colors.white}
-          name="close-outline"
-        ></Ionicons>
+      <Pressable onPress={dismissAlert}>
+        <Ionicons size={FONT_SIZE_L} color={colors.white} name="close-outline" />
       </Pressable>
     </Animated.View>
   );
 }
+
 const styles = StyleSheet.create({
   alertContainer: {
     width: ALERT_WIDTH,
@@ -113,4 +132,5 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_XS,
   },
 });
+
 export default Alert;
