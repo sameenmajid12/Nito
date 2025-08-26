@@ -21,7 +21,7 @@ import PairEmptyState from "./PairEmptyState";
 import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 function CurrentChat({ navigation }) {
   const { user } = useUser();
-  const {countdowns} = usePhaseTimer();
+  const { countdowns } = usePhaseTimer();
   const conversation = user.currentConversation;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const formatLastMessage = (message) => {
@@ -42,9 +42,7 @@ function CurrentChat({ navigation }) {
     <View style={styles.pageContainer}>
       {user.currentConversation ? (
         <>
-          <Text style={styles.time}>
-            {countdowns.untilRevealStart}
-          </Text>
+          <Text style={styles.time}>{countdowns.untilRevealStart}</Text>
           <View style={styles.mainContainer}>
             <Image
               source={require("../../assets/images/anonymous-user.png")}
@@ -63,20 +61,21 @@ function CurrentChat({ navigation }) {
                     ? conversation?.lastMessage?.sender === otherUser._id
                       ? `${formatLastMessage(conversation?.lastMessage?.text)}`
                       : `Message sent`
-                    : "You have 30 minutes, say hi and see if there’s a match!"}{" "}
+                    : "You have 30 minutes, say hi and see if there’s a match!"}
                 </Text>
-                <Text
-                  style={[
-                    { color: isRead ? colors.textLight : colors.textPrimary },
-                    styles.messageTime,
-                  ]}
-                >
-                  (
-                  {getTimeSinceMessage(
-                    new Date(conversation?.lastMessage?.createdAt)
-                  )}
-                  )
-                </Text>
+                {conversation?.lastMessage && (
+                  <Text
+                    style={[
+                      { color: isRead ? colors.textLight : colors.textPrimary },
+                      styles.messageTime,
+                    ]}
+                  >
+                    {getTimeSinceMessage(
+                      new Date(conversation?.lastMessage?.createdAt)
+                    )}
+                  </Text>
+                )}
+
                 {!isRead && (
                   <Ionicons
                     name="ellipse"
