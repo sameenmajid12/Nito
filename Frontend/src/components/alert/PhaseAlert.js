@@ -36,6 +36,9 @@ function RevealPhaseAlert({ navigation, type }) {
         useNativeDriver: false,
       }),
     ]).start();
+    const timeout = setTimeout(() => dismissAlert(), 9800);
+
+    return () => clearTimeout(timeout);
   }, [gradientTranslateY, translateY]);
   const gradientTranslation = gradientTranslateY.interpolate({
     inputRange: [0, 1],
@@ -106,7 +109,7 @@ function RevealPhaseAlert({ navigation, type }) {
       <View style={styles.content}>
         <Text style={styles.contentText}>
           {type === "matchmaking"
-            ? "New pairing found 🤝"
+            ? "New pairing found 🎉"
             : "Time to reveal 👀"}
         </Text>
         <View style={styles.contentActions}>

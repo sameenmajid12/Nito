@@ -25,7 +25,7 @@ function Alert({ state, message, _id, closeAlert }) {
       useNativeDriver: true,
     }).start();
 
-   const timeout = setTimeout(() => closeAlert(), 4700);
+   const timeout = setTimeout(() => dismissAlert(), 4700);
 
     return () => clearTimeout(timeout);
   }, []);
