@@ -1,23 +1,17 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  TouchableOpacity,
-} from "react-native";
-import { colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { colors, FONT_SIZE_M, TEXT_ACTIVE_OPACITY } from "../../styles";
 import ConnectionList from "../common/ConnectionList";
 import { Ionicons } from "@expo/vector-icons";
 import { useUser } from "../../contexts/UserContext";
 
 function Connections({ navigation }) {
-  const {user} = useUser();
+  const { user } = useUser();
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Recent connections</Text>
         <TouchableOpacity
-        activeOpacity={0.25}
+          activeOpacity={TEXT_ACTIVE_OPACITY}
           style={styles.viewAll}
           onPress={() => navigation.navigate("ConnectionScreen")}
         >
@@ -29,7 +23,11 @@ function Connections({ navigation }) {
           ></Ionicons>
         </TouchableOpacity>
       </View>
-      <ConnectionList connections={user?.revealedUsers} screen={"home"} navigation={navigation}/>
+      <ConnectionList
+        connections={user.revealedUsers}
+        screen={"home"}
+        navigation={navigation}
+      />
     </View>
   );
 }
@@ -45,7 +43,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
     paddingVertical: 10,
-    marginHorizontal:20
+    marginHorizontal: 20,
   },
   header: {
     color: colors.textPrimary,
