@@ -26,6 +26,7 @@ function MessagesContainer({
   loadOlderMessages,
   isLoadingMore,
   setIsLoadingMore,
+  hideTime
 }) {
   const flatListRef = useRef(null);
   const { user } = useUser();
@@ -36,7 +37,7 @@ function MessagesContainer({
     const keyboardWillShowListener = Keyboard.addListener(
       "keyboardWillShow",
       (e) => {
-        const {endCoordinates, duration } = e;
+        const { endCoordinates, duration } = e;
         Animated.timing(containerBottomPadding, {
           toValue: endCoordinates.height + 40,
           duration: duration,
@@ -99,40 +100,43 @@ function MessagesContainer({
     );
   };
   return (
-    <Animated.View style={{ flex: 1, paddingBottom: containerBottomPadding }}>
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        renderItem={renderItem}
-        keyExtractor={(item) => item._id}
-        contentContainerStyle={{
-          paddingRight: 25,
-        }}
-        inverted
-        onEndReached={() => loadOlderMessages()}
-        onEndReachedThreshold={0.1}
-        ListHeaderComponent={
-          isRevealing ? (
-            <ChatRevealing
-              conversation={conversation}
-              setConversation={setConversation}
-            />
-          ) : null
-        }
-        ListFooterComponent={
-          isLoadingMore ? (
-            <ActivityIndicator
-              color={colors.primary}
-              size={FONT_SIZE_XXL}
-              style={{ marginVertical: 30 }}
-            />
-          ) : !hasMore ? (
-            <ChatBeginning user={otherUser} isMatch={isMatch} />
-          ) : null
-        }
-        showsVerticalScrollIndicator={false}
-      />
-    </Animated.View>
+      <Animated.View style={{ flex: 1, paddingBottom: containerBottomPadding }}>
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          renderItem={renderItem}
+          keyExtractor={(item) => item._id}
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: "flex-end",
+            paddingRight: 25,
+          }}
+          inverted
+          onEndReached={() => loadOlderMessages()}
+          onEndReachedThreshold={0.1}
+          ListHeaderComponent={
+            isRevealing ? (
+              <ChatRevealing
+                conversation={conversation}
+                setConversation={setConversation}
+              />
+            ) : null
+          }
+          onScrollBeginDrag={hideTime}
+          ListFooterComponent={
+            isLoadingMore ? (
+              <ActivityIndicator
+                color={colors.primary}
+                size={FONT_SIZE_XXL}
+                style={{ marginVertical: 30 }}
+              />
+            ) : !hasMore ? (
+              <ChatBeginning user={otherUser} isMatch={isMatch} />
+            ) : null
+          }
+          showsVerticalScrollIndicator={false}
+        />
+      </Animated.View>
   );
 }
 export default MessagesContainer;
