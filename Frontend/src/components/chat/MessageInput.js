@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: 5,
-    paddingRight: 10,
+    paddingRight: 5,
     columnGap: 5,
   },
   attachmentIcon: {

@@ -92,6 +92,7 @@ function ChatScreen({ navigation, route }) {
               isLoadingMore={isLoadingMore}
               loadOlderMessages={loadOlderMessages}
               setIsLoadingMore={setIsLoadingMore}
+              hideTime={hideTime}
             />
           ) : (
             <View style={styles.loadingScreen}>

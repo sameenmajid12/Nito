@@ -32,11 +32,16 @@ function ChatHeader({
           <Ionicons style={styles.icons} name="chevron-back"></Ionicons>
         </Pressable>
         <Pressable
-          onPress={() => navigation.navigate("UserScreen", { user: otherUser })}
+          onPress={() =>
+            isMatch && navigation.navigate("UserScreen", { user: otherUser })
+          }
           style={styles.userProfile}
         >
           <Image style={styles.receiverProfilePic} source={image}></Image>
-          <Text style={styles.receiverName}>{name}</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={styles.receiverName}>{name}</Text>
+            {isMatch && <Ionicons name="chevron-forward"></Ionicons>}
+          </View>
         </Pressable>
       </View>
       <View style={styles.headerRight}>

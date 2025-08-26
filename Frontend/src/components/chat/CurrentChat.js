@@ -18,21 +18,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { useUser } from "../../contexts/UserContext";
 import { getTimeSinceMessage, getTimeUntil } from "../../utils/Format";
 import PairEmptyState from "./PairEmptyState";
+import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 function CurrentChat({ navigation }) {
   const { user } = useUser();
+  const {countdowns} = usePhaseTimer();
   const conversation = user.currentConversation;
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const [timeLeft, setTimeLeft] = useState(
-    getTimeUntil(new Date(conversation?.endTime))
-  );
-  useEffect(() => {
-    if (timeLeft <= 0) return;
-    const interval = setInterval(() => {
-      setTimeLeft(getTimeUntil(new Date(conversation?.endTime)));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [conversation?.endTime]);
   const formatLastMessage = (message) => {
     if (message.length > 50) {
       return message.slice(0, 50) + "...";
@@ -52,7 +43,7 @@ function CurrentChat({ navigation }) {
       {user.currentConversation ? (
         <>
           <Text style={styles.time}>
-            {timeLeft ? `${timeLeft} left` : "Time's up!"}{" "}
+            {countdowns.untilRevealStart}
           </Text>
           <View style={styles.mainContainer}>
             <Image
