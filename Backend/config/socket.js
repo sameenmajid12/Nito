@@ -30,6 +30,10 @@ const initializeSocketIo = (server) => {
       console.log("Phase timers updated");
       io.emit("phaseTimerUpdated");
     });
+    socket.on("matchmakingCompleted", ({ schoolId }) => {
+      console.log(`Received matchmakingComplete from lambda for ${schoolId}`);
+      io.emit("matchmakingCompleted", { schoolId });
+    });
     socket.on("pairAction", async ({ conversationId, userId, action }) => {
       try {
         const conversation = await Conversation.findById(conversationId);

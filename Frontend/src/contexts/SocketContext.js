@@ -7,8 +7,13 @@ const SocketContext = createContext();
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const socketRef = useRef();
-  const { user, setUser, updateUserAfterRevealPhaseFinalized } = useUser();
-  const { openRevealPhaseAlert } = useAlert();
+  const {
+    user,
+    setUser,
+    updateUserAfterRevealPhaseFinalized,
+    updateUserAfterMatchmakingCompleted,
+  } = useUser();
+  const { openPhaseAlert } = useAlert();
   useEffect(() => {
     if (!user || !user._id) {
       if (socketRef.current) {
@@ -77,7 +82,7 @@ export const SocketProvider = ({ children }) => {
           status: "revealing",
         },
       }));
-      openRevealPhaseAlert();
+      openPhaseAlert("reveal");
     };
 
     const handleOtherUserPairAction = (updatedConversation) => {
@@ -91,18 +96,22 @@ export const SocketProvider = ({ children }) => {
       }));
     };
     const handleRevealPhaseFinalized = async ({ schoolId }) => {
-      console.log(`Is school id(${schoolId}) = user.school._id(${user.school._id}):  ${user.school._id !== schoolId}`)
-      
-      if (user.school._id !== schoolId) {
-        return;
+      if (user.school._id === schoolId) {
+        await updateUserAfterRevealPhaseFinalized();
       }
-      await updateUserAfterRevealPhaseFinalized();
+    };
+    const handleMatchmakingCompleted = async ({ schoolId }) => {
+      if (user.school._id === schoolId) {
+        await updateUserAfterMatchmakingCompleted();
+        openPhaseAlert("matchmaking");
+      }
     };
     newSocket.on("connect", registerUser);
     newSocket.on("receiveMessage", handleReceiveMessage);
     newSocket.on("revealPhaseStarted", handleRevealPhaseStarted);
     newSocket.on("revealPhaseFinalized", handleRevealPhaseFinalized);
     newSocket.on("otherUserPairActionComplete", handleOtherUserPairAction);
+    newSocket.on("matchmakingCompleted", handleMatchmakingCompleted);
     newSocket.on("typing");
     newSocket.on("read");
 
