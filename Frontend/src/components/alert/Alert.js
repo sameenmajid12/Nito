@@ -47,8 +47,7 @@ function Alert({ state, message, _id, closeAlert }) {
         translateY.setValue(70 + gestureState.dy);
       },
       onPanResponderRelease: (e, gestureState) => {
-        console.log(gestureState.dy);
-        if (gestureState.dy < -40) {
+        if (gestureState.dy < -40 || gestureState.dy > 30) {
           dismissAlert();
         } else {
           Animated.spring(translateY, {
