@@ -13,8 +13,8 @@ import { colors, FONT_SIZE_M, FONT_SIZE_XXS } from "../../styles";
 import { useAlert } from "../../contexts/AlertContext";
 import { useUser } from "../../contexts/UserContext";
 const ALERT_WIDTH = 300;
-function RevealPhaseAlert({ navigation }) {
-  const { closeRevealPhaseAlert } = useAlert();
+function RevealPhaseAlert({ navigation, type }) {
+  const { closePhaseAlert } = useAlert();
   const { user } = useUser();
   const AnimatedLinearGradient =
     Animated.createAnimatedComponent(LinearGradient);
@@ -75,7 +75,7 @@ function RevealPhaseAlert({ navigation }) {
         />
       </Animated.View>
       <View style={styles.content}>
-        <Text style={styles.contentText}>Time to reveal 👀</Text>
+        <Text style={styles.contentText}>{type==="matchmaking"? "New pairing found 🤝": "Time to reveal 👀"}</Text>
         <View style={styles.contentActions}>
           <Pressable
             style={styles.viewButton}
@@ -88,7 +88,7 @@ function RevealPhaseAlert({ navigation }) {
             <Text style={styles.viewButtonText}>View</Text>
           </Pressable>
           <View style={styles.contentActionsDivider}></View>
-          <Pressable onPress={closeRevealPhaseAlert}>
+          <Pressable onPress={closePhaseAlert}>
             <Ionicons
               name="close"
               color={colors.white}

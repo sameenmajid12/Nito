@@ -4,7 +4,7 @@ const AlertContext = createContext();
 
 export const AlertProvider = ({ children }) => {
   const [alerts, setAlerts] = useState([]);
-  const [showRevealPhaseAlert, setShowRevealPhaseAlert] = useState(false);
+  const [phaseAlert, setPhaseAlert] = useState({ visible: false, type: "" });
   const addAlert = (state, message) => {
     const _id = Date.now() * Math.random();
     const newAlert = { _id, state, message };
@@ -13,11 +13,11 @@ export const AlertProvider = ({ children }) => {
   const closeAlert = (id) => {
     setAlerts((prev) => prev.filter((a) => a._id !== id));
   };
-  const closeRevealPhaseAlert = () => {
-    setShowRevealPhaseAlert(false);
+  const closePhaseAlert = () => {
+    setPhaseAlert({ visible: false, type: "" });
   };
-  const openRevealPhaseAlert = () => {
-    setShowRevealPhaseAlert(true);
+  const openPhaseAlert = (type) => {
+    setPhaseAlert({ visible: true, type });
   };
   return (
     <AlertContext.Provider
@@ -25,9 +25,9 @@ export const AlertProvider = ({ children }) => {
         alerts,
         addAlert,
         closeAlert,
-        showRevealPhaseAlert,
-        closeRevealPhaseAlert,
-        openRevealPhaseAlert
+        phaseAlert,
+        closePhaseAlert,
+        openPhaseAlert,
       }}
     >
       {children}
