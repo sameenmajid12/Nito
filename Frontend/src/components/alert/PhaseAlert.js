@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Pressable,
   Text,
+  PanResponder,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -49,8 +50,37 @@ function RevealPhaseAlert({ navigation, type }) {
     }
     return result;
   };
+  const dismissAlert = () => {
+    Animated.timing(translateY, {
+      toValue: -200,
+      duration: 200,
+      easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
+      useNativeDriver: true,
+    }).start(() => closePhaseAlert());
+  };
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: (e, gestureState) => {
+        translateY.setValue(70 + gestureState.dy);
+      },
+      onPanResponderRelease: (e, gestureState) => {
+        console.log(gestureState.dy);
+        if (gestureState.dy < -40 || gestureState.dy > 50) {
+          dismissAlert();
+        } else {
+          Animated.spring(translateY, {
+            toValue: 70,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
   return (
     <Animated.View
+      {...panResponder.panHandlers}
       style={[
         styles.alertContainer,
         {
@@ -75,7 +105,11 @@ function RevealPhaseAlert({ navigation, type }) {
         />
       </Animated.View>
       <View style={styles.content}>
-        <Text style={styles.contentText}>{type==="matchmaking"? "New pairing found 🤝": "Time to reveal 👀"}</Text>
+        <Text style={styles.contentText}>
+          {type === "matchmaking"
+            ? "New pairing found 🤝"
+            : "Time to reveal 👀"}
+        </Text>
         <View style={styles.contentActions}>
           <Pressable
             style={styles.viewButton}
@@ -88,7 +122,7 @@ function RevealPhaseAlert({ navigation, type }) {
             <Text style={styles.viewButtonText}>View</Text>
           </Pressable>
           <View style={styles.contentActionsDivider}></View>
-          <Pressable onPress={closePhaseAlert}>
+          <Pressable onPress={dismissAlert}>
             <Ionicons
               name="close"
               color={colors.white}

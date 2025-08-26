@@ -17,7 +17,6 @@ function Alert({ state, message, _id, closeAlert }) {
   const translateY = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(1)).current;
 
-  // Show alert
   useEffect(() => {
     Animated.timing(translateY, {
       toValue: 70,
