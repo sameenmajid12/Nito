@@ -238,6 +238,26 @@ export const UserProvider = ({ children }) => {
       console.error("Error updating after reveal phase finalized: ", e);
     }
   };
+  const updateUserAfterMatchmakingCompleted=async()=>{
+    try {
+      console.log("Matchmaking completed received on frontend");
+      const response = await axios.get(
+        `${API_BASE_URL}/user/me/matchmaking-completed`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const { updatedUserFields } = response.data;
+      setUser((prev) => ({
+        ...prev,
+        ...updatedUserFields,
+      }));
+    } catch (e) {
+      console.error("Error updating after matchmaking completed: ", e);
+    }
+  }
   return (
     <UserContext.Provider
       value={{
@@ -253,6 +273,7 @@ export const UserProvider = ({ children }) => {
         setUser,
         getConversation,
         updateUserAfterRevealPhaseFinalized,
+        updateUserAfterMatchmakingCompleted,
         refreshUser
       }}
     >
