@@ -13,9 +13,11 @@ import MessagesContainer from "../../../components/chat/MessagesContainer";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useUser } from "../../../contexts/UserContext";
 import useMessages from "../../../hooks/useMessages";
+import { useSocket } from "../../../contexts/SocketContext";
 function ChatScreen({ navigation, route }) {
   const { user } = useUser();
   const [conversation, setConversation] = useState(route.params.conversation);
+  const { socket } = useSocket();
   const {
     messages,
     isLoadingInitial,
@@ -27,6 +29,20 @@ function ChatScreen({ navigation, route }) {
     isLoadingMore,
     setIsLoadingMore,
   } = useMessages(conversation);
+  useEffect(() => {
+    const handleRevealPhaseStartedInChat = () => {
+      if (conversation._id === user.currentPair.conversation._id) {
+        setConversation((prev) => ({
+          ...prev,
+          status: "revealing",
+        }));
+      }
+    };
+    socket.on("revealPhaseStarted", handleRevealPhaseStartedInChat);
+    return () => {
+      socket.off("revealPhaseStarted", handleRevealPhaseStartedInChat);
+    };
+  }, [socket]);
   const [showTime, setShowTime] = useState(false);
   const toggleTime = () => {
     setShowTime((prev) => !prev);
