@@ -36,7 +36,7 @@ export function getTimeSinceMessage(date) {
   if (hours >= 1) return `${hours}h`;
 
   const minutes = Math.floor(diffMs / oneMinute);
-  return minutes === 0 ? "Now" : `${minutes}m`;
+  return minutes <= 0 ? "Now" : `${minutes}m`;
 }
 
 function formatAMPM(date) {
