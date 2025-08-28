@@ -69,11 +69,14 @@ const userSchema = new mongoose.Schema(
       ref: "User",
       default: [],
     },
-
-    currentConversation: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Conversation",
-      default: null,
+    currentPair: {
+      conversation: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Conversation",
+        default: null,
+      },
+      user1SimilarTags: { type: [String], default: null },
+      user2SimilarTags: { type: [String], default: null },
     },
     savedConversations: {
       type: [mongoose.Schema.Types.ObjectId],
