@@ -35,13 +35,18 @@ userRouter.get("/me", verifyToken, async (req, res) => {
         ],
       },
       {
-        path: "currentConversation",
+        path: "currentPair",
         populate: [
-          { path: "user1", select: "username" },
-          { path: "user2", select: "username" },
-          { path: "lastMessage" },
-          { path: "lastReadMessages.user1", model: "Message" },
-          { path: "lastReadMessages.user2", model: "Message" },
+          {
+            path: "conversation",
+            populate: [
+              { path: "user1", select: "username" },
+              { path: "user2", select: "username" },
+              { path: "lastMessage" },
+              { path: "lastReadMessages.user1", model: "Message" },
+              { path: "lastReadMessages.user2", model: "Message" },
+            ],
+          },
         ],
       },
       ,
@@ -105,7 +110,7 @@ userRouter.get("/me/reveal-finalized", verifyToken, async (req, res, next) => {
     console.log(`User id in reveal finalized ${userId}`);
     const updatedUserFields = await User.findById(userId)
       .select(
-        "revealedUsers lastPairStatus archivedConversations savedConversations currentConversation"
+        "revealedUsers lastPairStatus archivedConversations savedConversations currentPair"
       )
       .populate([
         {
@@ -138,40 +143,47 @@ userRouter.get("/me/reveal-finalized", verifyToken, async (req, res, next) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-userRouter.get("/me/matchmaking-completed", verifyToken, async (req, res, next) => {
-  try {
-    const userId = req.user._id;
-    console.log(`User id in matchmaking completed ${userId}`);
-    const updatedUserFields = await User.findById(userId)
-      .select(
-        "currentConversation"
-      )
-      .populate([
-        {
-          path: "currentConversation",
-          populate: [
-            { path: "user1", select: "fullname profilePic username" },
-            { path: "user2", select: "fullname profilePic username" },
-            { path: "lastMessage" },
-            {
-              path: "lastReadMessages",
-              populate: [
-                { path: "user1", model: "Message" },
-                { path: "user2", model: "Message" },
-              ],
-            },
-          ],
-        },
-      ]);
-    if (!updatedUserFields) {
-      return res.status(404).json({ message: "User not found" });
+userRouter.get(
+  "/me/matchmaking-completed",
+  verifyToken,
+  async (req, res, next) => {
+    try {
+      const userId = req.user._id;
+      console.log(`User id in matchmaking completed ${userId}`);
+      const updatedUserFields = await User.findById(userId)
+        .select("currentPair")
+        .populate([
+          {
+            path: "currentPair",
+            populate: [
+              {
+                path: "conversation",
+                populate: [
+                  { path: "user1", select: "fullname profilePic username" },
+                  { path: "user2", select: "fullname profilePic username" },
+                  { path: "lastMessage" },
+                  {
+                    path: "lastReadMessages",
+                    populate: [
+                      { path: "user1", model: "Message" },
+                      { path: "user2", model: "Message" },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ]);
+      if (!updatedUserFields) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.status(200).json({ updatedUserFields });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ message: "Internal server error" });
     }
-    res.status(200).json({ updatedUserFields });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ message: "Internal server error" });
   }
-});
+);
 userRouter.patch("/update", verifyToken, async (req, res, next) => {
   try {
     console.log("Updating user...");
@@ -199,13 +211,18 @@ userRouter.patch("/update", verifyToken, async (req, res, next) => {
         ],
       },
       {
-        path: "currentConversation",
+        path: "currentPair",
         populate: [
-          { path: "user1", select: "username" },
-          { path: "user2", select: "username" },
-          { path: "lastMessage" },
-          { path: "lastReadMessages.user1", model: "Message" },
-          { path: "lastReadMessages.user2", model: "Message" },
+          {
+            path: "conversation",
+            populate: [
+              { path: "user1", select: "username" },
+              { path: "user2", select: "username" },
+              { path: "lastMessage" },
+              { path: "lastReadMessages.user1", model: "Message" },
+              { path: "lastReadMessages.user2", model: "Message" },
+            ],
+          },
         ],
       },
       ,
@@ -242,7 +259,9 @@ userRouter.patch("/update-tags", verifyToken, async (req, res, next) => {
   try {
     const userId = req.user._id;
     const { tags: newTags } = req.body;
-    const user = await User.findById(userId).select("tags vectorTags vectorTagsAverage");
+    const user = await User.findById(userId).select(
+      "tags vectorTags vectorTagsAverage"
+    );
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
