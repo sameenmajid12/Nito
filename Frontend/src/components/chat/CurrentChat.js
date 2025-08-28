@@ -22,11 +22,11 @@ import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 function CurrentChat({ navigation }) {
   const { user } = useUser();
   const { countdowns } = usePhaseTimer();
-  const conversation = user.currentConversation;
+  const conversation = user.currentPair.conversation;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const formatLastMessage = (message) => {
     if (message.length > 50) {
-      return message.slice(0, 50) + "...";
+      return message.slice(0, 20) + "...";
     } else {
       return message;
     }
@@ -40,7 +40,7 @@ function CurrentChat({ navigation }) {
     conversation?.lastMessage.sender === user._id;
   return (
     <View style={styles.pageContainer}>
-      {user.currentConversation ? (
+      {user.currentPair.conversation ? (
         <>
           <Text style={styles.time}>{countdowns.untilRevealStart}</Text>
           <View style={styles.mainContainer}>
@@ -56,6 +56,8 @@ function CurrentChat({ navigation }) {
                     styles.lastMessage,
                     { color: isRead ? colors.textLight : colors.textPrimary },
                   ]}
+                  numberOfLines={conversation.lastMessage?.text ? 1 : 2}
+                  ellipsizeMode="tail"
                 >
                   {conversation?.lastMessage?.text
                     ? conversation?.lastMessage?.sender === otherUser._id
@@ -70,9 +72,9 @@ function CurrentChat({ navigation }) {
                       styles.messageTime,
                     ]}
                   >
-                    {getTimeSinceMessage(
+                    {`(${getTimeSinceMessage(
                       new Date(conversation?.lastMessage?.createdAt)
-                    )}
+                    )})`}
                   </Text>
                 )}
 
@@ -108,7 +110,7 @@ function CurrentChat({ navigation }) {
               ]}
               onPress={() =>
                 navigation.navigate("Chat", {
-                  conversation: user.currentConversation,
+                  conversation: user.currentPair.conversation,
                 })
               }
               activeOpacity={0.8}
@@ -122,13 +124,17 @@ function CurrentChat({ navigation }) {
             </TouchableOpacity>
           </View>
           <Text style={styles.infoText}>
-            You both like:{" "}
+            Similar tags:{" "}
             <Text style={styles.interests}>
-              {Array.isArray(user?.currentConversation?.similarTags) &&
-                user?.currentConversation?.similarTags?.map(
+              {Array.isArray(
+                user?.currentPair?.[`${otherUserNum}SimilarTags`]
+              ) &&
+                user?.currentPair?.[`${otherUserNum}SimilarTags`]?.map(
                   (tag, i) =>
                     `${tag}${
-                      i === user.currentConversation.similarTags?.length - 1
+                      i ===
+                      user?.currentPair?.[`${otherUserNum}SimilarTags`].length -
+                        1
                         ? ""
                         : ", "
                     }`

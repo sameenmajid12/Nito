@@ -81,16 +81,19 @@ function useMessages(conversation) {
       };
       socket.emit("markConversationAsRead", data);
       setUser((prev) => {
-        if (conversation._id === user.currentConversation?._id) {
+        if (conversation._id === user.currentPair.conversation?._id) {
           return {
             ...prev,
-            currentConversation: {
-              ...prev.currentConversation,
-              lastReadMessages: {
-                ...prev.currentConversation?.lastReadMessages,
+            currentPair:{
+              ...prev.currentPair,
+              conversation:{
+                ...prev.currentPair.conversation,
+                lastReadMessages: {
+                ...prev.currentPair.conversation?.lastReadMessages,
                 [userNum]: conversation.lastMessage,
               },
-            },
+              }
+            }
           };
         }
         const conversationIndex = prev.savedConversations.findIndex(

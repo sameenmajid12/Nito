@@ -21,18 +21,18 @@ function ConnectionList({ screen, connections, navigation }) {
       ) : (
         <View style={styles.emptyStateWrapper}>
           <Text style={styles.emptyStateText}>
-            {user.currentConversation
+            {user.currentPair.conversation
               ? "It's a little quiet here... start texting and make a \nconnection"
               : `No connections yet... your next pair will appear in ${countdowns.untilNextPair}`}
             ! 🤝
           </Text>
-          {user.currentConversation && (
+          {user.currentPair.conversation && (
             <TouchableOpacity
               activeOpacity={TEXT_ACTIVE_OPACITY}
               style={styles.emptyStateButton}
               onPress={() =>
                 navigation.navigate("Chat", {
-                  conversation: user.currentConversation,
+                  conversation: user.currentPair.conversation,
                 })
               }
             >

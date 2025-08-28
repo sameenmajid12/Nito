@@ -41,13 +41,18 @@ export const SocketProvider = ({ children }) => {
 
     const handleReceiveMessage = (message) => {
       console.log("Received message");
-      if (message.conversation === user.currentConversation?._id.toString()) {
+      if (
+        message.conversation === user.currentPair.Conversation?._id.toString()
+      ) {
         console.log("Received message for currentConversation");
         setUser((prev) => ({
           ...prev,
-          currentConversation: {
-            ...prev.currentConversation,
-            lastMessage: message,
+          currentPair: {
+            ...prev.currentPair,
+            conversation: {
+              ...prev.currentPair.conversation,
+              lastMessage: message,
+            },
           },
         }));
         return;
@@ -77,22 +82,28 @@ export const SocketProvider = ({ children }) => {
     const handleRevealPhaseStarted = () => {
       setUser((prev) => ({
         ...prev,
-        currentConversation: {
-          ...prev.currentConversation,
-          status: "revealing",
+        currentPair: {
+          ...prev.currentPair,
+          conversation: {
+            ...prev.currentPair.conversation,
+            status: "revealing",
+          },
         },
       }));
       openPhaseAlert("reveal");
     };
 
     const handleOtherUserPairAction = (updatedConversation) => {
-      const conversation = user.currentConversation;
+      const conversation = user.currentPair.conversation;
       if (!conversation) {
         return;
       }
       setUser((prev) => ({
         ...prev,
-        currentConversation: updatedConversation,
+        currentPair: {
+          ...prev.currentPair,
+          conversation: updatedConversation,
+        },
       }));
     };
     const handleRevealPhaseFinalized = async ({ schoolId }) => {

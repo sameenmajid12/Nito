@@ -44,7 +44,7 @@ function NewPairingFound({ navigation }) {
         </Text>
 
         <Pressable
-          onPress={() => navigation.navigate("Chat", {conversation: user?.currentConversation})}
+          onPress={() => navigation.navigate("Chat", {conversation: user.currentPair.conversation})}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
         >

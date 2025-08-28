@@ -24,7 +24,7 @@ import { useState } from "react";
 
 function HomeScreen({ navigation }) {
   const { user, refreshUser } = useUser();
-  const isPaired = user.currentConversation !== null;
+  const isPaired = user.currentPair.conversation !== null;
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = async () => {
     setRefreshing(true);

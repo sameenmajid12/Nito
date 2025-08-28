@@ -10,7 +10,7 @@ import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 
 function ChatRevealing({ conversation, setConversation }) {
   const { socket } = useSocket();
-  const {untilRevealEnd} = usePhaseTimer();
+  const { countdowns } = usePhaseTimer();
   const { user, setUser } = useUser();
   const userNum = conversation.user1._id === user._id ? "user1" : "user2";
   const userVote = conversation?.[`${userNum}Revealed`];
@@ -21,7 +21,10 @@ function ChatRevealing({ conversation, setConversation }) {
       setConversation(updatedConversation);
       setUser((prev) => ({
         ...prev,
-        currentConversation: updatedConversation,
+        currentPair: {
+          ...prev.currentPair,
+          conversation: updatedConversation,
+        },
       }));
       setIsLoadingReveal(false);
       setIsLoadingSkip(false);
@@ -33,9 +36,12 @@ function ChatRevealing({ conversation, setConversation }) {
       }));
       setUser((prev) => ({
         ...prev,
-        currentConversation: {
-          ...prev.currentConversation,
-          [`${userNum}Revealed`]: null,
+        currentPair: {
+          ...prev.currentPair,
+          conversation: {
+            ...prev.currentPair.conversation,
+            [`${userNum}Revealed`]: null,
+          },
         },
       }));
     };
@@ -88,7 +94,8 @@ function ChatRevealing({ conversation, setConversation }) {
             <Text style={styles.voteOption}>
               {userVote ? "REVEAL" : "SKIP"}
             </Text>
-            , result will be out in {"\n"}{countdowns.untilRevealEnd}
+            , result will be out in {"\n"}
+            {countdowns.untilRevealEnd}
           </Text>
           <View style={styles.undoWrapper}>
             <TouchableOpacity
