@@ -15,28 +15,38 @@ const ALERT_WIDTH = 200;
 
 function Alert({ state, message, _id, closeAlert }) {
   const translateY = useRef(new Animated.Value(0)).current;
-  const opacityAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(translateY, {
-      toValue: 70,
-      duration: 400,
-      easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
-      useNativeDriver: true,
-    }).start();
-
-   const timeout = setTimeout(() => dismissAlert(), 4700);
-
-    return () => clearTimeout(timeout);
+    Animated.parallel([
+      Animated.timing(translateY, {
+        toValue: 70,
+        duration: 400,
+        easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+    ]).start();
   }, []);
 
   const dismissAlert = () => {
-    Animated.timing(translateY, {
-      toValue: -200,
-      duration: 200,
-      easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
-      useNativeDriver: true,
-    }).start(() => closeAlert(_id));
+    Animated.parallel([
+      Animated.timing(translateY, {
+        toValue: -200,
+        duration: 700,
+        easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 350,
+        useNativeDriver: true,
+      }),
+    ]).start(() => closeAlert(_id));
   };
 
   const panResponder = useRef(
@@ -88,7 +98,7 @@ function Alert({ state, message, _id, closeAlert }) {
         {
           transform: [{ translateY }, { translateX: -ALERT_WIDTH / 2 }],
           backgroundColor,
-          opacity: opacityAnim,
+          opacity: fadeAnim,
         },
       ]}
     >
@@ -97,7 +107,11 @@ function Alert({ state, message, _id, closeAlert }) {
         <Text style={styles.messageText}>{message}</Text>
       </View>
       <Pressable onPress={dismissAlert}>
-        <Ionicons size={FONT_SIZE_L} color={colors.white} name="close-outline" />
+        <Ionicons
+          size={FONT_SIZE_L}
+          color={colors.white}
+          name="close-outline"
+        />
       </Pressable>
     </Animated.View>
   );

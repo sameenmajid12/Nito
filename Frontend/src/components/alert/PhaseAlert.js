@@ -21,24 +21,28 @@ function RevealPhaseAlert({ navigation, type }) {
     Animated.createAnimatedComponent(LinearGradient);
   const gradientTranslateY = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
-    Animated.sequence([
+    Animated.parallel([
       Animated.timing(translateY, {
         toValue: 70,
-        duration: 400,
+        duration: 1000,
         easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
         useNativeDriver: true,
       }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
       Animated.timing(gradientTranslateY, {
+        delay: 350,
         toValue: 1,
         duration: 5000,
-        easing: Easing.bezier(0, 1.04, 0.75, 1.01),
+        easing: Easing.bezier(0, 0.77, 0.55, 1.01),
         useNativeDriver: false,
       }),
     ]).start();
-    const timeout = setTimeout(() => dismissAlert(), 9800);
-
-    return () => clearTimeout(timeout);
   }, [gradientTranslateY, translateY]);
   const gradientTranslation = gradientTranslateY.interpolate({
     inputRange: [0, 1],
@@ -46,7 +50,7 @@ function RevealPhaseAlert({ navigation, type }) {
   });
   const generateGradientColors = () => {
     let result = [];
-    const colorArr = [colors.primary, colors.accent70];
+    const colorArr = [colors.primary, colors.accent];
     for (let i = 0; i < 28; i++) {
       result.push(colorArr[0]);
       result.push(colorArr[1]);
@@ -54,12 +58,19 @@ function RevealPhaseAlert({ navigation, type }) {
     return result;
   };
   const dismissAlert = () => {
-    Animated.timing(translateY, {
-      toValue: -200,
-      duration: 200,
-      easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
-      useNativeDriver: true,
-    }).start(() => closePhaseAlert());
+    Animated.parallel([
+      Animated.timing(translateY, {
+        toValue: -200,
+        duration: 700,
+        easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 350,
+        useNativeDriver: true,
+      }),
+    ]).start(() => closePhaseAlert());
   };
   const panResponder = useRef(
     PanResponder.create({
@@ -90,6 +101,7 @@ function RevealPhaseAlert({ navigation, type }) {
             { translateY: translateY },
             { translateX: -ALERT_WIDTH / 2 },
           ],
+          opacity: fadeAnim,
         },
       ]}
     >
@@ -115,11 +127,12 @@ function RevealPhaseAlert({ navigation, type }) {
         <View style={styles.contentActions}>
           <Pressable
             style={styles.viewButton}
-            onPress={() =>
+            onPress={() => {
+              dismissAlert();
               navigation.navigate("Chat", {
-                conversation: user.currentConversation,
-              })
-            }
+                conversation: user.currentPair.conversation,
+              });
+            }}
           >
             <Text style={styles.viewButtonText}>View</Text>
           </Pressable>
