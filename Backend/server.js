@@ -12,7 +12,7 @@ const {
 const { pollRouter } = require("./controllers/pollController.js");
 const { supportRouter } = require("./controllers/supportController.js");
 const { phaseTimerRouter } = require("./controllers/phaseTimerController.js");
-const initializeSocketIo = require("./config/socket.js");
+const { initializeSocketIo } = require("./config/socket.js");
 const connectDB = require("./config/db.js");
 
 const corsOptions = {
