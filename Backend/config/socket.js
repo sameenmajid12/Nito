@@ -2,8 +2,9 @@ const { Server } = require("socket.io");
 const Message = require("../models/MessageModel");
 const Conversation = require("../models/ConversationModel");
 const socketUsers = {};
+let io;
 const initializeSocketIo = (server) => {
-  const io = new Server(server, {
+  io = new Server(server, {
     cors: {
       origin: "*",
     },
@@ -155,4 +156,7 @@ const initializeSocketIo = (server) => {
   });
 };
 
-module.exports = initializeSocketIo;
+const getIo = () => io;
+const getSocketUsers = () => socketUsers;
+
+module.exports = { initializeSocketIo, getIo, getSocketUsers };
