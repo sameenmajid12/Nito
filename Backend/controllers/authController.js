@@ -8,6 +8,7 @@ const s3 = require("../config/s3Client");
 const { sendVerificationEmail } = require("../utils/sendEmail.js");
 const VerificationCode = require("../models/VerificationCodeModel.js");
 const { PutObjectCommand } = require("@aws-sdk/client-s3");
+const { v4: uuidv4 } = require("uuid");
 const {
   generateAccessToken,
   generateRefreshToken,
@@ -37,8 +38,8 @@ authRouter.post("/register", upload.single("profilePic"), async (req, res) => {
         .json({ message: "Email is already used for another account!" });
     }
     const fileUploadParams = {
-      Bucket: "nito-s3-image-bucket",
-      Key: req.file.originalname,
+      Bucket: process.env.PROFILE_PICTURE_BUCKET,
+      Key: `${uuidv4()}-${req.file.originalname}`,
       Body: req.file.buffer,
       ContentType: req.file.mimetype,
     };
