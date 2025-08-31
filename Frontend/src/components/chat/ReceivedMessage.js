@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 const PROFILE_PIC_SIZE = 33;
 const TEXT_LEFT_MARGIN = 33 + 5;
 const NAME_HEIGHT = 16;
-function ReceivedMessage({ text, first, last, isMatch, otherUser }) {
+function ReceivedMessage({ text, first, last, isMatch, otherUser, lastItem }) {
   const image = isMatch
     ? otherUser.profilePic
     : require("../../assets/images/anonymous-user.png");
@@ -22,6 +22,7 @@ function ReceivedMessage({ text, first, last, isMatch, otherUser }) {
             first ? styles.first : null,
             last ? styles.last : null,
             !first ? { marginLeft: TEXT_LEFT_MARGIN } : null,
+            { marginBottom: lastItem ? 40 : last ? 20 : 0 },
           ]}
         >
           <Text style={styles.text}>{text}</Text>
@@ -46,7 +47,6 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_S,
   },
   last: {
-    marginBottom: 20,
     shadowColor: "#000",
     shadowRadius: 4,
     shadowOpacity: 0.2,

@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { colors, FONT_SIZE_S, FONT_SIZE_XS } from "../../styles";
-const NAME_HEIGHT = 16;
-function SentMessage({ text, first, last }) {
+function SentMessage({ text, first, last, lastItem }) {
   return (
     <View>
       {first && <Text style={styles.name}>You</Text>}
@@ -10,6 +9,7 @@ function SentMessage({ text, first, last }) {
           styles.sentMessage,
           first && styles.first,
           last && styles.last,
+          { marginBottom: lastItem ? 40 : last ? 20 : 0 },
         ]}
       >
         <Text style={styles.text}>{text}</Text>
@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_S,
   },
   last: {
-    marginBottom: 20,
     shadowRadius: 4,
     shadowOpacity: 0.075,
     shadowOffset: { width: 0, height: 4 },
