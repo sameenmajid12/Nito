@@ -15,6 +15,10 @@ const messageSchema = new mongoose.Schema(
     type: { type: String, enum: ["image", "text"], default: "text" },
     text: { type: String, trim: true },
     imageKey: { type: String },
+    imageDimensions: {
+      width: { type: Number },
+      height: { type: Number },
+    },
     clientId: {
       type: String,
       required: false,
