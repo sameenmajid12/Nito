@@ -16,7 +16,6 @@ import { BlurView } from "expo-blur";
 import { colors, FONT_SIZE_XS, PRIMARY_ACTIVE_OPACITY } from "../../styles";
 import ImageModal from "../modal/ImageModal";
 
-const SCREEN = Dimensions.get("window");
 const LEFT_MARGIN = 33 + 5;
 const PROFILE_PIC_SIZE = 33;
 const NAME_HEIGHT = 16;
@@ -24,11 +23,11 @@ const NAME_HEIGHT = 16;
 function ImageMessage({
   message,
   isByUser,
-  first,
-  last,
+  isFirstByUser,
+  isLastByUser,
   otherUser,
   isMatch,
-  lastItem,
+  isLastMessage,
 }) {
   const imageWidth = message.imageDimensions.width;
   const imageHeight = message.imageDimensions.height;
@@ -47,8 +46,8 @@ function ImageMessage({
     width: imageWidth,
     height: imageHeight,
     alignSelf: isByUser ? "flex-end" : "flex-start",
-    marginLeft: !first ? LEFT_MARGIN : 0,
-    marginBottom: lastItem ? 40 : last ? 20 : 0,
+    marginLeft: !isFirstByUser ? LEFT_MARGIN : 0,
+    marginBottom: isLastMessage ? 40 : isLastByUser ? 20 : 0,
     borderRadius: 15,
   });
   useEffect(() => {
@@ -74,12 +73,12 @@ function ImageMessage({
   };
 
   return (
-    <View style={{ flexDirection: "row", columnGap: 5, marginVertical: 2.5 }}>
-      {first && !isByUser && (
+    <View style={styles.mainWrapper}>
+      {isFirstByUser && !isByUser && (
         <Image style={styles.profilePic} source={profilePic} />
       )}
       <View style={{ flex: 1 }}>
-        {first && !isByUser && <Text style={styles.name}>{name}</Text>}
+        {isFirstByUser && !isByUser && <Text style={styles.name}>{name}</Text>}
 
         {!image && !notFound ? (
           <View style={[styles.notLoaded, getImageStyles()]}>
@@ -134,6 +133,7 @@ function ImageMessage({
 }
 
 const styles = StyleSheet.create({
+  mainWrapper: { flexDirection: "row", columnGap: 5, marginVertical: 2.5 },
   notLoaded: {
     backgroundColor: colors.black10,
     alignItems: "center",

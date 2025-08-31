@@ -6,8 +6,7 @@ function SectionSelector({ setSelectedSection, checkSelected }) {
     <View style={styles.mainContainer}>
       <Pressable
         style={[styles.button, checkSelected("current") ? styles.active : null]}
-               onPress={()=>setSelectedSection("current")}
-
+        onPress={() => setSelectedSection("current")}
       >
         <Text
           style={
@@ -20,9 +19,11 @@ function SectionSelector({ setSelectedSection, checkSelected }) {
         </Text>
       </Pressable>
       <Pressable
-       style={[styles.button, checkSelected("connections") ? styles.active : null]}
-              onPress={()=>setSelectedSection("connections")}
-
+        style={[
+          styles.button,
+          checkSelected("connections") ? styles.active : null,
+        ]}
+        onPress={() => setSelectedSection("connections")}
       >
         <Text
           style={
@@ -35,8 +36,11 @@ function SectionSelector({ setSelectedSection, checkSelected }) {
         </Text>
       </Pressable>
       <Pressable
-       style={[styles.button, checkSelected("archived") ? styles.active : null]}
-       onPress={()=>setSelectedSection("archived")}
+        style={[
+          styles.button,
+          checkSelected("archived") ? styles.active : null,
+        ]}
+        onPress={() => setSelectedSection("archived")}
       >
         <Text
           style={
@@ -58,7 +62,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     columnGap: 10,
     paddingTop: 30,
-    alignSelf:"center"
+    alignSelf: "center",
   },
   button: {
     flex: 1,

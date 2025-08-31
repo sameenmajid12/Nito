@@ -4,25 +4,32 @@ import { Image } from "expo-image";
 const PROFILE_PIC_SIZE = 33;
 const TEXT_LEFT_MARGIN = 33 + 5;
 const NAME_HEIGHT = 16;
-function ReceivedMessage({ text, first, last, isMatch, otherUser, lastItem }) {
+function ReceivedMessage({
+  text,
+  isFirstByUser,
+  isLastByUser,
+  isMatch,
+  otherUser,
+  isLastMessage,
+}) {
   const image = isMatch
     ? otherUser.profilePic
     : require("../../assets/images/anonymous-user.png");
   const name = isMatch ? otherUser.fullname : otherUser.username;
   return (
     <View style={{ flexDirection: "row", columnGap: 5 }}>
-      {first && image && (
+      {isFirstByUser && image && (
         <Image style={styles.profilePic} source={image}></Image>
       )}
       <View style={{ flex: 1 }}>
-        {first && <Text style={styles.name}>{name}</Text>}
+        {isFirstByUser && <Text style={styles.name}>{name}</Text>}
         <View
           style={[
             styles.receivedMessage,
-            first ? styles.first : null,
-            last ? styles.last : null,
-            !first ? { marginLeft: TEXT_LEFT_MARGIN } : null,
-            { marginBottom: lastItem ? 40 : last ? 20 : 0 },
+            isFirstByUser ? styles.first : null,
+            isLastByUser ? styles.last : null,
+            !isFirstByUser ? { marginLeft: TEXT_LEFT_MARGIN } : null,
+            { marginBottom: isLastMessage ? 40 : isLastByUser ? 20 : 0 },
           ]}
         >
           <Text style={styles.text}>{text}</Text>

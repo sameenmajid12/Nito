@@ -129,10 +129,7 @@ function MessageInput({
       )}
 
       <Animated.View
-        style={[
-          styles.inputContainer,
-          image && { borderTopRightRadius: 0, borderTopLeftRadius: 0 },
-        ]}
+        style={[styles.inputContainer, image && styles.inputContainerWithImage]}
       >
         <Pressable onPress={pickImage}>
           <Ionicons
@@ -211,6 +208,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flex: 1,
   },
+  inputContainerWithImage: { borderTopRightRadius: 0, borderTopLeftRadius: 0 },
 });
 
 export default MessageInput;

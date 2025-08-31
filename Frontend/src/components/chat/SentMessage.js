@@ -1,15 +1,15 @@
 import { View, Text, StyleSheet } from "react-native";
 import { colors, FONT_SIZE_S, FONT_SIZE_XS } from "../../styles";
-function SentMessage({ text, first, last, lastItem }) {
+function SentMessage({ text, isFirstByUser, isLastByUser, isLastMessage }) {
   return (
     <View>
-      {first && <Text style={styles.name}>You</Text>}
+      {isFirstByUser && <Text style={styles.name}>You</Text>}
       <View
         style={[
           styles.sentMessage,
-          first && styles.first,
-          last && styles.last,
-          { marginBottom: lastItem ? 40 : last ? 20 : 0 },
+          isFirstByUser && styles.first,
+          isLastByUser && styles.last,
+          { marginBottom: isLastMessage ? 40 : isLastByUser ? 20 : 0 },
         ]}
       >
         <Text style={styles.text}>{text}</Text>

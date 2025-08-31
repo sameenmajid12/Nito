@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { colors, FONT_SIZE_L } from "../../styles";
 import ImageModal from "../modal/ImageModal";
-import { View, Pressable,} from "react-native";
+import { View, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 
@@ -12,6 +12,10 @@ function MessageInputImage({
   uri,
   closeImage,
 }) {
+  const getDimensions = () => ({
+    width: imageRenderDimensions.width,
+    height: imageRenderDimensions.height,
+  });
   return (
     <>
       {modalVisible && (
@@ -24,12 +28,7 @@ function MessageInputImage({
       )}
 
       <View style={styles.imageRenderContainer}>
-        <View
-          style={{
-            width: imageRenderDimensions.width,
-            height: imageRenderDimensions.height,
-          }}
-        >
+        <View style={getDimensions()}>
           <Pressable style={styles.imageClose} onPress={closeImage}>
             <Ionicons
               size={FONT_SIZE_L}
@@ -39,11 +38,12 @@ function MessageInputImage({
           </Pressable>
           <Pressable onPress={() => setModalVisible(true)}>
             <Image
-              style={{
-                width: imageRenderDimensions.width,
-                height: imageRenderDimensions.height,
-                borderRadius: 10,
-              }}
+              style={[
+                getDimensions(),
+                {
+                  borderRadius: 10,
+                },
+              ]}
               source={uri}
             ></Image>
           </Pressable>

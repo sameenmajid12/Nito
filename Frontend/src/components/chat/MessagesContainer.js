@@ -4,6 +4,7 @@ import {
   Keyboard,
   Easing,
   ActivityIndicator,
+  StyleSheet,
 } from "react-native";
 import ReceivedMessage from "./ReceivedMessage";
 import SentMessage from "./SentMessage";
@@ -100,22 +101,21 @@ function MessagesContainer({
       flatListRef.current.scrollToOffset({ offset: 0, animated });
     }
   };
-  const isByUser = (message) => {
-    return message.sender === user._id;
-  };
+
   const renderItem = ({ item, index }) => {
-    const first = messages[index + 1]?.sender !== item.sender;
-    const last = messages[index - 1]?.sender !== item.sender;
+    const isByUser = item.sender === user._id;
+    const isFirstByUser = messages[index + 1]?.sender !== item.sender;
+    const isLastByUser = messages[index - 1]?.sender !== item.sender;
     if (item.type === "image") {
       return (
         <ImageMessage
           message={item}
-          isByUser={isByUser(item)}
-          first={first}
-          last={last}
+          isByUser={isByUser}
+          isFirstByUser={isFirstByUser}
+          isLastByUser={isLastByUser}
           isMatch={isMatch}
           otherUser={otherUser}
-          lastItem={index === 0}
+          isLastMessage={index === 0}
         />
       );
     }
@@ -123,19 +123,19 @@ function MessagesContainer({
       <SentMessage
         key={item._id}
         text={item.text}
-        first={first}
-        last={last}
-        lastItem={index === 0}
+        isFirstByUser={isFirstByUser}
+        isLastByUser={isLastByUser}
+        isLastMessage={index === 0}
       />
     ) : (
       <ReceivedMessage
         key={item._id}
         text={item.text}
-        first={first}
-        last={last}
+        isFirstByUser={isFirstByUser}
+        isLastByUser={isLastByUser}
         isMatch={isMatch}
         otherUser={otherUser}
-        lastItem={index === 0}
+        isLastMessage={index === 0}
       />
     );
   };
@@ -146,11 +146,7 @@ function MessagesContainer({
         data={messages}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: "flex-end",
-          paddingRight: 25,
-        }}
+        contentContainerStyle={styles.contentContainer}
         keyboardShouldPersistTaps="handled"
         inverted
         onEndReached={() => loadOlderMessages()}
@@ -180,4 +176,11 @@ function MessagesContainer({
     </Animated.View>
   );
 }
+const styles = StyleSheet.create({
+  contentContainer: {
+    flexGrow: 1,
+    justifyContent: "flex-end",
+    paddingRight: 25,
+  },
+});
 export default MessagesContainer;

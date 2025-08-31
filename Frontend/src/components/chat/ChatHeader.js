@@ -25,18 +25,18 @@ function ChatHeader({
     ? otherUser.profilePic
     : require("../../assets/images/anonymous-user.png");
   const { openModal } = useModal();
+  const navigateToUserProfile = () => {
+    if (isMatch) {
+      navigation.navigate("UserScreen", { user: otherUser });
+    }
+  };
   return (
     <View style={styles.headerContainer}>
       <View style={styles.headerLeft}>
         <Pressable onPress={() => navigation.goBack()}>
           <Ionicons style={styles.icons} name="chevron-back"></Ionicons>
         </Pressable>
-        <Pressable
-          onPress={() =>
-            isMatch && navigation.navigate("UserScreen", { user: otherUser })
-          }
-          style={styles.userProfile}
-        >
+        <Pressable onPress={navigateToUserProfile} style={styles.userProfile}>
           <Image style={styles.receiverProfilePic} source={image}></Image>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={styles.receiverName}>{name}</Text>
