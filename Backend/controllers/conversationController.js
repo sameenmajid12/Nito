@@ -46,6 +46,7 @@ conversationRouter.get(
 );
 conversationRouter.get("/with/:otherUserId", verifyToken, async (req, res) => {
   try {
+    console.log("Getting conversation with user")
     const userId = req.user._id;
     const { otherUserId } = req.params;
     const user = await User.findById(userId);
@@ -79,14 +80,15 @@ conversationRouter.get("/with/:otherUserId", verifyToken, async (req, res) => {
 });
 
 conversationRouter.post(
-  "/:conversation/uploadImage",
+  "/:conversationId/uploadImage",
   verifyToken,
   upload.single("image"),
   async (req, res) => {
     try {
+      console.log("Uploading image message to s3");
       const userId = req.user._id;
       const sender = await User.findById(userId);
-      const { receiverId } = req.body;
+      const { receiverId, clientId } = req.body;
       const { conversationId } = req.params;
       const receiver = await User.findById(receiverId);
       const conversation = await Conversation.findById(conversationId);
@@ -102,19 +104,25 @@ conversationRouter.post(
       }
       const fileKey = `${uuidv4()}-${req.file.originalname}`;
       const fileUploadParams = {
-        Bucket: process.env.MESSAGE_BUCKET,
+        Bucket: process.env.MESSAGE_IMAGE_BUCKET,
         Key: fileKey,
         Body: req.file.buffer,
         ContentType: req.file.mimetype,
       };
       await s3.send(new PutObjectCommand(fileUploadParams));
+      const dimensions = JSON.parse(req.body.dimensions);
 
       const messageObject = await Message.create({
+        clientId,
         sender: sender._id,
         receiver: receiver._id,
         conversation: conversation._id,
         type: "image",
         imageKey: fileKey,
+        imageDimensions: {
+          width: dimensions.width,
+          height: dimensions.height,
+        },
       });
       const io = getIo();
       const socketUsers = getSocketUsers();
@@ -126,7 +134,7 @@ conversationRouter.post(
       if (senderSocket) {
         io.to(senderSocket).emit("receiveMessage", messageObject);
       }
-      res.status(201).json({ message: messageObject });
+      res.sendStatus(201);
     } catch (e) {
       console.error(e);
       res.status(500).json({ message: "Internal server error" });
@@ -138,6 +146,7 @@ conversationRouter.get(
   verifyToken,
   async (req, res) => {
     try {
+      console.log("Getting presigned url for image");
       const { messageId } = req.params;
       const message = await Message.findById(messageId);
       const userId = req.user._id;
@@ -157,7 +166,7 @@ conversationRouter.get(
       const url = await getSignedUrl(
         s3,
         new GetObjectCommand({
-          Bucket: process.env.MESSAGE_BUCKET,
+          Bucket: process.env.MESSAGE_IMAGE_BUCKET,
           Key: message.imageKey,
         }),
         { expiresIn: 7200 }
