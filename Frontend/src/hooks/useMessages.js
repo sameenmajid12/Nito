@@ -14,6 +14,11 @@ function useMessages(conversation) {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [newMessage, setNewMessage] = useState("");
+  const [newMessageImage, setNewMessageImage] = useState(null);
+  const [newMessageImageDimensions, setNewMessageImageDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
   const [hasLoadedInitial, setHasLoadedInitial] = useState(false);
   const otherUser =
     conversation.user1._id === user._id
@@ -84,16 +89,16 @@ function useMessages(conversation) {
         if (conversation._id === user.currentPair.conversation?._id) {
           return {
             ...prev,
-            currentPair:{
+            currentPair: {
               ...prev.currentPair,
-              conversation:{
+              conversation: {
                 ...prev.currentPair.conversation,
                 lastReadMessages: {
-                ...prev.currentPair.conversation?.lastReadMessages,
-                [userNum]: conversation.lastMessage,
+                  ...prev.currentPair.conversation?.lastReadMessages,
+                  [userNum]: conversation.lastMessage,
+                },
               },
-              }
-            }
+            },
           };
         }
         const conversationIndex = prev.savedConversations.findIndex(
@@ -166,18 +171,73 @@ function useMessages(conversation) {
     setMessages((prevMessages) => [tempMessage, ...prevMessages]);
     setNewMessage("");
   };
+  const sendImageMessage = async (image, conversationId, receiverId) => {
+    try {
+      console.log("Sending image message to backend");
+      const maxDimensions = 250;
+      const scale = maxDimensions / Math.max(image.width, image.height);
+      const scaledWidth = scale * image.width;
+      const scaledHeight = scale * image.height;
+      const formData = new FormData();
+      const clientId = uuidv4();
 
+      formData.append("image", {
+        name: image.name,
+        uri: image.uri,
+        type: image.type,
+      });
+      formData.append(
+        "dimensions",
+        JSON.stringify({
+          width: scaledWidth,
+          height: scaledHeight,
+        })
+      );
+      formData.append("receiverId", receiverId);
+      formData.append("clientId", clientId);
+      const tempMessage = {
+        _id: clientId,
+        sender: user._id,
+        receiver: receiverId,
+        conversation: conversationId,
+        imageKey: "placeholder",
+        imageDimensions: {
+          width: scaledWidth,
+          height: scaledHeight,
+        },
+        type: "image",
+      };
+      setMessages((prev) => [tempMessage, ...prev]);
+
+      await axios.post(
+        `${API_BASE_URL}/conversation/${conversationId}/uploadImage`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  };
   return {
     messages,
     isLoadingInitial,
     setNewMessage,
     newMessage,
     sendMessage,
+    sendImageMessage,
     loadOlderMessages,
     hasLoadedInitial,
     hasMore,
     isLoadingMore,
     setIsLoadingMore,
+    newMessageImage,
+    setNewMessageImage,
+    newMessageImageDimensions,
+    setNewMessageImageDimensions,
   };
 }
 

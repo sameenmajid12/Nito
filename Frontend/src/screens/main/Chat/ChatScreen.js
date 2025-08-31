@@ -28,6 +28,11 @@ function ChatScreen({ navigation, route }) {
     loadOlderMessages,
     isLoadingMore,
     setIsLoadingMore,
+    sendImageMessage,
+    newMessageImage,
+    setNewMessageImage,
+    newMessageImageDimensions,
+    setNewMessageImageDimensions,
   } = useMessages(conversation);
   useEffect(() => {
     const handleRevealPhaseStartedInChat = () => {
@@ -52,11 +57,7 @@ function ChatScreen({ navigation, route }) {
       setShowTime(false);
     }
   };
-  const mainGesture = Gesture.Pan().onStart((event) => {
-    if (Math.abs(event.translationY) > Math.abs(event.translationX)) {
-      return;
-    }
-    Keyboard.dismiss();
+  const mainGesture = Gesture.Tap().onTouchesDown(() => {
     hideTime();
   });
   const sideGesture = Gesture.Tap().onTouchesDown(() => {
@@ -109,6 +110,7 @@ function ChatScreen({ navigation, route }) {
               loadOlderMessages={loadOlderMessages}
               setIsLoadingMore={setIsLoadingMore}
               hideTime={hideTime}
+              imageHeight={newMessageImageDimensions.height}
             />
           ) : (
             <View style={styles.loadingScreen}>
@@ -127,6 +129,13 @@ function ChatScreen({ navigation, route }) {
         setMessage={setNewMessage}
         sendMessage={sendMessage}
         disabled={!isMatch && !isCurrent}
+        sendImageMessage={sendImageMessage}
+        conversationId={conversation._id}
+        receiverId={otherUser._id}
+        image={newMessageImage}
+        setImage={setNewMessageImage}
+        imageRenderDimensions={newMessageImageDimensions}
+        setImageRenderDimensions={setNewMessageImageDimensions}
       ></MessageInput>
     </SafeAreaView>
   );
