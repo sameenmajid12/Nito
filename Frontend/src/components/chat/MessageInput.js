@@ -7,18 +7,32 @@ import {
   Keyboard,
   Easing,
   Pressable,
+  Dimensions,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import { colors } from "../../styles";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import MessageInputImage from "./MessageInputImage";
 const ICON_SIZE = 36;
 const MIN_INPUT_HEIGHT = 45;
 const INITIAL_BOTTOM_VALUE = 0;
-
-function MessageInput({ message, setMessage, sendMessage, disabled }) {
+function MessageInput({
+  message,
+  setMessage,
+  sendMessage,
+  disabled,
+  sendImageMessage,
+  conversationId,
+  receiverId,
+  image,
+  setImage,
+  imageRenderDimensions,
+  setImageRenderDimensions,
+}) {
   const messageInputTranslateY = useRef(
     new Animated.Value(INITIAL_BOTTOM_VALUE)
   ).current;
-
+  const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
     const keyboardWillShowListener = Keyboard.addListener(
       "keyboardWillShow",
@@ -51,6 +65,51 @@ function MessageInput({ message, setMessage, sendMessage, disabled }) {
       keyboardWillHideListener.remove();
     };
   }, []);
+  const pickImage = async () => {
+    Keyboard.dismiss();
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      alert("Permission to access media library is required!");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets && result.assets[0]) {
+      const pickedImage = result.assets[0];
+      const { uri, width, height } = pickedImage;
+      const name = `photo_${Date.now()}.jpg`;
+      const type = pickedImage.mimeType;
+      const scaleForRender = 150 / Math.max(width, height);
+      setImageRenderDimensions({
+        width: width * scaleForRender,
+        height: height * scaleForRender,
+      });
+      setImage({ name, type, uri, width, height });
+    }
+  };
+  const closeImage = () => {
+    setTimeout(() => {
+      setImage(null);
+      setImageRenderDimensions({ width: 0, height: 0 });
+    }, 50);
+  };
+  const handleSendMessage = async () => {
+    if (!image && !message) {
+      return;
+    }
+    if (image) {
+      closeImage();
+      await sendImageMessage(image, conversationId, receiverId);
+    }
+    if (message) {
+      sendMessage();
+    }
+  };
 
   return (
     <Animated.View
@@ -59,12 +118,29 @@ function MessageInput({ message, setMessage, sendMessage, disabled }) {
         { transform: [{ translateY: messageInputTranslateY }] },
       ]}
     >
-      <Animated.View style={[styles.inputContainer]}>
-        <Ionicons
-          color={colors.primary}
-          size={ICON_SIZE}
-          name="add-circle"
-        ></Ionicons>
+      {image && (
+        <MessageInputImage
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          uri={image.uri}
+          imageRenderDimensions={imageRenderDimensions}
+          closeImage={closeImage}
+        />
+      )}
+
+      <Animated.View
+        style={[
+          styles.inputContainer,
+          image && { borderTopRightRadius: 0, borderTopLeftRadius: 0 },
+        ]}
+      >
+        <Pressable onPress={pickImage}>
+          <Ionicons
+            color={colors.primary}
+            size={ICON_SIZE}
+            name="add-circle"
+          ></Ionicons>
+        </Pressable>
         <View style={styles.inputContainerRight}>
           <TextInput
             editable={!disabled}
@@ -76,14 +152,10 @@ function MessageInput({ message, setMessage, sendMessage, disabled }) {
             placeholderTextColor={colors.textPlaceholder}
           ></TextInput>
 
-          <Pressable
-            onPress={() => {
-              if (message !== "") sendMessage();
-            }}
-          >
+          <Pressable onPress={handleSendMessage}>
             <Ionicons
               size={ICON_SIZE}
-              color={message === "" ? colors.primary50 : colors.primary}
+              color={!image && !message ? colors.primary50 : colors.primary}
               name="arrow-up-circle"
             ></Ionicons>
           </Pressable>
@@ -95,7 +167,6 @@ function MessageInput({ message, setMessage, sendMessage, disabled }) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: colors.background,
     minHeight: 85,
     marginBottom: 0,
     position: "absolute",
@@ -118,6 +189,7 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 5,
     columnGap: 5,
+    transform: [{ translateY: -10 }],
   },
   attachmentIcon: {
     fontSize: ICON_SIZE,
