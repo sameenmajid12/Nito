@@ -13,7 +13,7 @@ export const MessageImageProvider = ({ children }) => {
     }
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/conversation/message/${messageId}/presignedUrls`,
+        `${API_BASE_URL}/conversation/message/${messageId}/presignedUrl`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
