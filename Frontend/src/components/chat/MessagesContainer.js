@@ -119,7 +119,7 @@ function MessagesContainer({
         />
       );
     }
-    return isByUser(item) ? (
+    return isByUser ? (
       <SentMessage
         key={item._id}
         text={item.text}
