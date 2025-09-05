@@ -66,6 +66,9 @@ function MessageInput({
     };
   }, []);
   const pickImage = async () => {
+    if(disabled){
+      return
+    }
     Keyboard.dismiss();
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -133,7 +136,7 @@ function MessageInput({
       >
         <Pressable onPress={pickImage}>
           <Ionicons
-            color={colors.primary}
+            color={!disabled ? colors.primary : colors.primary50}
             size={ICON_SIZE}
             name="add-circle"
           ></Ionicons>

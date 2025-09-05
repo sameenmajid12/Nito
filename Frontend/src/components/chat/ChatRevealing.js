@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     marginTop: 40,
     rowGap: 20,
-    marginBottom: 40,
+    marginBottom: 60,
   },
   text: {
     textAlign: "center",
