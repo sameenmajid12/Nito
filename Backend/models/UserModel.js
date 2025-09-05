@@ -146,6 +146,8 @@ const userSchema = new mongoose.Schema(
     },
     resetToken: String,
     resetTokenExpiry: Date,
+    online: { type: Boolean, default: false },
+    lastActive: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );

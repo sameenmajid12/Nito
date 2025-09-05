@@ -93,7 +93,7 @@ userRouter.get("/:userId", verifyToken, async (req, res, next) => {
         .json({ message: "User is not a connection or not revealed" });
     }
     const userToRetrieve = await User.findById(userToRetreieveId).select(
-      "fullname user profilePic socialMedia revealedUsers bio year major tags username votedPolls"
+      "fullname user profilePic socialMedia revealedUsers bio year major tags username votedPolls online lastActive"
     );
     if (!userToRetrieve) {
       return res.status(404).json({ message: "User not found" });
@@ -115,7 +115,7 @@ userRouter.get("/me/reveal-finalized", verifyToken, async (req, res, next) => {
       .populate([
         {
           path: "revealedUsers",
-          options: { sort: { matchTime: 1 } },
+          options: { sort: { matchTime: -1 } },
           populate: { path: "user", select: "fullname profilePic username" },
         },
         {

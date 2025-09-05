@@ -1,6 +1,7 @@
 const { Server } = require("socket.io");
 const Message = require("../models/MessageModel");
 const Conversation = require("../models/ConversationModel");
+const User = require("../models/UserModel");
 const socketUsers = {};
 let io;
 const initializeSocketIo = (server) => {
@@ -12,10 +13,15 @@ const initializeSocketIo = (server) => {
     pingTimeout: 5000,
   });
   io.on("connection", (socket) => {
-    socket.on("register", (userId) => {
+    socket.on("register", async (userId) => {
       console.log(`User ${userId} connected with socket ID ${socket.id}`);
       socketUsers[userId] = socket.id;
       socket.userId = userId;
+      try {
+        await User.findByIdAndUpdate(userId, { online: true });
+      } catch (err) {
+        console.error("Error setting user online:", err);
+      }
     });
 
     socket.on("revealPhaseStarted", () => {
@@ -37,6 +43,7 @@ const initializeSocketIo = (server) => {
     });
     socket.on("pairAction", async ({ conversationId, userId, action }) => {
       try {
+        console.log(`Pair action: ${action}`);
         const conversation = await Conversation.findById(conversationId);
         if (!conversation) {
           return socket.emit("errorMessage", {
@@ -75,6 +82,7 @@ const initializeSocketIo = (server) => {
 
     socket.on("undoPairAction", async ({ conversationId, userId }) => {
       try {
+        console.log("Undo pair action");
         const conversation = await Conversation.findById(conversationId);
         if (!conversation) {
           return socket.emit("errorMessage", {
@@ -147,10 +155,18 @@ const initializeSocketIo = (server) => {
       }
     );
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       if (socketUsers[socket.userId]) {
         console.log(`Disconnecting user with socket ID ${socket.userId}`);
         delete socketUsers[socket.userId];
+        try {
+          await User.findByIdAndUpdate(socket.userId, {
+            online: false,
+            lastActive: Date.now(),
+          });
+        } catch (err) {
+          console.err("Error updating user online status", err);
+        }
       }
     });
   });

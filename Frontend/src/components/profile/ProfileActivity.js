@@ -1,9 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import {
-  colors,
-  FONT_SIZE_L,
-  FONT_SIZE_XS,
-} from "../../styles";
+import { colors, FONT_SIZE_L, FONT_SIZE_XS } from "../../styles";
 import ProfileSectionHeader from "./ProfileSectionHeader";
 import {
   Pressable,
@@ -12,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { timeSinceLastActive } from "../../utils/Format";
 function ProfileActivity({ navigate, isUser, user }) {
   if (!user) {
     return;
@@ -39,7 +36,9 @@ function ProfileActivity({ navigate, isUser, user }) {
         ) : (
           <Pressable style={styles.activity}>
             <Text style={styles.description}>Last Active</Text>
-            <Text style={styles.metric}>12m ago</Text>
+            <Text style={styles.metric}>
+              {user.online ? "Now" : timeSinceLastActive(user.lastActive)}
+            </Text>
           </Pressable>
         )}
       </View>

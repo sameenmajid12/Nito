@@ -73,3 +73,24 @@ export function getTimeUntil(futureDate) {
 
   return `${minutes}m ${seconds}s`;
 }
+
+export function timeSinceLastActive(date) {
+  const now = new Date();
+  const target = new Date(date);
+  const diffMs = now - target;
+  console.log(date);
+  console.log(diffMs);
+  const seconds = Math.floor(diffMs / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const months = Math.floor(days / 30.44);
+  const years = Math.floor(days / 365.25);
+
+  if (seconds < 60) return "Now";
+  if (minutes < 60) return `${minutes}m`;
+  if (hours < 24) return `${hours}h`;
+  if (days < 30) return `${days}d`;
+  if (months < 12) return `${months}mo`;
+  return `${years}y`;
+}
