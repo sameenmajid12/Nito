@@ -132,7 +132,7 @@ function MainNavigator() {
     if (!pairStatus.viewed) {
       console.log(`Revealed users: `, user.revealedUsers);
       const matchedUserObj =
-        user.revealedUsers?.[user.revealedUsers?.length - 1];
+        user.revealedUsers[0];
       const matchedUser = matchedUserObj?.user;
 
       navigation.navigate("MatchScreen", {

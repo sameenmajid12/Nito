@@ -52,7 +52,7 @@ function MatchScreen({ navigation, route }) {
     }
   }, []);
   const { type, matchedUser } = route.params;
-  const isMatch = type !== "matched";
+  const isMatch = type === "matched";
   if (isMatch && !matchedUser) {
     return;
   }
@@ -86,7 +86,7 @@ function MatchScreen({ navigation, route }) {
     : "Go back";
 
   const viewMatchedUserProfile = () => {
-    navigation.navigate("UserScreen", { user: matchedUser });
+    navigation.replace("UserScreen", { user: matchedUser });
   };
   const viewUserProfile = () => {
     navigation.replace("MainTabs", {
@@ -96,7 +96,7 @@ function MatchScreen({ navigation, route }) {
   const messageUser = async () => {
     const conversation = await getConversation(matchedUser);
     if (conversation) {
-      navigation.navigate("Chat", { conversation });
+      navigation.replace("Chat", { conversation });
     }
   };
   return (
