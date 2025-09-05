@@ -24,9 +24,10 @@ function ProfileAboutMe({
   const hasBio = !isUser && user.bio?.length > 0;
   const hasYear = !isUser && user.year;
   const hasMajor = !isUser && user.major?.length > 0;
+  const hasAboutSection = (hasBio || hasMajor || hasYear) || isUser
   return (
     <View style={styles.sectionWrapper}>
-      <ProfileSectionHeader header={isUser ? "About me" : "About"} />
+      {hasAboutSection && <ProfileSectionHeader header={isUser ? "About me" : "About"} />}
       <View style={styles.contentContainer}>
         {(isUser || (!isUser && hasBio)) && (
           <Input
@@ -89,6 +90,7 @@ function ProfileAboutMe({
           changes={changes}
           isUser={isUser}
           user={user}
+          hasAboutSection={hasAboutSection}
         />
       </View>
     </View>

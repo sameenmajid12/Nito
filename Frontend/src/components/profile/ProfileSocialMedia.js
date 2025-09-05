@@ -1,16 +1,18 @@
 import { StyleSheet, Text, View } from "react-native";
 import { colors } from "../../styles";
 import ProfileSocialInput from "./ProfileSocialInput";
-function ProfileSocialMedia({ editing, handleChange, changes, user, isUser }) {
+import ProfileSectionHeader from "./ProfileSectionHeader";
+function ProfileSocialMedia({ editing, handleChange, changes, user, isUser, hasAboutSection }) {
   const hasInstagram = !isUser && user.socialMedia?.instagram;
   const hasSnapchat = !isUser && user.socialMedia?.snapchat;
   const hasLinkedin = !isUser && user.socialMedia?.linkedin;
   const hasDiscord = !isUser && user.socialMedia?.discord;
-
+  const hasSocials = (hasInstagram || hasSnapchat || hasLinkedin || hasDiscord) || isUser
+  if (!hasSocials) return;
   return (
     <View style={styles.sectionWrapper}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Social media</Text>
+      <View style={[styles.headerContainer, { borderBottomWidth: hasAboutSection ? 1 : 0 }]}>
+        {hasAboutSection ? <Text style={styles.headerText}>Social media</Text> : <ProfileSectionHeader header={"Social media"} />}
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.sideBySide}>
@@ -59,14 +61,13 @@ function ProfileSocialMedia({ editing, handleChange, changes, user, isUser }) {
 }
 
 const styles = StyleSheet.create({
-  sectionWrapper:{
-    rowGap:15
+  sectionWrapper: {
+    rowGap: 15
   },
-  contentContainer:{
-    rowGap:5
+  contentContainer: {
+    rowGap: 5
   },
   headerContainer: {
-    borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
     paddingVertical: 2,
   },
