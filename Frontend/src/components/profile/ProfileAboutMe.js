@@ -26,7 +26,7 @@ function ProfileAboutMe({
   const hasMajor = !isUser && user.major?.length > 0;
   return (
     <View style={styles.sectionWrapper}>
-      <ProfileSectionHeader header={"About me"} />
+      <ProfileSectionHeader header={isUser ? "About me" : "About"} />
       <View style={styles.contentContainer}>
         {(isUser || (!isUser && hasBio)) && (
           <Input

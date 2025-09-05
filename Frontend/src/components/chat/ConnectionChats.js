@@ -9,6 +9,12 @@ function ConnectionChats({ navigation }) {
     if (!message) {
       return `Send a message to ${name}!`;
     }
+    if(message.sender === user._id){
+      return "Message sent"
+    }
+    if(message.type === "image"){
+      return "Image received";
+    }
     if (message.text.length <= maxLength) return message.text;
     return message?.text.slice(0, maxLength - 3) + "...";
   }

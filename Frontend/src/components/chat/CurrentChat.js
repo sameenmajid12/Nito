@@ -25,10 +25,19 @@ function CurrentChat({ navigation }) {
   const conversation = user.currentPair.conversation;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const formatLastMessage = (message) => {
+    if(!message){
+
+    }
+    if (message.sender === user._id) {
+      return "Message sent";
+    }
+    if (message.type === "image") {
+      return "Image received";
+    }
     if (message.length > 50) {
-      return message.slice(0, 20) + "...";
+      return message.text?.slice(0, 20) + "...";
     } else {
-      return message;
+      return message?.text;
     }
   };
   const userNum = conversation?.user1._id === user._id ? "user1" : "user2";
@@ -36,7 +45,7 @@ function CurrentChat({ navigation }) {
   const otherUser = conversation?.[otherUserNum];
   const isRead =
     conversation?.lastReadMessages[userNum]?._id ===
-      conversation?.lastMessage?._id ||
+    conversation?.lastMessage?._id ||
     conversation?.lastMessage.sender === user._id;
   return (
     <View style={styles.pageContainer}>
@@ -59,10 +68,8 @@ function CurrentChat({ navigation }) {
                   numberOfLines={conversation.lastMessage?.text ? 1 : 2}
                   ellipsizeMode="tail"
                 >
-                  {conversation?.lastMessage?.text
-                    ? conversation?.lastMessage?.sender === otherUser._id
-                      ? `${formatLastMessage(conversation?.lastMessage?.text)}`
-                      : `Message sent`
+                  {conversation?.lastMessage
+                    ? `${formatLastMessage(conversation?.lastMessage)}`
                     : "You have 30 minutes, say hi and see if there’s a match!"}
                 </Text>
                 {conversation?.lastMessage && (
@@ -131,12 +138,11 @@ function CurrentChat({ navigation }) {
               ) &&
                 user?.currentPair?.[`${otherUserNum}SimilarTags`]?.map(
                   (tag, i) =>
-                    `${tag}${
-                      i ===
+                    `${tag}${i ===
                       user?.currentPair?.[`${otherUserNum}SimilarTags`].length -
-                        1
-                        ? ""
-                        : ", "
+                      1
+                      ? ""
+                      : ", "
                     }`
                 )}
             </Text>
