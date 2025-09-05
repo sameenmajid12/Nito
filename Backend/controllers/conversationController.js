@@ -124,9 +124,12 @@ conversationRouter.post(
           height: dimensions.height,
         },
       });
+      conversation.lastMessage = messageObject._id;
+      await conversation.save();
       const io = getIo();
       const socketUsers = getSocketUsers();
       const receiverSocket = socketUsers[receiverId];
+
       if (receiverSocket) {
         io.to(receiverSocket).emit("receiveMessage", messageObject);
       }
