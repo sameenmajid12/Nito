@@ -50,9 +50,11 @@ function ImageMessage({
     marginBottom: isLastMessage ? 40 : isLastByUser ? 20 : 0,
     borderRadius: 15,
   });
+  let isMounted = true;
   useEffect(() => {
     const getImage = async () => {
       const url = await getUrl(message._id);
+      if (!isMounted) return;
       if (!url) {
         setNotFound(true);
         return;
@@ -62,6 +64,9 @@ function ImageMessage({
     if (message.imageKey !== "placeholder") {
       getImage();
     }
+    return () => {
+      isMounted = false;
+    }
   }, [message]);
 
   const handleLoad = () => {
@@ -69,7 +74,11 @@ function ImageMessage({
       toValue: 1,
       duration: 200,
       useNativeDriver: true,
-    }).start(() => setLoaded(true));
+    }).start(() => {
+      if (isMounted) {
+        setLoaded(true);
+      }
+    });
   };
 
   return (
