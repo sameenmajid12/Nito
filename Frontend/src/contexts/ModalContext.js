@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { Keyboard } from "react-native";
 const ModalContext = createContext();
 
 export const ModalProvider = ({ children }) => {
@@ -16,6 +17,7 @@ export const ModalProvider = ({ children }) => {
     ) {
       return;
     }
+    Keyboard.dismiss();
     setModalState({ visible: true, data: data, name: name });
   };
 
