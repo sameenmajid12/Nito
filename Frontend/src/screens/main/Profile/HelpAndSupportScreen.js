@@ -12,18 +12,18 @@ import { colors, FONT_SIZE_XL } from "../../../styles";
 import ContactUs from "../../../components/support/ContactUs";
 import TextHeader from "../../../components/common/TextHeader";
 import FAQList from "../../../components/support/FAQList";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 function HelpAndSupportScreen({ navigation }) {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-
+  const scrollViewRef = useRef(null);
   useEffect(() => {
-    const keybaordWillShowListener = Keyboard.addListener(
+    const keyboardWillShowListener = Keyboard.addListener(
       "keyboardWillShow",
       () => {
         LayoutAnimation.configureNext({
           ...LayoutAnimation.Presets.easeInEaseOut,
-          duration: 50,
+          duration: 150,
         });
         setKeyboardVisible(true);
       }
@@ -37,11 +37,19 @@ function HelpAndSupportScreen({ navigation }) {
           duration: 150,
         });
         setKeyboardVisible(false);
+        setTimeout(()=>{
+          if (scrollViewRef.current) {
+          scrollViewRef.current.scrollToEnd({ animated: true });
+
+        }
+        }, 200)
+        
       }
+
     );
 
     return () => {
-      keybaordWillShowListener.remove();
+      keyboardWillShowListener.remove();
       keyboardWillHideListener.remove();
     };
   }, []);
@@ -50,14 +58,14 @@ function HelpAndSupportScreen({ navigation }) {
       <TextHeader text={"Help & Support"} navigation={navigation} />
 
       <Animated.View style={styles.contentWrapper}>
-        <ScrollView style={styles.scrollContainer}>
+        <ScrollView ref={scrollViewRef} style={styles.scrollContainer}>
           <View style={styles.headerWrapper}>
             <Text style={styles.header}>How can we help?</Text>
             <Text style={styles.subheader}>
               Find answers to all your questions in one place
             </Text>
           </View>
-          <FAQList keyboardVisible={keyboardVisible}/>
+          <FAQList keyboardVisible={keyboardVisible} />
           <ContactUs />
         </ScrollView>
       </Animated.View>
