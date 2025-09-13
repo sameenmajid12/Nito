@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Linking } from "react-native";
 import { colors } from "../../styles";
 import ProfileSocialInput from "./ProfileSocialInput";
 import ProfileSectionHeader from "./ProfileSectionHeader";
@@ -9,6 +9,39 @@ function ProfileSocialMedia({ editing, handleChange, changes, user, isUser, hasA
   const hasDiscord = !isUser && user.socialMedia?.discord;
   const hasSocials = (hasInstagram || hasSnapchat || hasLinkedin || hasDiscord) || isUser
   if (!hasSocials) return;
+  const openSocialLink = async (platform, data) => {
+    console.log(platform);
+    console.log(data);
+    let appUrl = "";
+    let webUrl = "";
+    switch (platform) {
+      case "instagram":
+        appUrl = `instagram://user?username=${data}`;
+        webUrl = `https://www.instagram.com/${data}`;
+        break;
+      case "snapchat":
+        appUrl = `snapchat://add/${data}`;
+        webUrl = `https://www.snapchat.com/add/${data}`;
+        break;
+      case "linkedin":
+        const username = data.split("linkedin.com/in/")[1];
+        appUrl = `linkedin://in/${username}`;
+        webUrl = data;
+        break;
+      case "discord":
+        appUrl = `https://discord.com/users/${data}`;
+        webUrl = `https://discord.com/users/${data}`;
+        break;
+      default:
+        break;
+    }
+    const supported = await Linking.canOpenURL(appUrl);
+    if (supported) {
+      Linking.openURL(appUrl);
+    } else {
+      Linking.openURL(webUrl);
+    }
+  }
   return (
     <View style={styles.sectionWrapper}>
       <View style={[styles.headerContainer, { borderBottomWidth: hasAboutSection ? 1 : 0 }]}>
@@ -20,18 +53,22 @@ function ProfileSocialMedia({ editing, handleChange, changes, user, isUser, hasA
             <ProfileSocialInput
               editing={editing}
               changes={changes}
-              socialMedia={"Instagram"}
+              platform={"Instagram"}
               setValue={(text) => handleChange("instagram", text)}
               user={user}
+              openSocialLink={openSocialLink}
+              isUser={isUser}
             />
           )}
           {(isUser || (!isUser && hasSnapchat)) && (
             <ProfileSocialInput
               editing={editing}
               changes={changes}
-              socialMedia={"Snapchat"}
+              platform={"Snapchat"}
               setValue={(text) => handleChange("snapchat", text)}
               user={user}
+              openSocialLink={openSocialLink}
+              isUser={isUser}
             />
           )}
         </View>
@@ -40,18 +77,22 @@ function ProfileSocialMedia({ editing, handleChange, changes, user, isUser, hasA
             <ProfileSocialInput
               editing={editing}
               changes={changes}
-              socialMedia={"LinkedIn"}
+              platform={"LinkedIn"}
               setValue={(text) => handleChange("linkedin", text)}
               user={user}
+              openSocialLink={openSocialLink}
+              isUser={isUser}
             />
           )}
           {(isUser || (!isUser && hasDiscord)) && (
             <ProfileSocialInput
               editing={editing}
               changes={changes}
-              socialMedia={"Discord"}
+              platform={"Discord"}
               setValue={(text) => handleChange("discord", text)}
               user={user}
+              openSocialLink={openSocialLink}
+              isUser={isUser}
             />
           )}
         </View>
