@@ -6,6 +6,5 @@ module.exports = {
       path: '.env',
       allowUndefined: true,
     }],
-    ['@babel/plugin-transform-private-methods', { loose: true }]
   ],
 };
