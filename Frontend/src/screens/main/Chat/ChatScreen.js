@@ -1,10 +1,10 @@
 import {
-  SafeAreaView,
   StyleSheet,
   Keyboard,
   ActivityIndicator,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../../../styles";
 import MessageInput from "../../../components/chat/MessageInput";
 import { useState, useEffect } from "react";

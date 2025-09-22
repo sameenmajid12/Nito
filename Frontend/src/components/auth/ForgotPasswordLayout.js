@@ -1,5 +1,4 @@
 import {
-  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -9,6 +8,7 @@ import {
   Easing,
   ActivityIndicator,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   colors,
   FONT_SIZE_XL,

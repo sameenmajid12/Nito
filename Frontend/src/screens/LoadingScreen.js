@@ -1,4 +1,5 @@
-import { Animated, SafeAreaView, StyleSheet } from "react-native";
+import { Animated, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Logo from "../components/common/Logo";
 import { colors } from "../styles";
 import { useEffect, useRef } from "react";

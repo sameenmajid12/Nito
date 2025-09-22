@@ -1,5 +1,4 @@
 import {
-  SafeAreaView,
   StyleSheet,
   Pressable,
   Text,
@@ -8,6 +7,7 @@ import {
   Animated,
   TouchableOpacity,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useRef, useEffect } from "react";
 import {
   colors,

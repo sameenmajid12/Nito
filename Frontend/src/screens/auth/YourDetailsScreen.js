@@ -1,6 +1,5 @@
 import {
   Keyboard,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
@@ -8,6 +7,7 @@ import {
   Pressable,
   Animated,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { colors, FONT_SIZE_XL, FONT_SIZE_XS } from "../../styles";
 import Button from "../../components/common/Button";
 import { useEffect, useRef, useState } from "react";

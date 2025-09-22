@@ -1,10 +1,10 @@
 import {
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
   Keyboard,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../../styles";
 import TextHeader from "../../components/common/TextHeader";
 import ConnectionList from "../../components/common/ConnectionList";

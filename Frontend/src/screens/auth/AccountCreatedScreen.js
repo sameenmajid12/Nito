@@ -1,11 +1,11 @@
 import {
-  SafeAreaView,
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   Animated,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Logo from "../../components/common/Logo";
 import { colors, FONT_SIZE_M } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";

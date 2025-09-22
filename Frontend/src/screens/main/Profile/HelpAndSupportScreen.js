@@ -4,10 +4,10 @@ import {
   Text,
   Animated,
   ScrollView,
-  SafeAreaView,
   Keyboard,
   LayoutAnimation
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { colors, FONT_SIZE_XL } from "../../../styles";
 import ContactUs from "../../../components/support/ContactUs";
 import TextHeader from "../../../components/common/TextHeader";

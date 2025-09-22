@@ -1,11 +1,11 @@
 import {
-  SafeAreaView,
   StyleSheet,
   View,
   Text,
   ScrollView,
   RefreshControl,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/common/Header";
 import {
   colors,
