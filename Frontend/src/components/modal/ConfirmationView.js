@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { FONT_SIZE_M, colors } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useModal } from "../../contexts/ModalContext";
 import { useUser } from "../../contexts/UserContext";

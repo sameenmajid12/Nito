@@ -2,7 +2,6 @@ import {
   Keyboard,
   StyleSheet,
   Text,
-  View,
   LayoutAnimation,
   Pressable,
   Animated,

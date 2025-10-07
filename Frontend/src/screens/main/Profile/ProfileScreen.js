@@ -1,11 +1,8 @@
 import {
   Animated,
   Keyboard,
-  KeyboardAvoidingView,
-  Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

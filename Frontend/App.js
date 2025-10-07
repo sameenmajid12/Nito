@@ -1,10 +1,7 @@
 import "react-native-get-random-values";
 
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
-import AuthNavigator from "./src/navigation/AuthNavigator";
-import MainNavigator from "./src/navigation/MainNavigator";
 import { ModalProvider } from "./src/contexts/ModalContext";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { UserProvider } from "./src/contexts/UserContext";

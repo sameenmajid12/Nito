@@ -2,7 +2,6 @@ import {
   StyleSheet,
   View,
   Text,
-  Pressable,
   Keyboard,
   TouchableOpacity,
   ActivityIndicator,

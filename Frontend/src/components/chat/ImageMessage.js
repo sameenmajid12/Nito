@@ -7,11 +7,9 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Dimensions,
   Animated,
   Keyboard,
 } from "react-native";
-import { BlurView } from "expo-blur";
 
 import { colors, FONT_SIZE_XS, PRIMARY_ACTIVE_OPACITY } from "../../styles";
 import ImageModal from "../modal/ImageModal";

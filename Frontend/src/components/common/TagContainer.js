@@ -1,5 +1,4 @@
-import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, StyleSheet } from "react-native";
 import { colors } from "../../styles";
 import { FONT_SIZE_S } from "../../styles";
 import TagItem from "./TagItem";

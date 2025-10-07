@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Pressable, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { FONT_SIZE_XL, FONT_SIZE_M, colors } from "../../styles";
 import { useModal } from "../../contexts/ModalContext";

@@ -1,17 +1,10 @@
 import {
-  Pressable,
   ScrollView,
   StyleSheet,
-  Text,
-  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   colors,
-  FONT_SIZE_L,
-  FONT_SIZE_M,
-  FONT_SIZE_S,
-  FONT_SIZE_XS,
 } from "../../../styles";
 import Header from "../../../components/common/Header";
 import { useState } from "react";

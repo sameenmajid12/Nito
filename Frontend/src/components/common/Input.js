@@ -4,7 +4,6 @@ import {
   FONT_SIZE_S,
   FONT_SIZE_XS,
   LINE_HEIGHT_XS,
-  textStyles,
 } from "../../styles";
 import { colors } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";

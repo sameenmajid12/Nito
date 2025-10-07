@@ -1,8 +1,6 @@
 import {  ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProfileTop from "../../components/profile/ProfileTop";
-import Header from "../../components/common/Header";
-import { Image } from "expo-image";
 import ProfileAboutMe from "../../components/profile/ProfileAboutMe";
 import ProfileActivity from "../../components/profile/ProfileActivity";
 import UserTags from "../../components/user/UserTags";

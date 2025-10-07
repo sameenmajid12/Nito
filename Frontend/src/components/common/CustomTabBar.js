@@ -1,6 +1,6 @@
 import { View, Text, Pressable, StyleSheet, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, FONT_FAMILY_SEMIBOLD, FONT_SIZE_XS } from '../../styles'; 
+import { colors, FONT_SIZE_XS } from '../../styles'; 
 
 function CustomTabBar({ state, descriptors, navigation, opacity }) {
   

@@ -4,12 +4,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   LayoutAnimation,
-  Animated,
 } from "react-native";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   colors,
-  FONT_SIZE_L,
   FONT_SIZE_M,
   TEXT_ACTIVE_OPACITY,
 } from "../../styles";

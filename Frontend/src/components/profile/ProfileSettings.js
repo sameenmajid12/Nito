@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Switch, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import ProfileSectionHeader from "./ProfileSectionHeader";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_L, FONT_SIZE_M, TEXT_ACTIVE_OPACITY } from "../../styles";

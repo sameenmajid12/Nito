@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import { colors, TEXT_ACTIVE_OPACITY } from "../../../styles";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import EmailVerificationInput from "../../../components/auth/EmailVerificationInput";
 import { useAuth } from "../../../contexts/AuthContext";
 import ForgotPasswordLayout from "../../../components/auth/ForgotPasswordLayout";

@@ -16,7 +16,7 @@ import {
 } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useUser } from "../../contexts/UserContext";
-import { getTimeSinceMessage, getTimeUntil } from "../../utils/Format";
+import { getTimeSinceMessage } from "../../utils/Format";
 import PairEmptyState from "./PairEmptyState";
 import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 function CurrentChat({ navigation }) {

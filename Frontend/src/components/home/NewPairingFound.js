@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { Text, StyleSheet, View, Pressable, Animated } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { colors, FONT_SIZE_S, FONT_SIZE_XXL } from "../../styles";

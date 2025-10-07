@@ -1,7 +1,7 @@
   import { Image } from "expo-image";
   import { useUser } from "../../contexts/UserContext";
   import { StyleSheet, View, Text } from "react-native";
-  import { colors, FONT_SIZE_M, FONT_SIZE_XL, FONT_SIZE_XXL } from "../../styles";
+  import { colors, FONT_SIZE_XXL } from "../../styles";
 
   function MatchedUserImages({ matchedUser }) {
     const { user } = useUser();

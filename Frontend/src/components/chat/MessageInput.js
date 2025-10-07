@@ -7,7 +7,6 @@ import {
   Keyboard,
   Easing,
   Pressable,
-  Dimensions,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { colors } from "../../styles";

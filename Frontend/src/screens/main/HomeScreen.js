@@ -10,9 +10,6 @@ import Header from "../../components/common/Header";
 import {
   colors,
   FONT_SIZE_L,
-  FONT_SIZE_S,
-  FONT_SIZE_XS,
-  FONT_SIZE_XXS,
 } from "../../styles";
 import NewPairingFound from "../../components/home/NewPairingFound";
 import NextPairIn from "../../components/home/NexPairIn";

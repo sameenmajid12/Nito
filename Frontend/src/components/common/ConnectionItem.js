@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Pressable,
   TouchableOpacity,
-  Animated, // Import Animated
+  Animated,
 } from "react-native";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";

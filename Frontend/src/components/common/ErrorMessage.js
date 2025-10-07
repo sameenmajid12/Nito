@@ -1,5 +1,4 @@
 import { StyleSheet, Text } from "react-native";
-import { colors } from "../../styles";
 function ErrorMessage({message, style}){
   return(
     <Text style={[styles.text, style]}>{message}</Text>
