@@ -30,7 +30,7 @@ function ProfileActivity({ navigate, isUser, user }) {
         </TouchableOpacity>
         {isUser ? (
           <Pressable style={styles.activity}>
-            <Text style={styles.metric}>27</Text>
+            <Text style={styles.metric}>{user.skippedUsers?.length}</Text>
             <Text style={styles.description}>Connections skipped</Text>
           </Pressable>
         ) : (
