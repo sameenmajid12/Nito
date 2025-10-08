@@ -4,7 +4,7 @@ const colors = {
   primary: "#7F68FF",
   primary50: "#BEACFF",
   primary70: "#A591FF",
-  accent: "432",
+  accent: "#EA80FC",
   accent40: "#F5C3FE",
   accent55: "#F3B2FD",
   accent70: "#F0A2FD",
