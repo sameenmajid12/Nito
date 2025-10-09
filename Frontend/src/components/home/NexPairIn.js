@@ -7,7 +7,7 @@ function NextMatchIn() {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Next match in</Text>
+        <Text style={styles.headerText}>Next pair in</Text>
         <Ionicons
           size={36}
           color={colors.primary}
