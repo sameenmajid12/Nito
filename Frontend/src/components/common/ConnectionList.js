@@ -4,9 +4,11 @@ import ConnectionItem from "./ConnectionItem";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 import { useUser } from "../../contexts/UserContext";
+import { useConversation } from "../../contexts/ConversationContext";
 function ConnectionList({ screen, connections, navigation }) {
   const { user } = useUser();
   const { countdowns } = usePhaseTimer();
+  const { openConversation, isCurrentConvoDeleted } = useConversation();
   return (
     <View>
       {connections?.length > 0 ? (
@@ -21,19 +23,17 @@ function ConnectionList({ screen, connections, navigation }) {
       ) : (
         <View style={styles.emptyStateWrapper}>
           <Text style={styles.emptyStateText}>
-            {user.currentPair.conversation
+            {(user.currentPair.conversation && !isCurrentConvoDeleted)
               ? "It's a little quiet here... start texting and make a \nconnection"
               : `No connections yet... your next pair will appear in ${countdowns.untilNextPair}`}
             ! 🤝
           </Text>
-          {user.currentPair.conversation && (
+          {(user.currentPair.conversation && !isCurrentConvoDeleted) && (
             <TouchableOpacity
               activeOpacity={TEXT_ACTIVE_OPACITY}
               style={styles.emptyStateButton}
               onPress={() =>
-                navigation.navigate("Chat", {
-                  conversation: user.currentPair.conversation,
-                })
+                openConversation(user.currentPair.conversation, true)
               }
             >
               <Text style={styles.emptyStateButtonText}>Chat now</Text>

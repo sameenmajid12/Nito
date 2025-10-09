@@ -18,10 +18,12 @@ import HomeConnections from "../../components/home/HomeConnections";
 import { useUser } from "../../contexts/UserContext";
 import WaitingForPair from "../../components/home/WaitingForPair";
 import { useState } from "react";
+import { useConversation } from "../../contexts/ConversationContext";
 
 function HomeScreen({ navigation }) {
   const { user, refreshUser } = useUser();
-  const isPaired = user.currentPair.conversation !== null;
+  const {isCurrentConvoDeleted} = useConversation();
+  const isPaired = user.currentPair.conversation && !isCurrentConvoDeleted;
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = async () => {
     setRefreshing(true);
@@ -52,7 +54,7 @@ function HomeScreen({ navigation }) {
             style={{ flexDirection: "row", columnGap: 10, marginBottom: 10 }}
           >
             {isPaired && <NextPairIn />}
-            <DailyPoll isPaired={isPaired}/>
+            <DailyPoll isPaired={isPaired} />
           </View>
         </View>
         <HomeConnections navigation={navigation} />

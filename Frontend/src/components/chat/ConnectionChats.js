@@ -3,16 +3,32 @@ import { useUser } from "../../contexts/UserContext";
 import { colors, FONT_SIZE_S, FONT_SIZE_M, FONT_SIZE_XS } from "../../styles";
 import { formatLastMessageTime } from "../../utils/Format";
 import { Image } from "expo-image";
-function ConnectionChats({ navigation }) {
+import { useConversation } from "../../contexts/ConversationContext";
+import { useEffect, useState } from "react";
+function ConnectionChats() {
   const { user } = useUser();
+  const { openConversation } = useConversation();
+  const [conversations, setConversations] = useState([]);
+  useEffect(() => {
+    setConversations(user.savedConversations.filter((conv) => {
+      const userNum = conv.user1._id === user._id ? "user1" : "user2";
+      const deletionDate = conv[`${userNum}DeletionDate`];
+      const lastMessageDate = conv.lastMessage?.createdAt;
+
+      if (!lastMessageDate) return !deletionDate;
+      if (!deletionDate) return true;
+
+      return new Date(lastMessageDate) > new Date(deletionDate);
+    }))
+  }, [user])
   function truncateMessage(message, maxLength, name) {
     if (!message) {
       return `Send a message to ${name}!`;
     }
-    if(message.sender === user._id){
+    if (message.sender === user._id) {
       return "Message sent"
     }
-    if(message.type === "image"){
+    if (message.type === "image") {
       return "Image received";
     }
     if (message.text.length <= maxLength) return message.text;
@@ -21,13 +37,13 @@ function ConnectionChats({ navigation }) {
   return (
     <View style={styles.conversationListContainer}>
       <Text style={styles.containerHeader}>Your connections</Text>
-      {user.savedConversations?.length > 0 ? (
-        user?.savedConversations?.map((conversation, index) => {
+      {conversations?.length > 0 ? (
+        conversations?.map((conversation, index) => {
           const userNum =
             conversation?.user1?._id === user._id ? "user1" : "user2";
           const isRead =
             conversation.lastReadMessages[userNum]?._id ===
-              conversation.lastMessage?._id ||
+            conversation.lastMessage?._id ||
             conversation.lastMessage?.sender === user._id;
           const otherUser =
             conversation.user1?._id === user._id
@@ -35,21 +51,21 @@ function ConnectionChats({ navigation }) {
               : conversation.user1;
           return (
             <Pressable
-              onPress={() => navigation.navigate("Chat", { conversation })}
+              onPress={() => openConversation(conversation, false)}
               key={index}
               style={({ pressed }) => [
                 styles.conversation,
                 index === 0 && styles.topconversation,
                 pressed
                   ? {
-                      backgroundColor: colors.black5,
-                      borderBottomColor: colors.borderHover,
-                      borderTopColor: index === 0 ? colors.borderHover : null,
-                    }
+                    backgroundColor: colors.black5,
+                    borderBottomColor: colors.borderHover,
+                    borderTopColor: index === 0 ? colors.borderHover : null,
+                  }
                   : {
-                      backgroundColor: colors.background,
-                      borderBottomColor: colors.borderLight,
-                    },
+                    backgroundColor: colors.background,
+                    borderBottomColor: colors.borderLight,
+                  },
               ]}
             >
               <Image
@@ -66,9 +82,9 @@ function ConnectionChats({ navigation }) {
                     isRead
                       ? { color: colors.textLight, fontFamily: "Nunito-Medium" }
                       : {
-                          color: colors.textPrimary,
-                          fontFamily: "Nunito-SemiBold",
-                        },
+                        color: colors.textPrimary,
+                        fontFamily: "Nunito-SemiBold",
+                      },
                   ]}
                 >
                   {truncateMessage(
@@ -103,7 +119,7 @@ function ConnectionChats({ navigation }) {
         </View>
       )}
     </View>
-  );f
+  ); f
 }
 const styles = StyleSheet.create({
   conversationListContainer: {
@@ -167,7 +183,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.borderLight,
     paddingHorizontal: 20,
-    paddingTop:10
+    paddingTop: 10
   },
   emptyStateText: {
     fontFamily: "Nunito-SemiBold",

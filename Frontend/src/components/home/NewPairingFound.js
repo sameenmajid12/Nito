@@ -3,10 +3,12 @@ import { Text, StyleSheet, View, Pressable, Animated } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { colors, FONT_SIZE_S, FONT_SIZE_XXL } from "../../styles";
 import { useUser } from "../../contexts/UserContext";
+import { useConversation } from "../../contexts/ConversationContext";
 
-function NewPairingFound({ navigation }) {
+function NewPairingFound() {
   const scale = useRef(new Animated.Value(1)).current;
   const { user } = useUser();
+  const { openConversation } = useConversation();
   const handlePressIn = () => {
     Animated.spring(scale, {
       toValue: 0.95,
@@ -44,7 +46,7 @@ function NewPairingFound({ navigation }) {
         </Text>
 
         <Pressable
-          onPress={() => navigation.navigate("Chat", {conversation: user.currentPair.conversation})}
+          onPress={() => openConversation(user.currentPair.conversation, true)}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
         >

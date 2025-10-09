@@ -19,13 +19,15 @@ import { useUser } from "../../contexts/UserContext";
 import { getTimeSinceMessage } from "../../utils/Format";
 import PairEmptyState from "./PairEmptyState";
 import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
-function CurrentChat({ navigation }) {
+import { useConversation } from "../../contexts/ConversationContext";
+function CurrentChat() {
   const { user } = useUser();
   const { countdowns } = usePhaseTimer();
+  const { openConversation, isCurrentConvoDeleted } = useConversation();
   const conversation = user.currentPair.conversation;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const formatLastMessage = (message) => {
-    if(!message){
+    if (!message) {
 
     }
     if (message.sender === user._id) {
@@ -49,7 +51,7 @@ function CurrentChat({ navigation }) {
     conversation?.lastMessage.sender === user._id;
   return (
     <View style={styles.pageContainer}>
-      {user.currentPair.conversation ? (
+      {(user.currentPair.conversation && !isCurrentConvoDeleted) ? (
         <>
           <Text style={styles.time}>{countdowns.untilRevealStart}</Text>
           <View style={styles.mainContainer}>
@@ -116,9 +118,7 @@ function CurrentChat({ navigation }) {
                 { transform: [{ scale: scaleAnim }] },
               ]}
               onPress={() =>
-                navigation.navigate("Chat", {
-                  conversation: user.currentPair.conversation,
-                })
+                openConversation(user.currentPair.conversation, true)
               }
               activeOpacity={0.8}
             >

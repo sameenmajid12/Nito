@@ -10,6 +10,7 @@ import ChatModal from "./ChatModal";
 import { useUser } from "../../contexts/UserContext";
 import NotificationModal from "./NotificationModal";
 import { useNotifications } from "../../contexts/NotificationContext";
+import { useConversation } from "../../contexts/ConversationContext";
 
 function Modal({
   user,
@@ -31,7 +32,8 @@ function Modal({
   }
 
   const { closeModal } = useModal();
-  const { updateUser, getConversation } = useUser();
+  const { getConversation } = useConversation();
+  const { updateUser, } = useUser();
   const { notificationsUpdated, notifications, setNotificationsUpdated } =
     useNotifications();
   const closeModalAndUpdateNotifications = () => {

@@ -14,9 +14,10 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useUser } from "../../../contexts/UserContext";
 import useMessages from "../../../hooks/useMessages";
 import { useSocket } from "../../../contexts/SocketContext";
-function ChatScreen({ navigation, route }) {
+import { useConversation } from "../../../contexts/ConversationContext";
+function ChatScreen({ navigation }) {
   const { user } = useUser();
-  const [conversation, setConversation] = useState(route.params.conversation);
+  const {conversation, setConversation} = useConversation();
   const { socket } = useSocket();
   const {
     messages,
