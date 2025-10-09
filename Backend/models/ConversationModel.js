@@ -40,6 +40,8 @@ const conversationSchema = new mongoose.Schema({
     required: true,
   },
   similarTags: { type: [String], default: [] },
+  user1DeletionDate: { type: Date },
+  user2DeletionDate: { type: Date }
 });
 
 conversationSchema.index({ user1: 1, user2: 1 }, { unique: true });
