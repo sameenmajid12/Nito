@@ -18,22 +18,33 @@ conversationRouter.get(
       console.log("Getting messages");
       const { conversationId } = req.params;
       const { _id: userId } = req.user;
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
       const { limit, before } = req.query;
       const conversation = await Conversation.findById(conversationId);
       if (!conversation) {
         return res.status(404).json({ message: "Conversation not found" });
       }
       if (
-        !conversation.user1.equals(userId) &&
-        !conversation.user2.equals(userId)
+        !conversation.user1.equals(user._id) &&
+        !conversation.user2.equals(user._id)
       ) {
         return res
           .status(403)
           .json({ message: "Not authorized to retrieve messages" });
       }
+      const userNum = conversation.user1.equals(user._id) ? "user1" : "user2"
       const query = { conversation: conversationId };
       if (before.length > 0) {
         query.createdAt = { $lt: new Date(before) };
+      }
+      if (conversation[`${userNum}DeletionDate`]) {
+        query.createdAt = {
+          ...query.createdAt,
+          $gt: new Date(conversation[`${userNum}DeletionDate`])
+        };
       }
       const messages = await Message.find(query)
         .sort({ createdAt: -1 })
@@ -181,4 +192,36 @@ conversationRouter.get(
     }
   }
 );
+
+conversationRouter.put("/delete", verifyToken, async (req, res, next) => {
+  try {
+    console.log("Deleting conversation");
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    console.log("Comes here")
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const { conversationId } = req.body;
+    const conversation = await Conversation.findById(conversationId);
+    console.log(conversation);
+    if (!conversation) {
+      return res.status(404).json({ message: "Conversation not found" });
+    }
+    if (!conversation.user1.equals(user._id) && !conversation.user2.equals(user._id)) {
+      return res.status(403).json({ message: "Unauthorized deletion" })
+    }
+    const userNum = conversation.user1.equals(user._id) ? "user1" : "user2";
+    conversation[`${userNum}DeletionDate`] = new Date();
+
+    console.log(conversation)
+    await conversation.save();
+
+    return res.status(200).json({ conversation });
+  }
+  catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Internal error" })
+  }
+})
 module.exports = { conversationRouter };
