@@ -203,21 +203,7 @@ export const UserProvider = ({ children }) => {
       setUserError(e);
     }
   };
-  const getConversation = async (otherUser) => {
-    try {
-      const response = await axios.get(
-        `${API_BASE_URL}/conversation/with/${otherUser._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return response.data.conversation;
-    } catch (e) {
-      addAlert("error", "Convo not found");
-    }
-  };
+  
   const updateUserAfterRevealPhaseFinalized = async () => {
     try {
       console.log("Reveal phase finalized received on frontend");
@@ -271,7 +257,6 @@ export const UserProvider = ({ children }) => {
         reportUser,
         blockUser,
         setUser,
-        getConversation,
         updateUserAfterRevealPhaseFinalized,
         updateUserAfterMatchmakingCompleted,
         refreshUser

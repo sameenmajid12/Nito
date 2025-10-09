@@ -13,6 +13,7 @@ import { PollProvider } from "./src/contexts/PollContext";
 import { NotificationProvider } from "./src/contexts/NotificationContext";
 import { PhaseTimerProvider } from "./src/contexts/PhaseTimerContext";
 import { MessageImageProvider } from "./src/contexts/MessageImageContext";
+import { ConversationProvider } from "./src/contexts/ConversationContext";
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Nunito-Regular": require("./src/assets/fonts/Nunito-Regular.ttf"),
@@ -29,19 +30,21 @@ export default function App() {
         <AlertProvider>
           <AuthProvider>
             <UserProvider>
-              <MessageImageProvider>
-                <NotificationProvider>
-                  <SocketProvider>
-                    <PhaseTimerProvider>
-                      <ModalProvider>
-                        <PollProvider>
-                          <AppNavigator />
-                        </PollProvider>
-                      </ModalProvider>
-                    </PhaseTimerProvider>
-                  </SocketProvider>
-                </NotificationProvider>
-              </MessageImageProvider>
+              <ConversationProvider>
+                <MessageImageProvider>
+                  <NotificationProvider>
+                    <SocketProvider>
+                      <PhaseTimerProvider>
+                        <ModalProvider>
+                          <PollProvider>
+                            <AppNavigator />
+                          </PollProvider>
+                        </ModalProvider>
+                      </PhaseTimerProvider>
+                    </SocketProvider>
+                  </NotificationProvider>
+                </MessageImageProvider>
+              </ConversationProvider>
             </UserProvider>
           </AuthProvider>
         </AlertProvider>
