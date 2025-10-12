@@ -29,6 +29,7 @@ function MessagesContainer({
   setIsLoadingMore,
   hideTime,
   imageHeight,
+  openMessageOptions
 }) {
   const flatListRef = useRef(null);
   const { user } = useUser();
@@ -119,25 +120,31 @@ function MessagesContainer({
         />
       );
     }
-    return isByUser ? (
-      <SentMessage
-        key={item._id}
-        text={item.text}
-        isFirstByUser={isFirstByUser}
-        isLastByUser={isLastByUser}
-        isLastMessage={index === 0}
-      />
-    ) : (
-      <ReceivedMessage
-        key={item._id}
-        text={item.text}
-        isFirstByUser={isFirstByUser}
-        isLastByUser={isLastByUser}
-        isMatch={isMatch}
-        otherUser={otherUser}
-        isLastMessage={index === 0}
-      />
-    );
+    if (isByUser) {
+      return (
+        <SentMessage
+          key={item._id}
+          text={item.text}
+          isFirstByUser={isFirstByUser}
+          isLastByUser={isLastByUser}
+          isLastMessage={index === 0}
+          openMessageOptions={openMessageOptions}
+          id={item._id}
+        />
+      );
+    } else {
+      return (
+        <ReceivedMessage
+          key={item._id}
+          text={item.text}
+          isFirstByUser={isFirstByUser}
+          isLastByUser={isLastByUser}
+          isMatch={isMatch}
+          otherUser={otherUser}
+          isLastMessage={index === 0}
+        />
+      );
+    }
   };
   return (
     <Animated.View style={{ flex: 1, paddingBottom: containerBottomPadding }}>
@@ -173,6 +180,7 @@ function MessagesContainer({
         }
         showsVerticalScrollIndicator={false}
       />
+      
     </Animated.View>
   );
 }
@@ -182,5 +190,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     paddingRight: 25,
   },
+  
 });
 export default MessagesContainer;

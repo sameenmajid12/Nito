@@ -3,11 +3,14 @@ import {
   Keyboard,
   ActivityIndicator,
   View,
+  Text,
+  TouchableWithoutFeedback,
+  Animated
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../../../styles";
 import MessageInput from "../../../components/chat/MessageInput";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ChatHeader from "../../../components/chat/ChatHeader";
 import MessagesContainer from "../../../components/chat/MessagesContainer";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -15,9 +18,11 @@ import { useUser } from "../../../contexts/UserContext";
 import useMessages from "../../../hooks/useMessages";
 import { useSocket } from "../../../contexts/SocketContext";
 import { useConversation } from "../../../contexts/ConversationContext";
+import { BlurView } from "expo-blur";
+import MessageOptions from "../../../components/chat/MessageOptions";
 function ChatScreen({ navigation }) {
   const { user } = useUser();
-  const {conversation, setConversation} = useConversation();
+  const { conversation, setConversation } = useConversation();
   const { socket } = useSocket();
   const {
     messages,
@@ -35,6 +40,23 @@ function ChatScreen({ navigation }) {
     newMessageImageDimensions,
     setNewMessageImageDimensions,
   } = useMessages(conversation);
+  const [selectedMessage, setSelectedMessage] = useState(null);
+  const optionsBackgroundOpacity = useRef(new Animated.Value(0)).current;
+  const openMessageOptions = (message) => {
+    setSelectedMessage(message);
+    Animated.timing(optionsBackgroundOpacity, {
+      toValue: 1,
+      duration: 350,
+      useNativeDriver: true
+    }).start()
+  }
+  const closeMessageOptions = () => {
+    Animated.timing(optionsBackgroundOpacity, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true
+    }).start(() => setSelectedMessage(null))
+  }
   useEffect(() => {
     const handleRevealPhaseStartedInChat = () => {
       if (conversation._id === user.currentPair.conversation._id) {
@@ -112,6 +134,7 @@ function ChatScreen({ navigation }) {
               setIsLoadingMore={setIsLoadingMore}
               hideTime={hideTime}
               imageHeight={newMessageImageDimensions.height}
+              openMessageOptions={openMessageOptions}
             />
           ) : (
             <View style={styles.loadingScreen}>
@@ -138,6 +161,26 @@ function ChatScreen({ navigation }) {
         imageRenderDimensions={newMessageImageDimensions}
         setImageRenderDimensions={setNewMessageImageDimensions}
       ></MessageInput>
+      {selectedMessage && (
+        <Animated.View style={[StyleSheet.absoluteFillObject, { zIndex: 1000, opacity: optionsBackgroundOpacity }]}>
+          <TouchableWithoutFeedback onPress={closeMessageOptions}>
+            <BlurView
+              intensity={70}
+              tint="dark"
+              style={StyleSheet.absoluteFillObject}
+            />
+          </TouchableWithoutFeedback>
+
+          <View style={styles.overlayContent}>
+            <View style={styles.selectedMessage}>
+              <Text style={styles.selectedText}>
+                {messages.find((m) => m._id === selectedMessage).text}
+              </Text>
+            </View>
+            <MessageOptions />
+          </View>
+        </Animated.View>
+      )}
     </SafeAreaView>
   );
 }
@@ -152,5 +195,27 @@ const styles = StyleSheet.create({
   },
   gestureWrapper: { flex: 1, flexDirection: "row" },
   loadingScreen: { flex: 1, justifyContent: "flex-end" },
+  overlayContent: {
+    position: "absolute",
+    bottom: 120,
+    right: 20,
+    alignItems: "flex-end",
+  },
+  selectedMessage: {
+    backgroundColor: colors.white70,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    marginBottom: 10,
+    shadowColor: colors.primary,
+    shadowRadius: 4,
+    shadowOpacity: 0.075,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  selectedText: {
+    color: colors.textPrimary,
+    fontFamily: "Nunito-Bold",
+    fontSize: 16,
+  },
 });
 export default ChatScreen;

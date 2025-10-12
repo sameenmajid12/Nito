@@ -1,19 +1,53 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Animated, Pressable, Vibration  } from "react-native";
+import { useRef, useState } from "react";
 import { colors, FONT_SIZE_S, FONT_SIZE_XS } from "../../styles";
-function SentMessage({ text, isFirstByUser, isLastByUser, isLastMessage }) {
+function SentMessage({ text, isFirstByUser, isLastByUser, isLastMessage, openMessageOptions, id }) {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const holdTimeout = useRef(null);
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.8,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 6,
+    }).start();
+
+    holdTimeout.current = setTimeout(() => {
+      openMessageOptions(id);
+      handlePressOut();
+    }, 500);
+  };
+
+  const handlePressOut = () => {
+    clearTimeout(holdTimeout.current);
+
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 20,
+      bounciness: 8,
+    }).start();
+  };
+
   return (
     <View>
       {isFirstByUser && <Text style={styles.name}>You</Text>}
-      <View
-        style={[
-          styles.sentMessage,
-          isFirstByUser && styles.first,
-          isLastByUser && styles.last,
-          { marginBottom: isLastMessage ? 40 : isLastByUser ? 20 : 0 },
-        ]}
-      >
-        <Text style={styles.text}>{text}</Text>
-      </View>
+      <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut}>
+        <Animated.View
+          style={[
+            styles.sentMessage,
+            isFirstByUser && styles.first,
+            isLastByUser && styles.last,
+            {
+              marginBottom: isLastMessage ? 40 : isLastByUser ? 20 : 0,
+              transform: [{ scale: scaleAnim }],
+            },
+          ]}
+        >
+          <Text style={styles.text}>{text}</Text>
+        </Animated.View>
+      </Pressable>
     </View>
   );
 }
