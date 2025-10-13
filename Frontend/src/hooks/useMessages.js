@@ -33,8 +33,7 @@ function useMessages(conversation) {
 
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/conversation/${conversation._id}/messages?before=${
-          before || ""
+        `${API_BASE_URL}/conversation/${conversation._id}/messages?before=${before || ""
         }&limit=${20}`,
         {
           headers: {
@@ -77,7 +76,7 @@ function useMessages(conversation) {
     const userNum = user._id === conversation.user1._id ? "user1" : "user2";
     if (
       conversation.lastMessage?._id !==
-        conversation.lastReadMessages[userNum]?._id &&
+      conversation.lastReadMessages[userNum]?._id &&
       conversation.lastMessage?.sender !== user._id
     ) {
       const data = {
@@ -143,8 +142,22 @@ function useMessages(conversation) {
         }
       });
     };
+    const handleMessageDeletion = (message) => {
+      console.log("Receive message deletion for current chat");
+      if (message.conversation !== conversation._id) return;
+      setMessages((prev) => prev.filter((m) => m._id !== message._id))
+    }
+    const handleMessageEdit = (message) => {
+      console.log("Receive message edit for current chat");
+      if (message.conversation !== conversation._id) return;
+      setMessages((prev) => prev.map((m) => m._id === message._id ? message : m))
+    }
+    socket.on("deleteMessage", handleMessageDeletion);
+    socket.on("editMessage", handleMessageEdit);
     socket.on("receiveMessage", handleReceiveMessage);
     return () => {
+      socket.off("deleteMessage", handleMessageDeletion);
+      socket.off("editMessage", handleMessageEdit);
       socket.off("receiveMessage", handleReceiveMessage);
     };
   }, [socket, conversation]);
