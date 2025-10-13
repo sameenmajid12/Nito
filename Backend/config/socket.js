@@ -150,10 +150,10 @@ const initializeSocketIo = (server) => {
 
         const receiverSocket = socketUsers[receiverId];
         if (receiverSocket) {
-          io.to(receiverSocket).emit("deleteMessage", messageId);
+          io.to(receiverSocket).emit("deleteMessage", message);
         }
 
-        socket.emit("deleteMessage", messageId);
+        socket.emit("deleteMessage", message);
 
       } catch (e) {
         console.error("Error deleting message:", e);
