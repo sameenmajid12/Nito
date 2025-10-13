@@ -29,6 +29,10 @@ const messageSchema = new mongoose.Schema(
       ref: "Conversation",
       index: true,
     },
+    edited:{
+      type:Boolean,
+      default:false
+    }
   },
   { timestamps: true }
 );

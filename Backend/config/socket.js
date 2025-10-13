@@ -130,7 +130,55 @@ const initializeSocketIo = (server) => {
         }
       }
     );
+    socket.on("deleteMessage", async ({ messageId, userId, receiverId, conversationId }) => {
+      try {
+        const message = await Message.findById(messageId);
+        if (!message || message.sender.toString() !== userId) return;
 
+        await Message.findByIdAndDelete(messageId);
+
+        const conversation = await Conversation.findById(conversationId);
+        if (!conversation) return;
+
+        if (conversation.lastMessage && conversation.lastMessage.toString() === message._id.toString()) {
+          const newLastMessage = await Message.findOne({ conversation: conversationId })
+            .sort({ createdAt: -1 });
+
+          conversation.lastMessage = newLastMessage ? newLastMessage._id : null;
+          await conversation.save();
+        }
+
+        const receiverSocket = socketUsers[receiverId];
+        if (receiverSocket) {
+          io.to(receiverSocket).emit("deleteMessage", messageId);
+        }
+
+        socket.emit("deleteMessage", messageId);
+
+      } catch (e) {
+        console.error("Error deleting message:", e);
+        socket.emit("errorMessage", { error: e.message });
+      }
+    });
+
+    socket.on("editMessage", async ({ messageId, newText, receiverId, userId }) => {
+      try {
+        const message = await Message.findById(messageId);
+        if (!message || message.sender.toString() !== userId) return;
+        message.text = newText;
+        message.edited = true;
+        await message.save();
+        const receiverSocket = socketUsers[receiverId];
+        if (receiverSocket) {
+          io.to(receiverSocket).emit("editMessage", message);
+        }
+        socket.emit("editMessage", message);
+      }
+      catch (e) {
+        console.error("Error deleting message:", e);
+        socket.emit("errorMessage", { error: e.message });
+      }
+    })
     socket.on(
       "markConversationAsRead",
       async ({ conversationId, receiverId }) => {
