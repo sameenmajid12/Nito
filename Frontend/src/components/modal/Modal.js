@@ -15,6 +15,7 @@ import { useConversation } from "../../contexts/ConversationContext";
 function Modal({
   user,
   conversation,
+  message,
   type,
   sort,
   changeSort,
@@ -45,9 +46,15 @@ function Modal({
   };
   const slideAnim = useRef(new Animated.Value(600)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
-  const [confirmationType, setConfirmationType] = useState(
-    type === "logoutModal" ? { type: "logout" } : null
-  );
+  const [confirmationType, setConfirmationType] = useState(null);
+  useEffect(() => {
+    if (type === "logoutModal") {
+      toggleConfirmation("logout", null, null);
+    }
+    else if (type === "messageModal") {
+      toggleConfirmation("delete", "message", { conversation, message })
+    }
+  }, []);
   const toggleConfirmation = (type, subject, data) => {
     if (confirmationType) {
       setConfirmationType(null);
@@ -71,7 +78,7 @@ function Modal({
   }, []);
 
   const handleClose = () => {
-    if (confirmationType && type !== "logoutModal") return;
+    if (confirmationType && (type !== "logoutModal" && type !== "messageModal")) return;
     Animated.parallel([
       Animated.timing(slideAnim, {
         toValue: 600,
@@ -94,7 +101,7 @@ function Modal({
     });
   };
   const cancelConfirmation = () => {
-    if (type === "logoutModal") {
+    if (type === "logoutModal" || type === "messageModal") {
       handleClose();
     }
     setConfirmationType(null);

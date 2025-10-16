@@ -12,11 +12,14 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useModal } from "../../contexts/ModalContext";
 import { useUser } from "../../contexts/UserContext";
 import { useConversation } from "../../contexts/ConversationContext";
+import useMessages from "../../hooks/useMessages";
 function ConfirmationView({ confirmationType, cancelConfirmation }) {
   const { logout } = useAuth();
   const { closeModal } = useModal();
   const { removeConnection } = useUser();
   const { deleteConversation } = useConversation();
+  const conversation = confirmationType.data?.conversation || null;
+  const { deleteMessage } = useMessages(conversation);
   if (!confirmationType.data && confirmationType.type !== "logout") {
     return;
   }
@@ -37,13 +40,14 @@ function ConfirmationView({ confirmationType, cancelConfirmation }) {
       ? "This action will stop all interaction between you and the user."
       : confirmationType.type === "report"
         ? "If we find this user is violating our guidelines, appropriate action will be taken."
-        : confirmationType.type === "delete"
-          ? "This will delete the conversation from your chat list. It won't be removed for the other person."
-          : confirmationType.type === "remove"
-            ? "This action will remove your connection. You cannot connect with this user again."
-            : confirmationType.type === "logout"
-              ? "You’ll need to sign in again to access your account."
-              : "";
+        : confirmationType.type === "delete" && confirmationType.data.message
+          ? "This will delete the message permanently"
+          : confirmationType.type === "delete" ? "This will delete the conversation from your chat list. It won't be removed for the other person."
+            : confirmationType.type === "remove"
+              ? "This action will remove your connection. You cannot connect with this user again."
+              : confirmationType.type === "logout"
+                ? "You’ll need to sign in again to access your account."
+                : "";
   const handleConfirmation = () => {
     switch (confirmationType.type) {
       case "block":
@@ -53,7 +57,11 @@ function ConfirmationView({ confirmationType, cancelConfirmation }) {
         console.log("Reporting user");
         break;
       case "delete":
-        deleteConversation();
+        if (confirmationType.data.message) {
+          deleteMessage(confirmationType.data.message)
+        } else {
+          deleteConversation();
+        }
         break;
       case "remove":
         removeConnection(confirmationType.data)

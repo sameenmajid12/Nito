@@ -167,9 +167,12 @@ function MainNavigator() {
           type={modalState.name}
           user={modalState.name === "userModal" ? modalState.data.user : null}
           conversation={
-            modalState.name === "chatModal"
+            modalState.name === "chatModal" || modalState.name === "messageModal"
               ? modalState.data.conversation
               : null
+          }
+          message={
+            modalState.name === "messageModal" ? modalState.data.message : null
           }
           sort={modalState.name === "sortModal" ? modalState.data.sort : null}
           changeSort={
