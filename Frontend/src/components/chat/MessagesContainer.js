@@ -117,6 +117,7 @@ function MessagesContainer({
           isMatch={isMatch}
           otherUser={otherUser}
           isLastMessage={index === 0}
+          openMessageOptions={openMessageOptions}
         />
       );
     }
@@ -124,12 +125,11 @@ function MessagesContainer({
       return (
         <SentMessage
           key={item._id}
-          text={item.text}
+          message={item}
           isFirstByUser={isFirstByUser}
           isLastByUser={isLastByUser}
           isLastMessage={index === 0}
           openMessageOptions={openMessageOptions}
-          id={item._id}
         />
       );
     } else {
