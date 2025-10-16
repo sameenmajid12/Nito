@@ -160,25 +160,6 @@ const initializeSocketIo = (server) => {
         socket.emit("errorMessage", { error: e.message });
       }
     });
-
-    socket.on("editMessage", async ({ messageId, newText, receiverId, userId }) => {
-      try {
-        const message = await Message.findById(messageId);
-        if (!message || message.sender.toString() !== userId) return;
-        message.text = newText;
-        message.edited = true;
-        await message.save();
-        const receiverSocket = socketUsers[receiverId];
-        if (receiverSocket) {
-          io.to(receiverSocket).emit("editMessage", message);
-        }
-        socket.emit("editMessage", message);
-      }
-      catch (e) {
-        console.error("Error deleting message:", e);
-        socket.emit("errorMessage", { error: e.message });
-      }
-    })
     socket.on(
       "markConversationAsRead",
       async ({ conversationId, receiverId }) => {
