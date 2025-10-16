@@ -20,6 +20,8 @@ import { useSocket } from "../../../contexts/SocketContext";
 import { useConversation } from "../../../contexts/ConversationContext";
 import { BlurView } from "expo-blur";
 import MessageOptions from "../../../components/chat/MessageOptions";
+import { Image } from "expo-image";
+import { useImageCache } from "../../../contexts/MessageImageContext";
 function ChatScreen({ navigation }) {
   const { user } = useUser();
   const { conversation, setConversation } = useConversation();
@@ -39,24 +41,28 @@ function ChatScreen({ navigation }) {
     setNewMessageImage,
     newMessageImageDimensions,
     setNewMessageImageDimensions,
+    selectedMessage,
+    openMessageOptions,
+    closeMessageOptions,
+    optionsBackgroundOpacity,
+    copyToClipboard
   } = useMessages(conversation);
-  const [selectedMessage, setSelectedMessage] = useState(null);
-  const optionsBackgroundOpacity = useRef(new Animated.Value(0)).current;
-  const openMessageOptions = (message) => {
-    setSelectedMessage(message);
-    Animated.timing(optionsBackgroundOpacity, {
-      toValue: 1,
-      duration: 350,
-      useNativeDriver: true
-    }).start()
-  }
-  const closeMessageOptions = () => {
-    Animated.timing(optionsBackgroundOpacity, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: true
-    }).start(() => setSelectedMessage(null))
-  }
+  const [selectedImage, setSelectedImage] = useState(null);
+  const { getUrl } = useImageCache();
+  useEffect(() => {
+    console.log(selectedMessage?.text);
+    const getSelectedImage = async () => {
+      const imageUrl = await getUrl(selectedMessage._id);
+      if (!imageUrl) {
+        closeMessageOptions();
+        return;
+      }
+      setSelectedImage(imageUrl);
+    }
+    if (selectedMessage?.type === "image") {
+      getSelectedImage();
+    }
+  }, [selectedMessage]);
   useEffect(() => {
     const handleRevealPhaseStartedInChat = () => {
       if (conversation._id === user.currentPair.conversation._id) {
@@ -171,13 +177,20 @@ function ChatScreen({ navigation }) {
             />
           </TouchableWithoutFeedback>
 
-          <View style={styles.overlayContent}>
-            <View style={styles.selectedMessage}>
-              <Text style={styles.selectedText}>
-                {messages.find((m) => m._id === selectedMessage).text}
-              </Text>
+          <View style={[styles.overlayContent, {bottom:selectedMessage.type==="text"?120:240}]}>
+            <View style={selectedMessage.type === "text" && styles.selectedMessage}>
+              {selectedMessage.text ?
+                <Text style={styles.selectedText}>{selectedMessage.text}</Text> :
+                <View style={styles.selectedImageWrapper}>
+                  <Image style={{
+                    width: selectedMessage?.imageDimensions.width,
+                    height: selectedMessage?.imageDimensions.height
+                  }}
+                    source={{ uri: selectedImage }}
+                  /></View>}
+
             </View>
-            <MessageOptions />
+            <MessageOptions type={selectedMessage.text ? "text" : "image"} message={selectedMessage} conversation={conversation} copyToClipboard={copyToClipboard} />
           </View>
         </Animated.View>
       )}
@@ -202,6 +215,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   selectedMessage: {
+    maxWidth:"90%",
     backgroundColor: colors.white70,
     paddingVertical: 10,
     paddingHorizontal: 15,
@@ -211,6 +225,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOpacity: 0.075,
     shadowOffset: { width: 0, height: 2 },
+  },
+  selectedImageWrapper:{
+    borderRadius:10,
+    overflow:'hidden',
+    marginBottom:15
   },
   selectedText: {
     color: colors.textPrimary,
