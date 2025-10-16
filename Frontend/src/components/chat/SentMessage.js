@@ -1,20 +1,20 @@
-import { View, Text, StyleSheet, Animated, Pressable, Vibration  } from "react-native";
-import { useRef, useState } from "react";
+import { View, Text, StyleSheet, Animated, Pressable  } from "react-native";
+import { useRef } from "react";
 import { colors, FONT_SIZE_S, FONT_SIZE_XS } from "../../styles";
-function SentMessage({ text, isFirstByUser, isLastByUser, isLastMessage, openMessageOptions, id }) {
+function SentMessage({ message, isFirstByUser, isLastByUser, isLastMessage, openMessageOptions }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const holdTimeout = useRef(null);
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
-      toValue: 0.8,
+      toValue: 0.9,
       useNativeDriver: true,
       speed: 50,
       bounciness: 6,
     }).start();
 
     holdTimeout.current = setTimeout(() => {
-      openMessageOptions(id);
+      openMessageOptions(message);
       handlePressOut();
     }, 500);
   };
@@ -45,7 +45,7 @@ function SentMessage({ text, isFirstByUser, isLastByUser, isLastMessage, openMes
             },
           ]}
         >
-          <Text style={styles.text}>{text}</Text>
+          <Text style={styles.text}>{message.text}</Text>
         </Animated.View>
       </Pressable>
     </View>

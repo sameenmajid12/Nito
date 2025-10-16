@@ -26,6 +26,7 @@ function ImageMessage({
   otherUser,
   isMatch,
   isLastMessage,
+  openMessageOptions
 }) {
   const imageWidth = message.imageDimensions.width;
   const imageHeight = message.imageDimensions.height;
@@ -36,10 +37,50 @@ function ImageMessage({
   const [modalVisible, setModalVisible] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const profilePic = isMatch
-    ? otherUser.profilePic
+    ? otherUser?.profilePic
     : require("../../assets/images/anonymous-user.png");
   const name = isMatch ? otherUser.fullname : otherUser.username;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const holdTimeout = useRef(null);
+  const isLongPress = useRef(false);
 
+  const handlePressIn = () => {
+    if (!isByUser) return;
+    Animated.spring(scaleAnim, {
+      toValue: 0.8,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 6,
+    }).start();
+
+    holdTimeout.current = setTimeout(() => {
+      isLongPress.current = true
+      openMessageOptions(message);
+      handlePressOut();
+    }, 500);
+  };
+
+  const handlePressOut = () => {
+    if (!isByUser) return;
+    clearTimeout(holdTimeout.current);
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 20,
+      bounciness: 8,
+    }).start();
+  };
+  const handlePress = () => {
+    if (isLongPress.current) {
+      isLongPress.current = false;
+      return;
+    }
+    if (loaded) {
+      setModalVisible(true);
+      Keyboard.dismiss();
+    }
+
+  }
   const getImageStyles = () => ({
     width: imageWidth,
     height: imageHeight,
@@ -93,12 +134,9 @@ function ImageMessage({
           </View>
         ) : !notFound ? (
           <TouchableOpacity
-            onPress={() => {
-              if (loaded) {
-                setModalVisible(true);
-                Keyboard.dismiss();
-              }
-            }}
+            onPress={handlePress}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
             style={[getImageStyles(), { marginLeft: 0 }]}
             activeOpacity={PRIMARY_ACTIVE_OPACITY}
           >
