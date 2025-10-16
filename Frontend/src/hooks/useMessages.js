@@ -1,10 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { API_BASE_URL } from "@env";
 import { useAuth } from "../contexts/AuthContext";
 import { useUser } from "../contexts/UserContext";
 import { useSocket } from "../contexts/SocketContext";
+import { Animated, Keyboard } from "react-native";
 import { v4 as uuidv4 } from "uuid";
+import { useAlert } from "../contexts/AlertContext";
+import * as Clipboard from 'expo-clipboard';
 function useMessages(conversation) {
   const { token } = useAuth();
   const { user, setUser } = useUser();
@@ -15,6 +18,8 @@ function useMessages(conversation) {
   const [hasMore, setHasMore] = useState(true);
   const [newMessage, setNewMessage] = useState("");
   const [newMessageImage, setNewMessageImage] = useState(null);
+  const [selectedMessage, setSelectedMessage] = useState(null);
+  const {addAlert} = useAlert();
   const [newMessageImageDimensions, setNewMessageImageDimensions] = useState({
     width: 0,
     height: 0,
@@ -71,7 +76,28 @@ function useMessages(conversation) {
       getMessages();
     }
   }, [conversation, hasLoadedInitial]);
-
+   const copyToClipboard = async(messageText) => {
+    await Clipboard.setStringAsync(messageText);
+    addAlert("success", "Copied to clipboard");
+    closeMessageOptions();
+  };
+  const optionsBackgroundOpacity = useRef(new Animated.Value(0)).current;
+  const openMessageOptions = (message) => {
+    setSelectedMessage(message);
+    Keyboard.dismiss();
+    Animated.timing(optionsBackgroundOpacity, {
+      toValue: 1,
+      duration: 350,
+      useNativeDriver: true
+    }).start()
+  }
+  const closeMessageOptions = () => {
+    Animated.timing(optionsBackgroundOpacity, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true
+    }).start(() => setSelectedMessage(null))
+  }
   useEffect(() => {
     const userNum = user._id === conversation.user1._id ? "user1" : "user2";
     if (
@@ -145,19 +171,14 @@ function useMessages(conversation) {
     const handleMessageDeletion = (message) => {
       console.log("Receive message deletion for current chat");
       if (message.conversation !== conversation._id) return;
-      setMessages((prev) => prev.filter((m) => m._id !== message._id))
-    }
-    const handleMessageEdit = (message) => {
-      console.log("Receive message edit for current chat");
-      if (message.conversation !== conversation._id) return;
-      setMessages((prev) => prev.map((m) => m._id === message._id ? message : m))
+      closeMessageOptions();
+      setMessages((prev) => prev.filter((m) => m._id !== message._id));
+      addAlert("success", "Message deleted")
     }
     socket.on("deleteMessage", handleMessageDeletion);
-    socket.on("editMessage", handleMessageEdit);
     socket.on("receiveMessage", handleReceiveMessage);
     return () => {
       socket.off("deleteMessage", handleMessageDeletion);
-      socket.off("editMessage", handleMessageEdit);
       socket.off("receiveMessage", handleReceiveMessage);
     };
   }, [socket, conversation]);
@@ -235,6 +256,13 @@ function useMessages(conversation) {
       console.error(e);
     }
   };
+  const deleteMessage = (messageId) => {
+    const receiverId = otherUser._id;
+    const userId = user._id;
+    const conversationId = conversation._id;
+    socket.emit("deleteMessage", { messageId, userId, receiverId, conversationId });
+  }
+  
   return {
     messages,
     isLoadingInitial,
@@ -251,6 +279,12 @@ function useMessages(conversation) {
     setNewMessageImage,
     newMessageImageDimensions,
     setNewMessageImageDimensions,
+    deleteMessage,
+    selectedMessage,
+    openMessageOptions,
+    closeMessageOptions,
+    optionsBackgroundOpacity,
+    copyToClipboard
   };
 }
 
