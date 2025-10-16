@@ -1,55 +1,57 @@
 import { Text, StyleSheet, TouchableOpacity, Animated, Easing } from "react-native";
-import { colors, FONT_SIZE_M, FONT_SIZE_XXL } from "../../styles";
+import { colors, FONT_SIZE_S, FONT_SIZE_XL, FONT_SIZE_XXL } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
-function MessageOptions({ message }) {
-  const translateX = useRef(new Animated.Value(400)).current;
-  useEffect(()=>{
-    Animated.timing(translateX,{
-      toValue:0,
-      duration:350,
-      delay:0,
-      useNativeDriver:true,
-      easing:Easing.easeInOut
+import { useModal } from "../../contexts/ModalContext";
+function MessageOptions({ message, conversation, copyToClipboard }) {
+  const optionsOpacity = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(optionsOpacity, {
+      toValue: 1,
+      duration: 350,
+      delay: 0,
+      useNativeDriver: true,
+      easing: Easing.easeInOut
     }).start()
-  },[])
+  }, []);
+  console.log(message);
+
+  const { openModal } = useModal();
   return (
-    <Animated.View style={[styles.messageOptionsWrapper, {transform:[{translateX}]}]}>
-      <TouchableOpacity style={styles.optionWrapper}>
-        <Ionicons style={styles.optionIcon} name="color-wand-outline"></Ionicons>
-        <Text style={styles.option}>Edit</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.optionWrapper}>
-        <Ionicons style={styles.optionIcon} name="clipboard-outline"></Ionicons>
+    <Animated.View style={[styles.mainWrapper, { opacity: optionsOpacity }, message.type === "image" ? styles.imageOptionsWrapper : styles.textOptionsWrapper]}>
+      {message.type === "text" && <TouchableOpacity onPress={() => copyToClipboard(message.text)} style={styles.optionWrapper}>
+        <Ionicons style={styles.optionIcon} size={FONT_SIZE_XL} name="clipboard-outline"></Ionicons>
         <Text style={styles.option}>Copy</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.optionWrapper}>
-        <Ionicons style={styles.optionIcon} size={FONT_SIZE_XXL} name="trash-outline"></Ionicons>
-        <Text style={styles.option}>Delete</Text>
+      </TouchableOpacity>}
+
+      <TouchableOpacity onPress={() => openModal({ message, conversation }, "messageModal")} style={styles.optionWrapper}>
+        <Ionicons style={styles.optionIcon} color={"red"} size={FONT_SIZE_XL} name="trash-outline"></Ionicons>
+        <Text style={[styles.option, { color: "red" }]}>Delete</Text>
       </TouchableOpacity>
     </Animated.View>
   )
 }
 const styles = StyleSheet.create({
-  messageOptionsWrapper: {
+  mainWrapper: {
     backgroundColor: colors.white70,
-    padding: 20,
-    paddingLeft:15,
-    rowGap:20,
-    borderRadius:20
+    rowGap: 20,
+    paddingLeft: 15,
+    paddingRight: 25
+  },
+  imageOptionsWrapper: {
+    borderRadius: 10, paddingVertical: 10,
+  },
+  textOptionsWrapper: {
+    paddingVertical: 20,
+    borderRadius: 15
   },
   optionWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    columnGap:10
-  },
-  optionIcon: {
-    fontSize: FONT_SIZE_XXL,
-    color: colors.textPrimary
+    columnGap: 10
   },
   option: {
-    color: colors.textPrimary,
-    fontFamily: "Nunito-SemiBold", fontSize: FONT_SIZE_M,
+    fontFamily: "Nunito-SemiBold", fontSize: FONT_SIZE_S,
     textAlign: "left"
   }
 })
