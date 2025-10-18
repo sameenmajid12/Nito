@@ -3,7 +3,7 @@ import { colors, FONT_SIZE_S, FONT_SIZE_XL } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
 import { useModal } from "../../contexts/ModalContext";
-function MessageOptions({ message, conversation, copyToClipboard, saveImageMessage }) {
+function MessageOptions({ message, conversation, copyToClipboard, saveImageMessage, isByUser }) {
   const optionsOpacity = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(optionsOpacity, {
@@ -17,7 +17,7 @@ function MessageOptions({ message, conversation, copyToClipboard, saveImageMessa
 
   const { openModal } = useModal();
   return (
-    <Animated.View style={[styles.mainWrapper, { opacity: optionsOpacity }, message.type === "image" ? styles.imageOptionsWrapper : styles.textOptionsWrapper]}>
+    <Animated.View style={[styles.mainWrapper, { opacity: optionsOpacity }, isByUser ? styles.userOptionsWrapper : styles.otherUserOptionsWrapper]}>
       {message.type === "text" ? <TouchableOpacity onPress={() => copyToClipboard(message.text)} style={styles.optionWrapper}>
         <Ionicons style={styles.optionIcon} size={FONT_SIZE_XL} name="clipboard-outline"></Ionicons>
         <Text style={styles.option}>Copy</Text>
@@ -26,10 +26,10 @@ function MessageOptions({ message, conversation, copyToClipboard, saveImageMessa
         <Text style={styles.option}>Save</Text>
       </TouchableOpacity>}
 
-      <TouchableOpacity onPress={() => openModal({ message, conversation }, "messageModal")} style={styles.optionWrapper}>
+      {isByUser && <TouchableOpacity onPress={() => openModal({ message, conversation }, "messageModal")} style={styles.optionWrapper}>
         <Ionicons style={styles.optionIcon} color={"red"} size={FONT_SIZE_XL} name="trash-outline"></Ionicons>
         <Text style={[styles.option, { color: "red" }]}>Delete</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>}
     </Animated.View>
   )
 }
@@ -38,14 +38,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white70,
     rowGap: 20,
     paddingLeft: 15,
-    paddingRight: 25
   },
-  imageOptionsWrapper: {
+  userOptionsWrapper: {
     borderRadius: 15, paddingVertical: 20,
+    paddingRight:30
   },
-  textOptionsWrapper: {
-    paddingVertical: 20,
-    borderRadius: 15
+  otherUserOptionsWrapper: {
+    paddingVertical: 15,
+    borderRadius: 15,
+    paddingRight:50
   },
   optionWrapper: {
     flexDirection: "row",
