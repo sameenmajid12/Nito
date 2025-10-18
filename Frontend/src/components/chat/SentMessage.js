@@ -14,7 +14,7 @@ function SentMessage({ message, isFirstByUser, isLastByUser, isLastMessage, open
     }).start();
 
     holdTimeout.current = setTimeout(() => {
-      openMessageOptions(message);
+      openMessageOptions(message, true);
       handlePressOut();
     }, 500);
   };

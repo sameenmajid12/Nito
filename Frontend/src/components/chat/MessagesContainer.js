@@ -136,12 +136,13 @@ function MessagesContainer({
       return (
         <ReceivedMessage
           key={item._id}
-          text={item.text}
+        message={item}
           isFirstByUser={isFirstByUser}
           isLastByUser={isLastByUser}
           isMatch={isMatch}
           otherUser={otherUser}
           isLastMessage={index === 0}
+          openMessageOptions={openMessageOptions}
         />
       );
     }

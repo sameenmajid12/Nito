@@ -1,17 +1,46 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Animated, Pressable } from "react-native";
 import { colors, FONT_SIZE_S, FONT_SIZE_XS } from "../../styles";
+import { useRef } from "react";
 import { Image } from "expo-image";
 const PROFILE_PIC_SIZE = 33;
 const TEXT_LEFT_MARGIN = 33 + 5;
 const NAME_HEIGHT = 16;
 function ReceivedMessage({
-  text,
+  message,
   isFirstByUser,
   isLastByUser,
   isMatch,
   otherUser,
   isLastMessage,
+  openMessageOptions
 }) {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const holdTimeout = useRef(null);
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.9,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 6,
+    }).start();
+
+    holdTimeout.current = setTimeout(() => {
+      openMessageOptions(message, false);
+      handlePressOut();
+    }, 500);
+  };
+
+  const handlePressOut = () => {
+    clearTimeout(holdTimeout.current);
+
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 20,
+      bounciness: 8,
+    }).start();
+  };
   const image = isMatch
     ? otherUser.profilePic
     : require("../../assets/images/anonymous-user.png");
@@ -21,20 +50,22 @@ function ReceivedMessage({
       {isFirstByUser && image && (
         <Image style={styles.profilePic} source={image}></Image>
       )}
-      <View style={{ flex: 1 }}>
+      <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut} style={{ flex: 1 }}>
         {isFirstByUser && <Text style={styles.name}>{name}</Text>}
-        <View
+        <Animated.View
           style={[
             styles.receivedMessage,
             isFirstByUser ? styles.first : null,
             isLastByUser ? styles.last : null,
             !isFirstByUser ? { marginLeft: TEXT_LEFT_MARGIN } : null,
-            { marginBottom: isLastMessage ? 40 : isLastByUser ? 20 : 0 },
+            {
+              marginBottom: isLastMessage ? 40 : isLastByUser ? 20 : 0, transform: [{ scale: scaleAnim }],
+            },
           ]}
         >
-          <Text style={styles.text}>{text}</Text>
-        </View>
-      </View>
+          <Text style={styles.text}>{message.text}</Text>
+        </Animated.View>
+      </Pressable>
     </View>
   );
 }
