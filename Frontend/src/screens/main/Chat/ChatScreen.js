@@ -18,9 +18,8 @@ import { useUser } from "../../../contexts/UserContext";
 import useMessages from "../../../hooks/useMessages";
 import { useSocket } from "../../../contexts/SocketContext";
 import { useConversation } from "../../../contexts/ConversationContext";
-import { BlurView } from "expo-blur";
-import MessageOptions from "../../../components/chat/MessageOptions";
-import { Image } from "expo-image";
+
+import MessageOptionsView from "../../../components/chat/MessageOptionsView";
 function ChatScreen({ navigation }) {
   const { user } = useUser();
   const { conversation, setConversation } = useConversation();
@@ -154,36 +153,15 @@ function ChatScreen({ navigation }) {
         setImageRenderDimensions={setNewMessageImageDimensions}
       ></MessageInput>
       {selectedMessage && (
-        <Animated.View style={[StyleSheet.absoluteFillObject, { zIndex: 1000, opacity: optionsBackgroundOpacity }]}>
-          <TouchableWithoutFeedback onPress={closeMessageOptions}>
-            <BlurView
-              intensity={70}
-              tint="dark"
-              style={StyleSheet.absoluteFillObject}
-            />
-          </TouchableWithoutFeedback>
-
-          <View style={[styles.overlayContent, { bottom: selectedMessage.type === "text" ? 120 : 240 }]}>
-            <View style={selectedMessage.type === "text" && styles.selectedMessage}>
-              {selectedMessage.text ?
-                <Text style={styles.selectedText}>{selectedMessage.text}</Text> :
-                <View style={styles.selectedImageWrapper}>
-                  <Image style={{
-                    width: selectedMessage?.imageDimensions.width,
-                    height: selectedMessage?.imageDimensions.height
-                  }}
-                    source={{ uri: selectedImage }}
-                  /></View>}
-
-            </View>
-            <MessageOptions
-              type={selectedMessage.text ? "text" : "image"}
-              image={selectedImage} message={selectedMessage}
-              conversation={conversation} copyToClipboard={copyToClipboard}
-              saveImageMessage={saveImageMessage}
-            />
-          </View>
-        </Animated.View>
+        <MessageOptionsView
+          selectedImage={selectedImage}
+          selectedMessage={selectedMessage}
+          copyToClipboard={copyToClipboard}
+          closeMessageOptions={closeMessageOptions}
+          saveImageMessage={saveImageMessage}
+          optionsBackgroundOpacity={optionsBackgroundOpacity}
+          conversation={conversation}
+        />
       )}
     </SafeAreaView>
   );
@@ -199,33 +177,6 @@ const styles = StyleSheet.create({
   },
   gestureWrapper: { flex: 1, flexDirection: "row" },
   loadingScreen: { flex: 1, justifyContent: "flex-end" },
-  overlayContent: {
-    position: "absolute",
-    bottom: 120,
-    right: 20,
-    alignItems: "flex-end",
-  },
-  selectedMessage: {
-    maxWidth: "90%",
-    backgroundColor: colors.white70,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 20,
-    marginBottom: 10,
-    shadowColor: colors.primary,
-    shadowRadius: 4,
-    shadowOpacity: 0.075,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  selectedImageWrapper: {
-    borderRadius: 10,
-    overflow: 'hidden',
-    marginBottom: 15
-  },
-  selectedText: {
-    color: colors.textPrimary,
-    fontFamily: "Nunito-Bold",
-    fontSize: 16,
-  },
+
 });
 export default ChatScreen;
