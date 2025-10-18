@@ -1,9 +1,9 @@
 import { Text, StyleSheet, TouchableOpacity, Animated, Easing } from "react-native";
-import { colors, FONT_SIZE_S, FONT_SIZE_XL, FONT_SIZE_XXL } from "../../styles";
+import { colors, FONT_SIZE_S, FONT_SIZE_XL } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
 import { useModal } from "../../contexts/ModalContext";
-function MessageOptions({ message, conversation, copyToClipboard }) {
+function MessageOptions({ message, conversation, copyToClipboard, saveImageMessage }) {
   const optionsOpacity = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(optionsOpacity, {
@@ -14,14 +14,16 @@ function MessageOptions({ message, conversation, copyToClipboard }) {
       easing: Easing.easeInOut
     }).start()
   }, []);
-  console.log(message);
 
   const { openModal } = useModal();
   return (
     <Animated.View style={[styles.mainWrapper, { opacity: optionsOpacity }, message.type === "image" ? styles.imageOptionsWrapper : styles.textOptionsWrapper]}>
-      {message.type === "text" && <TouchableOpacity onPress={() => copyToClipboard(message.text)} style={styles.optionWrapper}>
+      {message.type === "text" ? <TouchableOpacity onPress={() => copyToClipboard(message.text)} style={styles.optionWrapper}>
         <Ionicons style={styles.optionIcon} size={FONT_SIZE_XL} name="clipboard-outline"></Ionicons>
         <Text style={styles.option}>Copy</Text>
+      </TouchableOpacity> : <TouchableOpacity onPress={() => saveImageMessage()} style={styles.optionWrapper}>
+        <Ionicons style={styles.optionIcon} size={FONT_SIZE_XL} name="save-outline"></Ionicons>
+        <Text style={styles.option}>Save</Text>
       </TouchableOpacity>}
 
       <TouchableOpacity onPress={() => openModal({ message, conversation }, "messageModal")} style={styles.optionWrapper}>
@@ -39,7 +41,7 @@ const styles = StyleSheet.create({
     paddingRight: 25
   },
   imageOptionsWrapper: {
-    borderRadius: 10, paddingVertical: 10,
+    borderRadius: 15, paddingVertical: 20,
   },
   textOptionsWrapper: {
     paddingVertical: 20,

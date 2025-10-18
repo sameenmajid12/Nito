@@ -8,6 +8,10 @@ import { Animated, Keyboard } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 import { useAlert } from "../contexts/AlertContext";
 import * as Clipboard from 'expo-clipboard';
+import { File, Directory, Paths } from "expo-file-system";
+import * as MediaLibrary from 'expo-media-library';
+import { Alert } from 'react-native';
+import { useImageCache } from "../contexts/MessageImageContext";
 function useMessages(conversation) {
   const { token } = useAuth();
   const { user, setUser } = useUser();
@@ -19,7 +23,9 @@ function useMessages(conversation) {
   const [newMessage, setNewMessage] = useState("");
   const [newMessageImage, setNewMessageImage] = useState(null);
   const [selectedMessage, setSelectedMessage] = useState(null);
-  const {addAlert} = useAlert();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const { addAlert } = useAlert();
+  const { getUrl } = useImageCache();
   const [newMessageImageDimensions, setNewMessageImageDimensions] = useState({
     width: 0,
     height: 0,
@@ -76,7 +82,8 @@ function useMessages(conversation) {
       getMessages();
     }
   }, [conversation, hasLoadedInitial]);
-   const copyToClipboard = async(messageText) => {
+
+  const copyToClipboard = async (messageText) => {
     await Clipboard.setStringAsync(messageText);
     addAlert("success", "Copied to clipboard");
     closeMessageOptions();
@@ -98,6 +105,19 @@ function useMessages(conversation) {
       useNativeDriver: true
     }).start(() => setSelectedMessage(null))
   }
+  useEffect(() => {
+    const getSelectedImage = async () => {
+      const imageUrl = await getUrl(selectedMessage._id);
+      if (!imageUrl) {
+        closeMessageOptions();
+        return;
+      }
+      setSelectedImage(imageUrl);
+    }
+    if (selectedMessage?.type === "image") {
+      getSelectedImage();
+    }
+  }, [selectedMessage]);
   useEffect(() => {
     const userNum = user._id === conversation.user1._id ? "user1" : "user2";
     if (
@@ -256,13 +276,41 @@ function useMessages(conversation) {
       console.error(e);
     }
   };
+  async function saveImageMessage() {
+    try {
+      if (!selectedImage) return;
+
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission needed", "We need access to your photos to save images.");
+        return;
+      }
+
+      const destinationDir = new Directory(Paths.cache, "images");
+      destinationDir.create({ idempotent: true });
+      const filename = `downloadedImage_${Date.now()}.jpg`;
+      const destinationFile = new File(Paths.cache, filename);
+
+      const file = await File.downloadFileAsync(selectedImage, destinationFile);
+
+      const asset = await MediaLibrary.createAssetAsync(file.uri);
+      await MediaLibrary.createAlbumAsync("MyApp", asset, false);
+
+      addAlert("success", "Image saved");
+      closeMessageOptions();
+    } catch (err) {
+      console.error("Error saving image:", err);
+      addAlert("error", "Failed to save image");
+      closeMessageOptions();
+    }
+  }
   const deleteMessage = (messageId) => {
     const receiverId = otherUser._id;
     const userId = user._id;
     const conversationId = conversation._id;
     socket.emit("deleteMessage", { messageId, userId, receiverId, conversationId });
   }
-  
+
   return {
     messages,
     isLoadingInitial,
@@ -284,7 +332,10 @@ function useMessages(conversation) {
     openMessageOptions,
     closeMessageOptions,
     optionsBackgroundOpacity,
-    copyToClipboard
+    copyToClipboard,
+    selectedImage,
+    setSelectedImage,
+    saveImageMessage
   };
 }
 
