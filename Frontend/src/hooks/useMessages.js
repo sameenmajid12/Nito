@@ -13,6 +13,15 @@ import * as MediaLibrary from 'expo-media-library';
 import { Alert } from 'react-native';
 import { useImageCache } from "../contexts/MessageImageContext";
 function useMessages(conversation) {
+  if (!conversation) {
+    return {
+      deleteMessage: () => { },
+      sendMessage: () => { },
+      sendImageMessage: () => { },
+      openMessageOptions: () => { },
+      closeMessageOptions: () => { },
+    };
+  };
   const { token } = useAuth();
   const { user, setUser } = useUser();
   const { socket } = useSocket();
@@ -89,8 +98,8 @@ function useMessages(conversation) {
     closeMessageOptions();
   };
   const optionsBackgroundOpacity = useRef(new Animated.Value(0)).current;
-  const openMessageOptions = (message) => {
-    setSelectedMessage(message);
+  const openMessageOptions = (message, byUser) => {
+    setSelectedMessage({ message, byUser });
     Keyboard.dismiss();
     Animated.timing(optionsBackgroundOpacity, {
       toValue: 1,
@@ -107,29 +116,30 @@ function useMessages(conversation) {
   }
   useEffect(() => {
     const getSelectedImage = async () => {
-      const imageUrl = await getUrl(selectedMessage._id);
+      const imageUrl = await getUrl(selectedMessage.message._id);
       if (!imageUrl) {
         closeMessageOptions();
         return;
       }
       setSelectedImage(imageUrl);
     }
-    if (selectedMessage?.type === "image") {
+    if (selectedMessage?.message.type === "image") {
       getSelectedImage();
     }
   }, [selectedMessage]);
   useEffect(() => {
+    if (!conversation?.lastMessage) return;
     const userNum = user._id === conversation.user1._id ? "user1" : "user2";
     if (
       conversation.lastMessage?._id !==
       conversation.lastReadMessages[userNum]?._id &&
       conversation.lastMessage?.sender !== user._id
     ) {
-      const data = {
+
+      socket.emit("markConversationAsRead", {
         conversationId: conversation._id,
         receiverId: otherUser._id,
-      };
-      socket.emit("markConversationAsRead", data);
+      });
       setUser((prev) => {
         if (conversation._id === user.currentPair.conversation?._id) {
           return {
@@ -162,7 +172,7 @@ function useMessages(conversation) {
         return { ...prev, savedConversations: newConversations };
       });
     }
-  }, [messages, conversation]);
+  }, [conversation?.lastMessage?._id]);
 
   useEffect(() => {
     if (!socket) return;
@@ -285,6 +295,7 @@ function useMessages(conversation) {
         Alert.alert("Permission needed", "We need access to your photos to save images.");
         return;
       }
+      closeMessageOptions();
 
       const destinationDir = new Directory(Paths.cache, "images");
       destinationDir.create({ idempotent: true });
@@ -297,7 +308,6 @@ function useMessages(conversation) {
       await MediaLibrary.createAlbumAsync("MyApp", asset, false);
 
       addAlert("success", "Image saved");
-      closeMessageOptions();
     } catch (err) {
       console.error("Error saving image:", err);
       addAlert("error", "Failed to save image");

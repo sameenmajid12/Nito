@@ -45,7 +45,6 @@ function ImageMessage({
   const isLongPress = useRef(false);
 
   const handlePressIn = () => {
-    if (!isByUser) return;
     Animated.spring(scaleAnim, {
       toValue: 0.8,
       useNativeDriver: true,
@@ -55,13 +54,12 @@ function ImageMessage({
 
     holdTimeout.current = setTimeout(() => {
       isLongPress.current = true
-      openMessageOptions(message);
+      openMessageOptions(message, isByUser);
       handlePressOut();
     }, 500);
   };
 
   const handlePressOut = () => {
-    if (!isByUser) return;
     clearTimeout(holdTimeout.current);
     Animated.spring(scaleAnim, {
       toValue: 1,
