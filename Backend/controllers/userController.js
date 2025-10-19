@@ -368,10 +368,11 @@ userRouter.patch(
 
 userRouter.post("/block", verifyToken, async (req, res) => {
   try {
+    console.log("Blocking user");
     const userId = req.user._id;
-    const { userToBlockUsername } = req.body;
+    const { userToBlockId } = req.body;
     const user = await User.findById(userId);
-    const userToBlock = await User.findOne({ username: userToBlockUsername });
+    const userToBlock = await User.findById(userToBlockId);
     if (!user || !userToBlock) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -379,8 +380,11 @@ userRouter.post("/block", verifyToken, async (req, res) => {
       return res.status(400).json({ message: "User already blocked" });
     }
     user.blockedUsers.push(userToBlock._id);
+    if (user.revealedUsers.some((r) => r.user.equals(userToBlock._id))) {
+      user.revealedUsers = user.revealedUsers.filter((r) => !r.user.equals(userToBlock._id));
+    }
     await user.save();
-    res.status(200).json({ blockedUsers: user.blockedUsers });
+    res.status(200).json({ blockedUsers: user.blockedUsers, revealedUsers: user.revealedUsers });
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: "Internal server error" });
