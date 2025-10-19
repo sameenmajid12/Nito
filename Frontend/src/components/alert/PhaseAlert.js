@@ -13,15 +13,20 @@ import { Ionicons } from "@expo/vector-icons";
 import { colors, FONT_SIZE_M, FONT_SIZE_XXS } from "../../styles";
 import { useAlert } from "../../contexts/AlertContext";
 import { useUser } from "../../contexts/UserContext";
+import { useConversation } from "../../contexts/ConversationContext";
+
 const ALERT_WIDTH = 300;
+
 function RevealPhaseAlert({ navigation, type }) {
   const { closePhaseAlert } = useAlert();
   const { user } = useUser();
-  const AnimatedLinearGradient =
-    Animated.createAnimatedComponent(LinearGradient);
+  const { openConversation } = useConversation();
+  const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
+
   const gradientTranslateY = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
   useEffect(() => {
     Animated.parallel([
       Animated.timing(translateY, {
@@ -38,16 +43,18 @@ function RevealPhaseAlert({ navigation, type }) {
       Animated.timing(gradientTranslateY, {
         delay: 350,
         toValue: 1,
-        duration: 5000,
+        duration: 4000,
         easing: Easing.bezier(0, 0.77, 0.55, 1.01),
         useNativeDriver: false,
       }),
     ]).start();
   }, [gradientTranslateY, translateY]);
+
   const gradientTranslation = gradientTranslateY.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 50 * 24.5],
+    outputRange: [0, 101 * 24.5],
   });
+
   const generateGradientColors = () => {
     let result = [];
     const colorArr = [colors.primary, colors.accent];
@@ -57,6 +64,7 @@ function RevealPhaseAlert({ navigation, type }) {
     }
     return result;
   };
+
   const dismissAlert = () => {
     Animated.parallel([
       Animated.timing(translateY, {
@@ -72,6 +80,7 @@ function RevealPhaseAlert({ navigation, type }) {
       }),
     ]).start(() => closePhaseAlert());
   };
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -91,6 +100,27 @@ function RevealPhaseAlert({ navigation, type }) {
       },
     })
   ).current;
+
+  const repeatedContent = Array.from({ length: 40 }).map((_, i) => (
+    <View key={i} style={styles.content}>
+      <Text style={styles.contentText}>
+        {type === "matchmaking" ? "New pairing found 🎉" : "Time to reveal 👀"}
+      </Text>
+      <View style={styles.contentActions}>
+        <Pressable style={styles.viewButton} onPress={() => {
+          dismissAlert();
+          openConversation(user.currentPair?.conversation)
+        }}>
+          <Text style={styles.viewButtonText}>View</Text>
+        </Pressable>
+        <View style={styles.contentActionsDivider}></View>
+        <Pressable>
+          <Ionicons name="close" color={colors.white} size={FONT_SIZE_M} />
+        </Pressable>
+      </View>
+    </View>
+  ));
+
   return (
     <Animated.View
       {...panResponder.panHandlers}
@@ -106,46 +136,21 @@ function RevealPhaseAlert({ navigation, type }) {
       ]}
     >
       <Animated.View
-        style={[
-          styles.gradientView,
-          { transform: [{ translateY: gradientTranslation }] },
-        ]}
+        style={[styles.gradientView, { transform: [{ translateY: gradientTranslation }] }]}
       >
         <AnimatedLinearGradient
           start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1.1 }}
+          end={{ x: 0.5, y: 0.6 }}
           colors={generateGradientColors()}
           style={styles.gradientObject}
         />
-      </Animated.View>
-      <View style={styles.content}>
-        <Text style={styles.contentText}>
-          {type === "matchmaking"
-            ? "New pairing found 🎉"
-            : "Time to reveal 👀"}
-        </Text>
-        <View style={styles.contentActions}>
-          <Pressable
-            style={styles.viewButton}
-            onPress={() => {
-              dismissAlert();
-              navigation.navigate("Chat", {
-                conversation: user.currentPair.conversation,
-              });
-            }}
-          >
-            <Text style={styles.viewButtonText}>View</Text>
-          </Pressable>
-          <View style={styles.contentActionsDivider}></View>
-          <Pressable onPress={dismissAlert}>
-            <Ionicons
-              name="close"
-              color={colors.white}
-              size={FONT_SIZE_M}
-            ></Ionicons>
-          </Pressable>
+        <View style={{ flexDirection: 'column', rowGap: 40, position: "absolute", left: 0, right: 0, paddingHorizontal: 15, paddingVertical: 12 }}>
+          {repeatedContent}
         </View>
-      </View>
+      </Animated.View>
+
+      {/* Fixed interactable content on top */}
+
     </Animated.View>
   );
 }
@@ -155,19 +160,17 @@ const styles = StyleSheet.create({
     width: ALERT_WIDTH,
     position: "absolute",
     top: 0,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
     borderRadius: 999,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     left: "50%",
     zIndex: 100,
+    overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.15,
-    borderRadius: 10,
-    overflow: "hidden",
+    height: 45
   },
   content: {
     flex: 1,
@@ -199,7 +202,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 99,
-    height: 2500,
+    height: 5000,
   },
   gradientObject: {
     height: "100%",
