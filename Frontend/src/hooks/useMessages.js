@@ -74,6 +74,10 @@ function useMessages(conversation) {
       }
     } catch (e) {
       console.error(e);
+      const errorMessage =
+        e.response?.data?.message || "Something went wrong"; 
+      addAlert("error", errorMessage);
+
     } finally {
       if (!before) {
         setIsLoadingInitial(false);

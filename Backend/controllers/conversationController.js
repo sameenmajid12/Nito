@@ -36,6 +36,11 @@ conversationRouter.get(
           .json({ message: "Not authorized to retrieve messages" });
       }
       const userNum = conversation.user1.equals(user._id) ? "user1" : "user2"
+      const otherUserNum = userNum === "user1" ? "user2" : "user1";
+      const otherUserId = conversation[otherUserNum];
+      if(user.blockedUsers.some((u)=>u.equals(otherUserId))){
+        return res.status(400).json({message:"Cannot be viewed"})
+      }
       const query = { conversation: conversationId };
       if (before.length > 0) {
         query.createdAt = { $lt: new Date(before) };
