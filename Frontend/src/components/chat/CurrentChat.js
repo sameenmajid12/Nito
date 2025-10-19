@@ -130,7 +130,7 @@ function CurrentChat() {
               ></Ionicons>
             </TouchableOpacity>
           </View>
-          <Text style={styles.infoText}>
+          { user?.currentPair?.[`${otherUserNum}SimilarTags`].length > 0 ?  <Text style={styles.infoText}>
             Similar tags:{" "}
             <Text style={styles.interests}>
               {Array.isArray(
@@ -146,7 +146,8 @@ function CurrentChat() {
                     }`
                 )}
             </Text>
-          </Text>
+          </Text>: <Text style={styles.infoText}>No similar tags... opposites attract right?</Text>}
+         
         </>
       ) : (
         <PairEmptyState />
