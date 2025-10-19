@@ -14,9 +14,10 @@ import { useUser } from "../../contexts/UserContext";
 import { useConversation } from "../../contexts/ConversationContext";
 import useMessages from "../../hooks/useMessages";
 function ConfirmationView({ confirmationType, cancelConfirmation }) {
+  console.log(confirmationType);
   const { logout } = useAuth();
   const { closeModal } = useModal();
-  const { removeConnection } = useUser();
+  const { removeConnection, blockUser } = useUser();
   const { deleteConversation } = useConversation();
   const conversation = confirmationType.data?.conversation || null;
   const { deleteMessage } = useMessages(conversation);
@@ -51,7 +52,7 @@ function ConfirmationView({ confirmationType, cancelConfirmation }) {
   const handleConfirmation = () => {
     switch (confirmationType.type) {
       case "block":
-        console.log("Blocking user");
+        blockUser(confirmationType.data)
         break;
       case "report":
         console.log("Reporting user");

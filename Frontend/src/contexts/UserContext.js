@@ -162,7 +162,7 @@ export const UserProvider = ({ children }) => {
         savedConversations,
         archivedConversations,
       }));
-      addAlert("info", "Connection removed");
+      addAlert("success", "Connection removed");
     } catch (e) {
       console.error("Error removing connection: ", e);
       addAlert(e);
@@ -185,25 +185,26 @@ export const UserProvider = ({ children }) => {
       setUserError(e);
     }
   };
-  const blockUser = async (userToBlockUsername) => {
+  const blockUser = async (userToBlockId) => {
     try {
       const response = await axios.post(
         `${API_BASE_URL}/user/block`,
-        userToBlockUsername,
+        { userToBlockId },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      const { blockedUsers } = response.data;
-      setUser((prev) => ({ ...prev, blockedUsers }));
+      const { blockedUsers, revealedUsers } = response.data;
+      setUser((prev) => ({ ...prev, blockedUsers, revealedUsers }));
+      addAlert("success", "User blocked")
     } catch (e) {
       console.error("Error blocking user: ", e);
-      setUserError(e);
+      addAlert("error", "Error blocking user")
     }
   };
-  
+
   const updateUserAfterRevealPhaseFinalized = async () => {
     try {
       console.log("Reveal phase finalized received on frontend");
@@ -224,7 +225,7 @@ export const UserProvider = ({ children }) => {
       console.error("Error updating after reveal phase finalized: ", e);
     }
   };
-  const updateUserAfterMatchmakingCompleted=async()=>{
+  const updateUserAfterMatchmakingCompleted = async () => {
     try {
       console.log("Matchmaking completed received on frontend");
       const response = await axios.get(
