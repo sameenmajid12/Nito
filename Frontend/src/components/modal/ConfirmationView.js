@@ -14,7 +14,6 @@ import { useUser } from "../../contexts/UserContext";
 import { useConversation } from "../../contexts/ConversationContext";
 import useMessages from "../../hooks/useMessages";
 function ConfirmationView({ confirmationType, cancelConfirmation }) {
-  console.log(confirmationType);
   const { logout } = useAuth();
   const { closeModal } = useModal();
   const { removeConnection, blockUser } = useUser();
