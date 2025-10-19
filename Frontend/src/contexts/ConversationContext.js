@@ -22,10 +22,10 @@ export const ConversationProvider = ({ children }) => {
     navigation.navigate("Chat");
   }
   useEffect(() => {
-    if(!user) return;
+    if(!user || !user?.currentPair.conversation) return;
     const currentConvoLastMessageDate = user.currentPair.conversation?.lastMessage?.createdAt;
-    const currentConvoUserNum = user.currentPair?.conversation?.user1._id === user._id ? "user1" : "user2";
-    const currentConvoDeletionDate = user.currentPair?.conversation[`${currentConvoUserNum}DeletionDate`];
+    const currentConvoUserNum = user.currentPair.conversation?.user1?._id === user._id ? "user1" : "user2";
+    const currentConvoDeletionDate = user.currentPair.conversation[`${currentConvoUserNum}DeletionDate`];
     setIsCurrentConvoDeleted(currentConvoLastMessageDate && currentConvoDeletionDate ?
       new Date(currentConvoLastMessageDate) < new Date(currentConvoDeletionDate) :
       currentConvoDeletionDate ? true : false);
