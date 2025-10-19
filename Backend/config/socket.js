@@ -110,6 +110,18 @@ const initializeSocketIo = (server) => {
               error: "Conversation not found",
             });
           }
+          const sender = await User.findById(socket.userId);
+          const receiver = await User.findById(receiverId);
+
+          if (
+            sender.blockedUsers.some(id => id.equals(receiver._id)) ||
+            receiver.blockedUsers.some(id => id.equals(sender._id))
+          ) {
+            return socket.emit("errorMessage", {
+              error: "You cannot send messages to this user.",
+            });
+          }
+
           const message = await Message.create({
             sender: socket.userId,
             receiver: receiverId,
