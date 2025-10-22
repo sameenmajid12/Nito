@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { StyleSheet, Text, View } from "react-native";
-import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_XXL } from "../../styles";
+import { colors, FONT_SIZE_L } from "../../styles";
 import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 function PairEmptyState() {
   const { countdowns } = usePhaseTimer();

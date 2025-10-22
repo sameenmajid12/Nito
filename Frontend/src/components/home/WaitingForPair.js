@@ -1,6 +1,5 @@
 import { StyleSheet, View, Text } from "react-native";
 import { colors, FONT_SIZE_M, FONT_SIZE_XL } from "../../styles";
-import { getTimeUntil } from "../../utils/Format";
 import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 function WaitingForPair() {
   const { countdowns } = usePhaseTimer();

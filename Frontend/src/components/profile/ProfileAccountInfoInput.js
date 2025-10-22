@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Text, TextInput, View, StyleSheet, Pressable } from "react-native";
-import { colors, FONT_SIZE_L, FONT_SIZE_M, FONT_SIZE_XL } from "../../styles";
+import { colors, FONT_SIZE_XL } from "../../styles";
 function ProfileAccountInfoInput({
   iconName,
   label,

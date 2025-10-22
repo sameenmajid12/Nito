@@ -2,7 +2,6 @@ import { View, Text, Animated, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
 import { colors, FONT_SIZE_XXL } from "../../styles";
-import { getTimeUntil } from "../../utils/Format";
 import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 
 function TimeLeft({  showTime, toggleTime }) {
