@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Animated, Pressable  } from "react-native";
+import { View, Text, StyleSheet, Animated, Pressable } from "react-native";
 import { useRef } from "react";
 import { colors, FONT_SIZE_S, FONT_SIZE_XS } from "../../styles";
 function SentMessage({ message, isFirstByUser, isLastByUser, isLastMessage, openMessageOptions }) {
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     alignSelf: "flex-end",
-    backgroundColor: colors.white70,
+    backgroundColor: colors.primary,
     borderRadius: 20,
     maxWidth: "70%",
     marginBottom: 1,
@@ -66,13 +66,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
   },
   text: {
-    color: colors.textPrimary,
+    color: colors.white70,
     fontFamily: "Nunito-Bold",
     fontSize: FONT_SIZE_S,
   },
   last: {
+    shadowColor: "#000",
     shadowRadius: 4,
-    shadowOpacity: 0.075,
+    shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 4 },
   },
   name: {
