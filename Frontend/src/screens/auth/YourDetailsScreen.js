@@ -199,6 +199,7 @@ function YourDetailsScreen({ navigation }) {
           onPress={continueRegistration}
           title={"Continue"}
           buttonStyle={styles.buttonStyle}
+          height={45}
         ></Button>
         <Text
           style={{
@@ -228,7 +229,6 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     width: "100%",
-    height: 45,
     marginTop: 10,
     marginBottom: 15,
     borderRadius:10

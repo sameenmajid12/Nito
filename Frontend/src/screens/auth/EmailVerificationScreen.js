@@ -15,15 +15,13 @@ import {
   FONT_SIZE_S,
   FONT_SIZE_XL,
   TEXT_ACTIVE_OPACITY,
+  scaleSize
 } from "../../styles";
 import { Image } from "expo-image";
 import { useRegistration } from "../../contexts/RegistrationContext";
 import Button from "../../components/common/Button";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
-import { API_BASE_URL } from "@env";
 import { useAuth } from "../../contexts/AuthContext";
-import ErrorMessage from "../../components/common/ErrorMessage";
 import EmailVerificationInput from "../../components/auth/EmailVerificationInput";
 function EmailVerificationScreen({ navigation }) {
   const { registrationData } = useRegistration();
@@ -95,6 +93,7 @@ function EmailVerificationScreen({ navigation }) {
           title={"Continue"}
           buttonStyle={styles.button}
           isLoading={isLoadingRegistration}
+          height={45}
         ></Button>
         <View style={styles.notReceivedWrapper}>
           <Text style={styles.noReceivedText}>Didn't receive an email? </Text>
@@ -121,8 +120,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   emailIcon: {
-    width: 100,
-    height: 100,
+    width: scaleSize(100),
+    height: scaleSize(100),
     contentFit: "contain",
   },
   contentWrapper: {
@@ -158,6 +157,6 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontFamily: "Nunito-Bold",
   },
-  button: { width: "100%", height: 45, borderRadius:10 },
+  button: { width: "100%", borderRadius:10 },
 });
 export default EmailVerificationScreen;

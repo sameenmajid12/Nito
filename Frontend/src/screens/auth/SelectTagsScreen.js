@@ -110,6 +110,7 @@ function SelectTagsScreen({ navigation }) {
                 textStyle={styles.addButtonText}
                 variant={"tertiary"}
                 onPress={addTag}
+                height={35}
               ></Button>
             </View>
           </View>
@@ -146,11 +147,13 @@ function SelectTagsScreen({ navigation }) {
               title="Skip"
               buttonStyle={styles.mainButton}
               variant={"secondary"}
+              height={45}
             ></Button>
             <Button
               onPress={() => continueRegistration(false)}
               title="Finish"
               buttonStyle={styles.mainButton}
+              height={45}
             ></Button>
           </Animated.View>
         </Animated.View>
@@ -191,7 +194,6 @@ const styles = StyleSheet.create({
   },
   addButton: {
     width: 120,
-    height: 35,
     backgroundColor: colors.accent70,
     borderRadius: 10,
     shadowColor: "#000",
@@ -199,8 +201,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  addButtonText: { fontFamily: "Nunito-Bold", color: colors.white },
-  mainButton: { width: "48%", height: 45, borderRadius: 10 },
+  addButtonText: { fontFamily: "Nunito-Bold", color: colors.white, fontSize: FONT_SIZE_S },
+  mainButton: { width: "48%", borderRadius: 10 },
   navigateBack: {
     flexDirection: "row",
     columnGap: 3,

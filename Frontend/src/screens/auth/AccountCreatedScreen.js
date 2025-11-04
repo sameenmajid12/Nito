@@ -89,6 +89,7 @@ function AccountCreatedScreen() {
             onPress={handleGetStarted}
             buttonStyle={styles.button}
             textIcon={"arrow-forward"}
+            height={45}
           />
         </View>
       </Animated.View>
@@ -147,7 +148,6 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
-    height: 45,
     borderRadius: 99,
   },
   buttonText: {
