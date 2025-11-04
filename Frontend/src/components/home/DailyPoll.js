@@ -4,7 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { colors, FONT_SIZE_M, FONT_SIZE_S, FONT_SIZE_XS } from "../../styles";
+import { colors, FONT_SIZE_M, FONT_SIZE_S, FONT_SIZE_XS, scaleSize } from "../../styles";
 import { useModal } from "../../contexts/ModalContext";
 import { useEffect, useState } from "react";
 
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.white,
-    height: 30,
+    height: scaleSize(30),
     borderRadius: 5,
   },
   pollClosed: {

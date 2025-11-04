@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, View, Text } from "react-native";
 import { colors, FONT_SIZE_S } from "../../styles";
-
+import { scaleSize } from "../../styles";
 function TagItem({ myTag, tag, removeTag, addTag, index }) {
   const iconNameForMyTag = myTag && !removeTag ? "checkmark" : "close";
   return (
@@ -31,8 +31,8 @@ function TagItem({ myTag, tag, removeTag, addTag, index }) {
 }
 const styles = StyleSheet.create({
   tagContainer: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingVertical: scaleSize(10),
+    paddingHorizontal: scaleSize(15),
     flexDirection: "row",
     alignItems: "center",
     columnGap: 10,

@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Text, StyleSheet, View, Pressable, Animated } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { colors, FONT_SIZE_S, FONT_SIZE_XXL } from "../../styles";
+import { colors, FONT_SIZE_S, FONT_SIZE_XXL, scaleSize } from "../../styles";
 import { useUser } from "../../contexts/UserContext";
 import { useConversation } from "../../contexts/ConversationContext";
 
@@ -98,9 +98,9 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   button: {
-    width: 150,
-    height: 40,
-    marginTop: 20,
+    width: scaleSize(150),
+    height: scaleSize(40),
+    marginTop: scaleSize(20),
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 999,

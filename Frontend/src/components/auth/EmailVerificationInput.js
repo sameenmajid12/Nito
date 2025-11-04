@@ -2,6 +2,7 @@ import { StyleSheet, View, TextInput } from "react-native";
 import ErrorMessage from "../common/ErrorMessage";
 import { useRef } from "react";
 import { colors, FONT_SIZE_L } from "../../styles";
+import { scaleSize } from "../../styles";
 function EmailVerificationInput({ code, setCode, error, inputSize }) {
   const inputRefs = useRef([]);
   const changeText = (num, index) => {
@@ -33,7 +34,7 @@ function EmailVerificationInput({ code, setCode, error, inputSize }) {
               style={[
                 styles.input,
                 { borderColor: error ? "red" : colors.borderLight },
-                {width:inputSize, height:inputSize}
+                {width:scaleSize(inputSize), height: scaleSize(inputSize)}
               ]}
               value={code[index]}
               onKeyPress={(e) => handleKeyPress(e, index)}

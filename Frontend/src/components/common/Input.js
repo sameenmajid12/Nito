@@ -5,7 +5,7 @@ import {
   FONT_SIZE_XS,
   LINE_HEIGHT_XS,
 } from "../../styles";
-import { colors } from "../../styles";
+import { colors, scaleSize } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import ErrorMessage from "./ErrorMessage";
 function Input({
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    minHeight: 45,
+    minHeight: scaleSize(45),
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",

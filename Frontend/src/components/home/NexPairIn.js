@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { View, Text, StyleSheet } from "react-native";
-import { colors } from "../../styles";
+import { colors, scaleSize } from "../../styles";
 import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
 function NextMatchIn() {
   const { countdowns } = usePhaseTimer();
@@ -9,7 +9,7 @@ function NextMatchIn() {
       <View style={styles.header}>
         <Text style={styles.headerText}>Next pair in</Text>
         <Ionicons
-          size={36}
+          size={scaleSize(36)}
           color={colors.primary}
           name="time-outline"
         ></Ionicons>
