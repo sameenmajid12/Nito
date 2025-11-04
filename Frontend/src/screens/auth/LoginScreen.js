@@ -7,6 +7,7 @@ import {
   Pressable,
   Easing,
   TouchableOpacity,
+  Dimensions
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -14,6 +15,7 @@ import {
   FONT_SIZE_M,
   TEXT_ACTIVE_OPACITY,
   textStyles,
+  scaleSize
 } from "../../styles";
 import Button from "../../components/common/Button";
 import DecorationShapes from "../../components/auth/DecorationShapes";
@@ -24,7 +26,9 @@ import SchoolSelector from "../../components/auth/SchoolSelector";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import { useAuth } from "../../contexts/AuthContext";
 
-const INITIAL_PADDING_TOP = 180;
+const {width:SCREEN_WIDTH} = Dimensions.get("window");
+
+const INITIAL_PADDING_TOP = SCREEN_WIDTH >= 430 ? 180 : SCREEN_WIDTH >= 400 ? 160 : 140;
 const KEYBOARD_ACTIVE_PADDING_TOP = 80;
 
 function LoginScreen({ navigation }) {
@@ -181,6 +185,7 @@ function LoginScreen({ navigation }) {
               title="Login"
               buttonStyle={styles.buttonStyle}
               isLoading={isLoadingLogin}
+              height={45}
             />
             {authError && (
               <ErrorMessage
@@ -263,7 +268,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   inputStyle: { borderRadius: 10, paddingHorizontal: 18 },
-  buttonStyle: { width: "80%", height: 45, marginTop: 10, borderRadius: 10 },
+  buttonStyle: { width: "80%", marginTop: 10, borderRadius: 10 },
 });
 
 export default LoginScreen;

@@ -7,6 +7,7 @@ import {
   Keyboard,
   Easing,
   TouchableOpacity,
+  Dimensions
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors, FONT_SIZE_M, textStyles } from "../../styles";
@@ -28,7 +29,8 @@ function RegisterScreen({ navigation }) {
   const [schoolDropDown, setSchoolDropDown] = useState(false);
   const [formError, setFormError] = useState(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const INITIAL_PADDING_TOP = 250;
+  const {width:SCREEN_WIDTH} = Dimensions.get("window");
+  const INITIAL_PADDING_TOP = SCREEN_WIDTH >= 430 ? 250 : SCREEN_WIDTH >= 400 ? 230 : 210;
   const KEYBOARD_ACTIVE_PADDING_TOP = 110;
   const animatedPageContentPaddingTop = useRef(
     new Animated.Value(INITIAL_PADDING_TOP)
@@ -106,6 +108,7 @@ function RegisterScreen({ navigation }) {
             title="Register"
             buttonStyle={styles.buttonStyle}
             onPress={continueRegistration}
+            height={45}
           />
           <TouchableOpacity activeOpacity={0.5}>
             <Text style={styles.whyNito}>Why use Nito?</Text>
@@ -167,7 +170,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
     marginTop: 15,
   },
-  buttonStyle: { width: "80%", height: 45, marginTop: 10, borderRadius: 10 },
+  buttonStyle: { width: "80%", marginTop: 10, borderRadius: 10 },
 });
 
 export default RegisterScreen;
