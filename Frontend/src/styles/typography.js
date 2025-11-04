@@ -1,20 +1,20 @@
 
-import { StyleSheet } from 'react-native';
+import { StyleSheet,} from 'react-native';
 import colors from './colors'; 
+import { scaleSize } from './scale';
 
 const FONT_FAMILY_REGULAR = 'Nunito-Regular';
 const FONT_FAMILY_MEDIUM = 'Nunito-Medium';
 const FONT_FAMILY_SEMIBOLD = 'Nunito-SemiBold';
 const FONT_FAMILY_BOLD = 'Nunito-Bold';
 
-
-const FONT_SIZE_XXL = 32; // e.g., "You have a match!"
-const FONT_SIZE_XL = 24;  // e.g., Screen titles like "Home", "Profile"
-const FONT_SIZE_L = 20;   // e.g., Section headers like "Your Connections"
-const FONT_SIZE_M = 16;   // e.g., General headings, important text
-const FONT_SIZE_S = 14;   // e.g., Body text, input labels
-const FONT_SIZE_XS = 12;  // e.g., Smaller details, captions, placeholder text
-const FONT_SIZE_XXS = 10; // e.g., Very small text, timestamps
+const FONT_SIZE_XXL = scaleSize(32);
+const FONT_SIZE_XL = scaleSize(24);
+const FONT_SIZE_L = scaleSize(20);
+const FONT_SIZE_M = scaleSize(16);
+const FONT_SIZE_S = scaleSize(14);
+const FONT_SIZE_XS = scaleSize(12);
+const FONT_SIZE_XXS = scaleSize(10);
 
 const LINE_HEIGHT_XXL = FONT_SIZE_XXL * 1.2;
 const LINE_HEIGHT_XL = FONT_SIZE_XL * 1.3;
@@ -43,9 +43,6 @@ const textStyles = StyleSheet.create({
     fontSize: FONT_SIZE_S,
     lineHeight: LINE_HEIGHT_XS,
     color: colors.textPrimary,
-  },
-  sectionLabel:{
-
   },
   placeholder: {
     fontFamily: FONT_FAMILY_REGULAR,
