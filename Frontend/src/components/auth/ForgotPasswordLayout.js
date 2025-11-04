@@ -12,11 +12,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import {
   colors,
   FONT_SIZE_XL,
-  PRIMARY_ACTIVE_OPACITY,
   TEXT_ACTIVE_OPACITY,
 } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
+import Button from "../common/Button";
 
 function ForgotPasswordLayout({
   confirm,
@@ -80,22 +80,11 @@ function ForgotPasswordLayout({
         </View>
         {inputComponent}
         <View style={{ flex: 1 }} />
-        <TouchableOpacity
-          style={[
+        <Button title={buttonText} disabled={buttonDisabled} buttonStyle={[
             styles.button,
-            buttonDisabled ? styles.disabled : styles.active,
             { transform: [{ translateY: keyboardOffset }] },
-          ]}
-          activeOpacity={PRIMARY_ACTIVE_OPACITY}
-          onPress={confirm}
-          disabled={buttonDisabled}
-        >
-          {isLoading ? (
-            <ActivityIndicator color={colors.white}></ActivityIndicator>
-          ) : (
-            <Text style={styles.continueButtonText}>{buttonText}</Text>
-          )}
-        </TouchableOpacity>
+          ]} onPress={confirm} height={45}></Button>
+        
       </Animated.View>
     </SafeAreaView>
   );
