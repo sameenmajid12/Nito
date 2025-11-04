@@ -113,9 +113,12 @@ function ConnectionChats() {
         })
       ) : (
         <View style={styles.emptyStateWrapper}>
-          <Text style={styles.emptyStateText}>
-            Chats will appear here once you have other users as connections
-          </Text>
+          <Image style={styles.emptyStateImage} source={require("../../assets/images/conversationsEmptyState.png")} />
+          <View style={styles.emptyStateTextWrapper}>
+            <Text style={styles.emptyStateText}>
+              Chats will appear here once you have other users as connections
+            </Text>
+          </View>
         </View>
       )}
     </View>
@@ -183,12 +186,23 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.borderLight,
     paddingHorizontal: 20,
-    paddingTop: 10
+    paddingTop: 120,
+    width: "100%",
+    alignItems: "center",
+    rowGap: 20
+  },
+  emptyStateTextWrapper: {
+    width: '85%'
   },
   emptyStateText: {
-    fontFamily: "Nunito-SemiBold",
-    fontSize: FONT_SIZE_S,
-    color: colors.textPrimary,
+    fontFamily: "Nunito-Bold",
+    fontSize: FONT_SIZE_M,
+    color: colors.primaryDark,
+    textAlign: "center",
   },
+  emptyStateImage: {
+    width: 200,
+    height: 175
+  }
 });
 export default ConnectionChats;
