@@ -35,7 +35,7 @@ function SectionSelector({ setSelectedSection, checkSelected }) {
           Connections
         </Text>
       </Pressable>
-      <Pressable
+      {/*<Pressable
         style={[
           styles.button,
           checkSelected("archived") ? styles.active : null,
@@ -51,7 +51,7 @@ function SectionSelector({ setSelectedSection, checkSelected }) {
         >
           Archived
         </Text>
-      </Pressable>
+      </Pressable>*/}
     </View>
   );
 }
@@ -63,9 +63,10 @@ const styles = StyleSheet.create({
     columnGap: 10,
     paddingTop: 30,
     alignSelf: "center",
+    justifyContent:'center'
   },
   button: {
-    flex: 1,
+    width:"40%",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
