@@ -7,7 +7,7 @@ import {
   Pressable,
   View,
 } from "react-native";
-import { colors, FONT_SIZE_M, PRIMARY_ACTIVE_OPACITY } from "../../styles";
+import { colors, FONT_SIZE_M, PRIMARY_ACTIVE_OPACITY, scaleSize } from "../../styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useRef } from "react";
 function Button({
@@ -19,6 +19,7 @@ function Button({
   buttonStyle,
   textStyle,
   textIcon,
+  height
 }) {
   if (!variant) {
     variant = "primary";
@@ -47,8 +48,8 @@ function Button({
           variant === "primary"
             ? styles.buttonTextPrimary
             : variant === "secondary"
-            ? styles.buttonTextSecondary
-            : textStyle,
+              ? styles.buttonTextSecondary
+              : textStyle,
         ]}
       >
         {title}
@@ -67,6 +68,9 @@ function Button({
       activeOpacity={PRIMARY_ACTIVE_OPACITY}
       style={[
         buttonStyle,
+        !disabled && variant === "primary" && styles.primaryActive,
+        disabled && variant === "primary" && styles.primaryDisabled,
+        { height: scaleSize(height) },
         variant === "primary" ? styles.primaryButton : styles.customButton,
       ]}
       onPress={onPress}
@@ -78,7 +82,7 @@ function Button({
     <Pressable
       onPressIn={() => animateBackground(true)}
       onPressOut={() => animateBackground(false)}
-      style={[buttonStyle, styles.secondayButton]}
+      style={[buttonStyle, styles.secondayButton, { height: scaleSize(height) }]}
       onPress={onPress}
     >
       <Animated.View
@@ -94,13 +98,19 @@ function Button({
 }
 const styles = StyleSheet.create({
   primaryButton: {
-    backgroundColor: colors.primary,
     justifyContent: "center",
     alignItems: "center",
+
+  },
+  primaryActive: {
+    backgroundColor: colors.primary,
     shadowColor: "black",
     shadowOpacity: "0.25",
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
+  },
+  primaryDisabled: {
+    backgroundColor: colors.primary50,
   },
   secondayButton: {
     borderWidth: 1,
