@@ -1,7 +1,11 @@
 import { Image } from "expo-image";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { colors, FONT_SIZE_L } from "../../styles";
 import { usePhaseTimer } from "../../contexts/PhaseTimerContext";
+
+const {width:SCREEN_WIDTH} = Dimensions.get("window");
+
+const PADDING_TOP = SCREEN_WIDTH >= 430 ? 105 : SCREEN_WIDTH >= 400 ? 90 : 75;
 function PairEmptyState() {
   const { countdowns } = usePhaseTimer();
   return (
@@ -19,7 +23,7 @@ function PairEmptyState() {
 }
 const styles = StyleSheet.create({
   mainWrapper: {
-    paddingTop: 105,
+    paddingTop: PADDING_TOP,
     rowGap: 20,
   },
   image: {

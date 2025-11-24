@@ -1,10 +1,15 @@
-import { StyleSheet, View, Pressable, Text } from "react-native";
+import { StyleSheet, View, Pressable, Text, Dimensions } from "react-native";
 import { useUser } from "../../contexts/UserContext";
 import { colors, FONT_SIZE_S, FONT_SIZE_M, FONT_SIZE_XS } from "../../styles";
 import { formatLastMessageTime } from "../../utils/Format";
 import { Image } from "expo-image";
 import { useConversation } from "../../contexts/ConversationContext";
 import { useEffect, useState } from "react";
+
+const {width:SCREEN_WIDTH} = Dimensions.get("window");
+
+const EMPTY_STATE_PADDING_TOP = SCREEN_WIDTH >= 430 ? 150 : SCREEN_WIDTH >= 400 ? 130 : 110;
+
 function ConnectionChats() {
   const { user } = useUser();
   const { openConversation } = useConversation();
@@ -36,7 +41,8 @@ function ConnectionChats() {
   }
   return (
     <View style={styles.conversationListContainer}>
-      <Text style={styles.containerHeader}>Your connections</Text>
+      {conversations?.length > 0 && <Text style={styles.containerHeader}>Your connections</Text>
+      }
       {conversations?.length > 0 ? (
         conversations?.map((conversation, index) => {
           const userNum =
@@ -183,10 +189,9 @@ const styles = StyleSheet.create({
     top: 37,
   },
   emptyStateWrapper: {
-    borderTopWidth: 1,
-    borderTopColor: colors.borderLight,
+    
     paddingHorizontal: 20,
-    paddingTop: 120,
+    paddingTop: EMPTY_STATE_PADDING_TOP,
     width: "100%",
     alignItems: "center",
     rowGap: 20
