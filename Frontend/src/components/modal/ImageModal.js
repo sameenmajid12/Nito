@@ -5,12 +5,13 @@ import {
   View,
   StyleSheet,
   Dimensions,
+  Pressable
 } from "react-native";
 import { BlurView } from "expo-blur";
-import { colors } from "../../styles";
+import { colors, FONT_SIZE_XL } from "../../styles";
 import { useEffect, useRef, useState } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-
+import { Ionicons } from "@expo/vector-icons";
 const SCREEN = Dimensions.get("window");
 
 function ImageModal({ image, setModalVisible, width, height }) {
@@ -66,7 +67,13 @@ function ImageModal({ image, setModalVisible, width, height }) {
         ]).start();
       }
     });
-
+  const CloseButton = <Pressable style={styles.imageClose} onPress={closeModal}>
+    <Ionicons
+      size={FONT_SIZE_XL}
+      color={colors.primary}
+      name="close-circle-outline"
+    ></Ionicons>
+  </Pressable>
   return (
     <Modal transparent={true}>
       <BlurView intensity={50} style={{ flex: 1 }}>
@@ -94,6 +101,7 @@ function ImageModal({ image, setModalVisible, width, height }) {
               ]}
               onLoad={() => setScaleLoaded(true)}
             />
+            {CloseButton}
           </View>
         </GestureDetector>
       </BlurView>
@@ -113,6 +121,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#444",
     alignItems: "center",
     justifyContent: "center",
+  },
+  imageClose: {
+    position: "absolute",
+    right: 20,
+    top: 60,
+    zIndex: 999,
+    backgroundColor: colors.white,
+    borderRadius: 999,
   },
 });
 
