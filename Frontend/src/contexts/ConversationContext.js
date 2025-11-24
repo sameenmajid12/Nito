@@ -22,7 +22,7 @@ export const ConversationProvider = ({ children }) => {
     navigation.navigate("Chat");
   }
   useEffect(() => {
-    if(!user || !user?.currentPair.conversation) return;
+    if (!user || !user?.currentPair.conversation) return;
     const currentConvoLastMessageDate = user.currentPair.conversation?.lastMessage?.createdAt;
     const currentConvoUserNum = user.currentPair.conversation?.user1?._id === user._id ? "user1" : "user2";
     const currentConvoDeletionDate = user.currentPair.conversation[`${currentConvoUserNum}DeletionDate`];
@@ -73,8 +73,14 @@ export const ConversationProvider = ({ children }) => {
       addAlert("error", "Error deleting conversation");
     }
   }
+  const openConversationWithUser = async (userToMessage) => {
+    const conversation = await getConversation(userToMessage);
+    if (conversation) {
+      openConversation(conversation, false);
+    }
+  };
   return (
-    <ConversationContext.Provider value={{ conversation, setConversation, deleteConversation, setCurrent, current, getConversation, openConversation, isCurrentConvoDeleted }}>
+    <ConversationContext.Provider value={{ conversation, setConversation, deleteConversation, setCurrent, current, getConversation, openConversation, openConversationWithUser, isCurrentConvoDeleted }}>
       {children}
     </ConversationContext.Provider>
   );

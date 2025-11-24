@@ -5,9 +5,9 @@ import { colors, FONT_SIZE_L, FONT_SIZE_M } from "../../styles";
 function UserModal({
   user,
   toggleConfirmation,
-  messageUser,
   viewProfile,
   isOnUserScreen,
+  messageUser
 }) {
   return (
     <>

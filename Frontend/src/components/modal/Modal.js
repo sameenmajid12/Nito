@@ -33,7 +33,7 @@ function Modal({
   }
 
   const { closeModal } = useModal();
-  const { getConversation } = useConversation();
+  const { openConversationWithUser } = useConversation();
   const { updateUser, } = useUser();
   const { notificationsUpdated, notifications, setNotificationsUpdated } =
     useNotifications();
@@ -110,13 +110,10 @@ function Modal({
     navigation.navigate("UserScreen", { user: userToView });
     handleClose();
   };
-  const messageUser = async (userToMessage) => {
-    const conversation = await getConversation(userToMessage);
-    if (conversation) {
-      navigation.navigate("Chat", { conversation });
-    }
+  const messageUser = async(userToMessage) =>{
+    await openConversationWithUser(userToMessage);
     handleClose();
-  };
+  }
   return (
     <Pressable onPress={handleClose} style={styles.page}>
       <Animated.View
@@ -144,10 +141,10 @@ function Modal({
             <UserModal
               user={user}
               toggleConfirmation={toggleConfirmation}
-              messageUser={messageUser}
               viewProfile={viewProfile}
               isOnUserScreen={isOnUserScreen}
-            />
+              messageUser={messageUser}
+              />
           ) : type === "chatModal" ? (
             <ChatModal
               conversation={conversation}
