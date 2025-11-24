@@ -9,14 +9,14 @@ import { colors } from "../../styles";
 import TextHeader from "../../components/common/TextHeader";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "@env";
-import { useUser } from "../../contexts/UserContext";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
+import { useConversation } from "../../contexts/ConversationContext";
 function UserScreen({ route, navigation }) {
   const { user } = route.params;
   const [userToDisplay, setUserToDisplay] = useState(user);
   const { token } = useAuth();
-  const { getConversation } = useUser();
+  const { openConversationWithUser } = useConversation();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const getUser = async () => {
@@ -44,12 +44,6 @@ function UserScreen({ route, navigation }) {
     };
     getUser();
   }, []);
-  const messageUser = async (userToMessage) => {
-    const conversation = await getConversation(userToMessage);
-    if (conversation) {
-      navigation.navigate("Chat", { conversation });
-    }
-  };
   return (
     <SafeAreaView style={styles.page}>
       <TextHeader text={userToDisplay.fullname} navigation={navigation} />
@@ -58,7 +52,7 @@ function UserScreen({ route, navigation }) {
           <ProfileTop
             isUser={false}
             user={userToDisplay}
-            messageUser={messageUser}
+            openConversationWithUser={openConversationWithUser}
           ></ProfileTop>
           {isLoading ? (
             <View></View>

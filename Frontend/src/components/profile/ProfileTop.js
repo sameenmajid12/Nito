@@ -28,7 +28,7 @@ function ProfileTop({
   changesMade,
   isUser,
   user,
-  messageUser,
+  openConversationWithUser,
 }) {
   if (!user) {
     return;
@@ -135,7 +135,7 @@ function ProfileTop({
       ) : (
         <View style={styles.primaryButtonsContainer}>
           <TouchableOpacity
-            onPress={() => messageUser(user)}
+            onPress={() => openConversationWithUser(user)}
             activeOpacity={PRIMARY_ACTIVE_OPACITY}
             style={[styles.updateButton, styles.primary]}
           >
